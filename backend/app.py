@@ -128,9 +128,18 @@ def _startup() -> None:
     init_db()
     print("✅ Database initialized successfully")
     
-    # Load ML model
-    weights_path = _resolve_weights_path(MODEL_NAME)
-    _predictor.load(MODEL_NAME, weights_path)
+    # Load ML model (optional - skip if weights not found)
+    try:
+        weights_path = _resolve_weights_path(MODEL_NAME)
+        if os.path.exists(weights_path):
+            _predictor.load(MODEL_NAME, weights_path)
+            print(f"✅ Model loaded: {MODEL_NAME}")
+        else:
+            print(f"⚠️  Model weights not found: {weights_path}")
+            print("⚠️  API will run without ML model (detection endpoints will fail)")
+    except Exception as e:
+        print(f"⚠️  Failed to load model: {e}")
+        print("⚠️  API will run without ML model (detection endpoints will fail)")
 
 
 @app.get("/health")
