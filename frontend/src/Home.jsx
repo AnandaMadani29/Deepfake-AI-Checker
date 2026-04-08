@@ -1,11 +1,38 @@
 import React, { useEffect } from 'react'
+import { FaShieldAlt, FaRobot, FaCheckCircle, FaHistory, FaArrowUp } from 'react-icons/fa'
+import { HiLightningBolt, HiShieldCheck } from 'react-icons/hi'
+import { BiAnalyse } from 'react-icons/bi'
+import { MdSecurity, MdVerified } from 'react-icons/md'
 
-export default function Home({ onNavigateToDetection, targetSection, onSectionScrolled }) {
+export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavigateToRegister, onNavigateToHistory, onNavigateToArticles, onLogout, targetSection, onSectionScrolled, user }) {
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768)
+  const [menuOpen, setMenuOpen] = React.useState(false)
+  const [showBackToTop, setShowBackToTop] = React.useState(false)
+
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 400)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
+    setMenuOpen(false)
+  }
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   useEffect(() => {
@@ -19,44 +46,185 @@ export default function Home({ onNavigateToDetection, targetSection, onSectionSc
     }
   }, [targetSection])
   return (
-    <div style={{ minHeight: '100vh', background: '#1a1a1a', color: '#fff' }}>
+    <div style={{ background: '#1a1a1a', color: '#fff' }}>
       {/* Navbar */}
       <nav style={{ 
         background: '#0d0d0d', 
-        padding: '20px 60px',
+        padding: isMobile ? '16px 20px' : '20px 60px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderBottom: '1px solid #2a2a2a'
+        borderBottom: '1px solid #2a2a2a',
+        position: 'relative'
       }}>
-        <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: 1 }}>Fact.it</div>
-        <div style={{ display: 'flex', gap: 40, alignItems: 'center' }}>
-          <a onClick={() => scrollToSection('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>About us</a>
-          <a onClick={() => scrollToSection('services')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>Services</a>
-          <a onClick={() => scrollToSection('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>How To Use</a>
-          <button 
-            onClick={onNavigateToDetection}
-            style={{
-              background: '#E94E1B',
-              color: '#fff',
-              border: 'none',
-              padding: '10px 24px',
-              borderRadius: 4,
-              fontWeight: 600,
-              cursor: 'pointer',
-              fontSize: 14
-            }}>
-            Get Started
-          </button>
-        </div>
+        <div style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, letterSpacing: 1 }}>Fact.it</div>
+        
+        {isMobile ? (
+          // Mobile Menu
+          <>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#fff',
+                fontSize: 24,
+                cursor: 'pointer',
+                padding: 8
+              }}
+            >
+              {menuOpen ? '✕' : '☰'}
+            </button>
+            {menuOpen && (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                right: 0,
+                background: '#0d0d0d',
+                borderBottom: '1px solid #2a2a2a',
+                padding: '20px',
+                zIndex: 1000
+              }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <a onClick={() => scrollToSection('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', padding: '8px 0' }}>About us</a>
+                  <a onClick={() => scrollToSection('services')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', padding: '8px 0' }}>Services</a>
+                  <a onClick={() => scrollToSection('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', padding: '8px 0' }}>How To Use</a>
+                  <a onClick={onNavigateToArticles} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', padding: '8px 0' }}>Resources</a>
+                  {user ? (
+                    <>
+                      <div style={{ color: '#999', fontSize: 14, padding: '8px 0' }}>Hi, {user.full_name || user.email}</div>
+                      <button onClick={() => { onNavigateToDetection(); setMenuOpen(false); }} style={{ background: '#E94E1B', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>Get Started</button>
+                      <button onClick={() => { onNavigateToHistory(); setMenuOpen(false); }} style={{ background: 'transparent', color: '#fff', border: '1px solid #2a2a2a', padding: '10px 20px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>History</button>
+                      <button onClick={() => { onLogout(); setMenuOpen(false); }} style={{ background: 'transparent', color: '#999', border: '1px solid #2a2a2a', padding: '10px 16px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 13 }}>Logout</button>
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => { onNavigateToDetection(); setMenuOpen(false); }} style={{ background: '#E94E1B', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>Get Started</button>
+                      <button onClick={() => { onNavigateToLogin(); setMenuOpen(false); }} style={{ background: 'transparent', color: '#fff', border: '1px solid #2a2a2a', padding: '10px 20px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>Sign In</button>
+                      <a onClick={() => { onNavigateToRegister(); setMenuOpen(false); }} style={{ color: '#E94E1B', textDecoration: 'none', fontSize: 14, cursor: 'pointer', padding: '8px 0' }}>Sign Up</a>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          // Desktop Menu
+          <div style={{ display: 'flex', gap: 40, alignItems: 'center' }}>
+            <a onClick={() => scrollToSection('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>About us</a>
+            <a onClick={() => scrollToSection('services')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>Services</a>
+            <a onClick={() => scrollToSection('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>How To Use</a>
+            <a onClick={onNavigateToArticles} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>Resources</a>
+          
+          {user ? (
+            // Logged in: Show user menu
+            <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+              <button 
+                onClick={onNavigateToDetection}
+                style={{
+                  background: '#E94E1B',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '10px 24px',
+                  borderRadius: 4,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: 14
+                }}>
+                Get Started
+              </button>
+              <button
+                onClick={onNavigateToHistory}
+                style={{
+                  background: 'transparent',
+                  color: '#fff',
+                  border: '1px solid #2a2a2a',
+                  padding: '10px 20px',
+                  borderRadius: 4,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: 14
+                }}
+              >
+                History
+              </button>
+              <div style={{ color: '#999', fontSize: 14 }}>
+                Hi, {user.full_name || user.email}
+              </div>
+              <button
+                onClick={onLogout}
+                style={{
+                  background: 'transparent',
+                  color: '#999',
+                  border: '1px solid #2a2a2a',
+                  padding: '8px 16px',
+                  borderRadius: 4,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: 13
+                }}
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            // Logged out: Show detection/login/register buttons
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+              <button 
+                onClick={onNavigateToDetection}
+                style={{
+                  background: '#E94E1B',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '10px 24px',
+                  borderRadius: 4,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: 14
+                }}>
+                Get Started
+              </button>
+              <button
+                onClick={onNavigateToLogin}
+                style={{
+                  background: 'transparent',
+                  color: '#fff',
+                  border: '1px solid #2a2a2a',
+                  padding: '10px 20px',
+                  borderRadius: 4,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: 14
+                }}
+              >
+                Sign In
+              </button>
+              <a
+                onClick={onNavigateToRegister}
+                style={{
+                  color: '#E94E1B',
+                  textDecoration: 'none',
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  fontWeight: 600
+                }}
+              >
+                Sign Up
+              </a>
+            </div>
+          )}
+          </div>
+        )}
       </nav>
 
       {/* Hero Section */}
       <section style={{ 
-        padding: '80px 60px',
+        padding: isMobile ? '40px 20px' : '80px 60px',
         display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
         alignItems: 'center',
-        gap: 80,
+        gap: isMobile ? 40 : 80,
         maxWidth: 1400,
         margin: '0 auto'
       }}>
@@ -113,7 +281,7 @@ export default function Home({ onNavigateToDetection, targetSection, onSectionSc
           </div>
         </div>
         
-        {/* 3D Face Mesh Illustration */}
+        {/* Hero Image */}
         <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <div style={{ 
             width: 400, 
@@ -129,17 +297,16 @@ export default function Home({ onNavigateToDetection, targetSection, onSectionSc
             <div style={{ position: 'absolute', bottom: 0, left: 0, width: 60, height: 60, borderBottom: '3px solid #E94E1B', borderLeft: '3px solid #E94E1B' }}></div>
             <div style={{ position: 'absolute', bottom: 0, right: 0, width: 60, height: 60, borderBottom: '3px solid #E94E1B', borderRight: '3px solid #E94E1B' }}></div>
             
-            {/* Wireframe face placeholder */}
-            <svg width="300" height="350" viewBox="0 0 300 350" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="150" cy="175" rx="100" ry="140" stroke="#666" strokeWidth="1" strokeDasharray="4 4"/>
-              <circle cx="120" cy="150" r="8" fill="#E94E1B"/>
-              <circle cx="180" cy="150" r="8" fill="#E94E1B"/>
-              <ellipse cx="150" cy="200" rx="30" ry="15" stroke="#666" strokeWidth="1"/>
-              <path d="M 100 120 Q 120 110 140 120" stroke="#666" strokeWidth="1"/>
-              <path d="M 160 120 Q 180 110 200 120" stroke="#666" strokeWidth="1"/>
-              <line x1="150" y1="50" x2="150" y2="300" stroke="#333" strokeWidth="1" strokeDasharray="2 2"/>
-              <line x1="50" y1="175" x2="250" y2="175" stroke="#333" strokeWidth="1" strokeDasharray="2 2"/>
-            </svg>
+            {/* Hero Illustration */}
+            <img 
+              src="/hero-illustration.png" 
+              alt="AI Detection Illustration"
+              style={{
+                width: '450px',
+                height: '500px',
+                objectFit: 'contain'
+              }}
+            />
           </div>
         </div>
       </section>
@@ -169,21 +336,27 @@ export default function Home({ onNavigateToDetection, targetSection, onSectionSc
             marginTop: 60
           }}>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>🎯</div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+                <HiShieldCheck size={48} color="#E94E1B" />
+              </div>
               <h3 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 12px 0' }}>Our Mission</h3>
               <p style={{ fontSize: 14, color: '#999', lineHeight: 1.6 }}>
                 Empower everyone to distinguish real from fake in the digital age
               </p>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>🔬</div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+                <FaRobot size={48} color="#E94E1B" />
+              </div>
               <h3 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 12px 0' }}>Our Technology</h3>
               <p style={{ fontSize: 14, color: '#999', lineHeight: 1.6 }}>
                 State-of-the-art deep learning models trained on millions of images
               </p>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>🛡️</div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+                <FaShieldAlt size={48} color="#E94E1B" />
+              </div>
               <h3 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 12px 0' }}>Our Promise</h3>
               <p style={{ fontSize: 14, color: '#999', lineHeight: 1.6 }}>
                 Fast, accurate, and privacy-focused detection you can trust
@@ -288,7 +461,7 @@ export default function Home({ onNavigateToDetection, targetSection, onSectionSc
               color: '#E94E1B',
               marginBottom: 20
             }}>
-              🎯
+              <HiLightningBolt size={48} color="#E94E1B" />
             </div>
             <h3 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 16px 0' }}>
               Upload Image
@@ -311,7 +484,7 @@ export default function Home({ onNavigateToDetection, targetSection, onSectionSc
               color: '#E94E1B',
               marginBottom: 20
             }}>
-              📊
+              <BiAnalyse size={48} color="#E94E1B" />
             </div>
             <h3 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 16px 0' }}>
               AI Analysis
@@ -334,7 +507,7 @@ export default function Home({ onNavigateToDetection, targetSection, onSectionSc
               color: '#E94E1B',
               marginBottom: 20
             }}>
-              ✅
+              <FaCheckCircle size={48} color="#E94E1B" />
             </div>
             <h3 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 16px 0' }}>
               Get Results
@@ -349,9 +522,9 @@ export default function Home({ onNavigateToDetection, targetSection, onSectionSc
 
       {/* Footer */}
       <footer style={{ 
-        background: '#0d0d0d', 
-        padding: '40px 60px',
-        borderTop: '1px solid #2a2a2a'
+        padding: '40px 60px 20px 60px',
+        borderTop: '1px solid #2a2a2a',
+        margin: 0
       }}>
         <div style={{ 
           display: 'flex', 
@@ -383,14 +556,20 @@ export default function Home({ onNavigateToDetection, targetSection, onSectionSc
               <div style={{ fontWeight: 600, marginBottom: 12 }}>Resources</div>
               <div style={{ color: '#666', fontSize: 14, display: 'grid', gap: 8 }}>
                 <a onClick={() => scrollToSection('how-to-use')} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer' }}>How To Use</a>
-                <a href="#" style={{ color: '#666', textDecoration: 'none' }}>Blog</a>
+                <a onClick={onNavigateToArticles} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer' }}>Articles & Guides</a>
                 <a onClick={() => scrollToSection('how-to-use')} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer' }}>FAQ</a>
               </div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20 }}>▶️</a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20 }}>📷</a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20 }}>💼</a>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20 }}>
+                <HiLightningBolt size={20} />
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20 }}>
+                <HiLightningBolt size={20} />
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20 }}>
+                <HiLightningBolt size={20} />
+              </a>
             </div>
           </div>
         </div>
@@ -400,11 +579,50 @@ export default function Home({ onNavigateToDetection, targetSection, onSectionSc
           paddingTop: 20,
           borderTop: '1px solid #2a2a2a',
           color: '#666',
-          fontSize: 12
+          fontSize: 12,
+          paddingBottom: 0,
+          marginBottom: 0
         }}>
           © 2025 Fact.it All rights reserved
         </div>
       </footer>
+
+      {/* Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          style={{
+            position: 'fixed',
+            bottom: 40,
+            right: 40,
+            width: 50,
+            height: 50,
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #E94E1B 0%, #d43d10 100%)',
+            border: 'none',
+            color: '#fff',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 4px 12px rgba(233, 78, 27, 0.4)',
+            zIndex: 1000,
+            transition: 'all 0.3s ease',
+            animation: 'fadeIn 0.3s ease-in-out'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-4px)'
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(233, 78, 27, 0.6)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)'
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(233, 78, 27, 0.4)'
+          }}
+          title="Back to top"
+        >
+          <FaArrowUp size={20} />
+        </button>
+      )}
     </div>
   )
 }

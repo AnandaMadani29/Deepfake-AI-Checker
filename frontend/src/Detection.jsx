@@ -1,6 +1,11 @@
 import React, { useMemo, useState, useRef } from 'react'
+import toast from 'react-hot-toast'
+import { FaUpload, FaCheckCircle, FaTimesCircle, FaRobot, FaExclamationTriangle, FaInfoCircle, FaChevronDown, FaChevronUp, FaDownload } from 'react-icons/fa'
+import { HiPhotograph, HiLightningBolt } from 'react-icons/hi'
+import { MdDelete, MdWarning, MdInfo } from 'react-icons/md'
+import { BiAnalyse } from 'react-icons/bi'
 
-const DEFAULT_API_BASE = 'http://localhost:8000'
+const DEFAULT_API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 const MAX_FILES = 10
 
 function formatPct(x) {
@@ -8,14 +13,22 @@ function formatPct(x) {
   return `${(x * 100).toFixed(2)}%`
 }
 
-export default function Detection({ onNavigateToHome }) {
+export default function Detection({ onNavigateToHome, onNavigateToHistory, user }) {
   const [files, setFiles] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [results, setResults] = useState([])
   const [dragActive, setDragActive] = useState(false)
   const [processingIndex, setProcessingIndex] = useState(-1)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+  const [expandedResults, setExpandedResults] = useState({})
   const fileInputRef = useRef(null)
+
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const canSubmit = useMemo(() => files.length > 0 && !loading, [files, loading])
 
@@ -56,6 +69,63 @@ export default function Detection({ onNavigateToHome }) {
     setFiles([])
     setResults([])
     setError('')
+    setExpandedResults({})
+  }
+
+  const toggleResultExpanded = (id) => {
+    setExpandedResults(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }))
+  }
+
+  const expandAll = () => {
+    const allExpanded = {}
+    results.forEach(result => {
+      allExpanded[result.id] = true
+    })
+    setExpandedResults(allExpanded)
+  }
+
+  const collapseAll = () => {
+    setExpandedResults({})
+  }
+
+  const downloadResult = (item) => {
+    if (!item.result) {
+      toast.error('No result to download')
+      return
+    }
+    
+    toast.success('Downloading result...')
+
+    // Prepare result data
+    const resultData = {
+      filename: item.filename,
+      timestamp: item.timestamp,
+      classification: item.result.label,
+      confidence: {
+        fake: (item.result.prob_fake * 100).toFixed(2) + '%',
+        real: ((1 - item.result.prob_fake) * 100).toFixed(2) + '%'
+      },
+      model: item.result.model_name,
+      threshold: ((item.result.threshold || 0.5) * 100).toFixed(0) + '%',
+      explanation: item.result.explanation || null
+    }
+
+    // Create JSON file
+    const jsonContent = JSON.stringify(resultData, null, 2)
+    const blob = new Blob([jsonContent], { type: 'application/json' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    const filename = item.filename.replace(/\.[^/.]+$/, '') // Remove extension
+    link.setAttribute('href', url)
+    link.setAttribute('download', `${filename}_detection_result.json`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
   }
 
   const handleDrag = (e) => {
@@ -95,14 +165,30 @@ export default function Detection({ onNavigateToHome }) {
           const form = new FormData()
           form.append('file', fileData.file)
 
+          // Get token for authenticated requests
+          const token = localStorage.getItem('access_token')
+          const headers = {}
+          if (token) {
+            headers['Authorization'] = `Bearer ${token}`
+          }
+
           const res = await fetch(`${DEFAULT_API_BASE}/predict`, {
             method: 'POST',
+            headers: headers,
             body: form,
           })
 
           const data = await res.json().catch(() => null)
           if (!res.ok) {
             throw new Error((data && data.detail) ? String(data.detail) : `Request failed (${res.status})`)
+          }
+          
+          // Log detection response for debugging
+          console.log('🔍 Detection Response:', data)
+          if (data.saved_to_history) {
+            console.log('✅ Saved to history! History ID:', data.history_id)
+          } else {
+            console.log('ℹ️ Not saved to history (user not logged in or error)')
           }
           
           newResults.push({
@@ -135,11 +221,11 @@ export default function Detection({ onNavigateToHome }) {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#1a1a1a', color: '#fff' }}>
+    <div style={{ minHeight: '100vh', background: '#1a1a1a', color: '#fff', display: 'flex', flexDirection: 'column', margin: 0 }}>
       {/* Navbar */}
       <nav style={{ 
         background: '#0d0d0d', 
-        padding: '20px 60px',
+        padding: isMobile ? '16px 20px' : '20px 60px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -147,11 +233,11 @@ export default function Detection({ onNavigateToHome }) {
       }}>
         <div 
           onClick={() => onNavigateToHome()}
-          style={{ fontSize: 24, fontWeight: 700, letterSpacing: 1, cursor: 'pointer' }}
+          style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, letterSpacing: 1, cursor: 'pointer' }}
         >
           Fact.it
         </div>
-        <div style={{ display: 'flex', gap: 40, alignItems: 'center' }}>
+        <div style={{ display: isMobile ? 'none' : 'flex', gap: 40, alignItems: 'center' }}>
           <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>About us</a>
           <a onClick={() => onNavigateToHome('services')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>Services</a>
           <a onClick={() => onNavigateToHome('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>How To Use</a>
@@ -172,27 +258,56 @@ export default function Detection({ onNavigateToHome }) {
         </div>
       </nav>
 
+      {/* History Button - Top Right */}
+      {user && (
+        <div style={{ 
+          position: 'absolute', 
+          top: isMobile ? '70px' : '80px', 
+          right: isMobile ? '20px' : '60px',
+          zIndex: 10
+        }}>
+          <button 
+            onClick={onNavigateToHistory}
+            style={{
+              background: '#E94E1B',
+              color: '#fff',
+              border: 'none',
+              padding: '12px 24px',
+              borderRadius: 6,
+              fontWeight: 600,
+              cursor: 'pointer',
+              fontSize: 14,
+              boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8
+            }}>
+            View History
+          </button>
+        </div>
+      )}
+
       {/* Hero Section */}
-      <div style={{ padding: '60px 60px 40px', textAlign: 'center' }}>
+      <div style={{ padding: isMobile ? '40px 20px 30px' : '60px 60px 40px', textAlign: 'center', flex: 1, position: 'relative' }}>
         <h1 style={{ 
-          fontSize: 48, 
+          fontSize: isMobile ? 32 : 48, 
           fontWeight: 700, 
-          margin: '0 0 16px 0',
+          margin: '0 0 12px 0',
           lineHeight: 1.2
         }}>
           Detect Deepfake Images with AI
         </h1>
-        <p style={{ fontSize: 16, color: '#999', margin: '0 0 16px 0' }}>
+        <p style={{ fontSize: isMobile ? 14 : 16, color: '#999', margin: '0 0 12px 0' }}>
           Upload up to {MAX_FILES} images to verify their authenticity using advanced machine learning
         </p>
         <div style={{ 
           maxWidth: 700, 
-          margin: '0 auto 40px auto',
-          padding: '12px 20px',
+          margin: '0 auto 32px auto',
+          padding: isMobile ? '10px 16px' : '12px 20px',
           background: '#0d0d0d',
           borderRadius: 6,
           border: '1px solid #2a2a2a',
-          fontSize: 13,
+          fontSize: isMobile ? 12 : 13,
           color: '#999',
           textAlign: 'left'
         }}>
@@ -207,7 +322,8 @@ export default function Detection({ onNavigateToHome }) {
           maxWidth: 1100, 
           margin: '0 auto',
           display: 'flex',
-          gap: 40,
+          flexDirection: isMobile ? 'column' : 'row',
+          gap: isMobile ? 30 : 40,
           alignItems: 'flex-start'
         }}>
           {/* Upload Area */}
@@ -363,6 +479,53 @@ export default function Detection({ onNavigateToHome }) {
                     Clear All
                   </button>
                 </div>
+                {/* Expand/Collapse Controls */}
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'flex-end', 
+                  gap: 12, 
+                  marginBottom: 16 
+                }}>
+                  <button
+                    onClick={expandAll}
+                    style={{
+                      background: '#2a2a2a',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '8px 16px',
+                      borderRadius: 4,
+                      cursor: 'pointer',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6
+                    }}
+                  >
+                    <FaChevronDown size={12} />
+                    Expand All
+                  </button>
+                  <button
+                    onClick={collapseAll}
+                    style={{
+                      background: '#2a2a2a',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '8px 16px',
+                      borderRadius: 4,
+                      cursor: 'pointer',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6
+                    }}
+                  >
+                    <FaChevronUp size={12} />
+                    Collapse All
+                  </button>
+                </div>
+
                 {/* Summary Statistics */}
                 {(() => {
                   const successResults = results.filter(r => r.result && !r.error)
@@ -439,11 +602,114 @@ export default function Detection({ onNavigateToHome }) {
                         </div>
                       )}
                     </div>
-                    <div style={{ padding: 16 }}>
-                      <div style={{ fontSize: 14, color: '#fff', marginBottom: 12, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {/* Collapsible Header */}
+                    <div 
+                      style={{ 
+                        padding: 16,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        background: 'linear-gradient(135deg, #0a0a0a 0%, #141414 100%)',
+                        borderBottom: expandedResults[item.id] ? '1px solid #2a2a2a' : 'none',
+                        transition: 'background 0.3s'
+                      }}
+                    >
+                      <div 
+                        onClick={() => toggleResultExpanded(item.id)}
+                        style={{ 
+                          fontSize: 14, 
+                          color: '#fff', 
+                          fontWeight: 600, 
+                          overflow: 'hidden', 
+                          textOverflow: 'ellipsis', 
+                          whiteSpace: 'nowrap',
+                          flex: 1,
+                          cursor: 'pointer'
+                        }}
+                      >
                         {item.filename}
                       </div>
-                      {item.error ? (
+                      <div style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: 12,
+                        marginLeft: 12
+                      }}>
+                        {item.result && (
+                          <>
+                            <div style={{ 
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 6,
+                              padding: '4px 12px',
+                              borderRadius: 20,
+                              background: item.result.label === 'Real' ? 'rgba(74, 222, 128, 0.1)' : 'rgba(248, 113, 113, 0.1)',
+                              border: `1px solid ${item.result.label === 'Real' ? '#4ade80' : '#f87171'}`
+                            }}>
+                              {item.result.label === 'Real' ? (
+                                <FaCheckCircle size={12} color="#4ade80" />
+                              ) : (
+                                <FaTimesCircle size={12} color="#f87171" />
+                              )}
+                              <span style={{ 
+                                fontSize: 12,
+                                fontWeight: 600,
+                                color: item.result.label === 'Real' ? '#4ade80' : '#f87171'
+                              }}>
+                                {item.result.label}
+                              </span>
+                            </div>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                downloadResult(item)
+                              }}
+                              style={{
+                                background: '#2a2a2a',
+                                border: '1px solid #3a3a3a',
+                                color: '#fff',
+                                padding: '6px 12px',
+                                borderRadius: 4,
+                                cursor: 'pointer',
+                                fontSize: 11,
+                                fontWeight: 600,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 6,
+                                transition: 'all 0.2s'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.background = '#E94E1B'
+                                e.currentTarget.style.borderColor = '#E94E1B'
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.background = '#2a2a2a'
+                                e.currentTarget.style.borderColor = '#3a3a3a'
+                              }}
+                              title="Download result as JSON"
+                            >
+                              <FaDownload size={11} />
+                              Download
+                            </button>
+                          </>
+                        )}
+                        <div 
+                          onClick={() => toggleResultExpanded(item.id)}
+                          style={{ cursor: 'pointer', padding: '4px' }}
+                        >
+                          {expandedResults[item.id] ? (
+                            <FaChevronUp size={14} color="#999" />
+                          ) : (
+                            <FaChevronDown size={14} color="#999" />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Collapsible Content */}
+                    {expandedResults[item.id] && (
+                      <div style={{ padding: 16 }}>
+                        {item.error ? (
                         <div>
                           <div style={{ color: '#f87171', fontSize: 13, marginBottom: 8 }}>
                             ❌ Error: {item.error}
@@ -454,31 +720,83 @@ export default function Detection({ onNavigateToHome }) {
                         </div>
                       ) : item.result && (
                         <div>
+                          {/* Main Classification Card */}
                           <div style={{ 
-                            background: item.result.label === 'Real' ? '#1a2e1a' : '#2e1a1a',
-                            padding: '12px',
-                            borderRadius: 6,
-                            marginBottom: 12,
-                            border: `1px solid ${item.result.label === 'Real' ? '#2d5016' : '#5b1a2e'}`
+                            background: `linear-gradient(135deg, ${item.result.label === 'Real' ? '#1a2e1a' : '#2e1a1a'} 0%, ${item.result.label === 'Real' ? '#0f1f0f' : '#1f0f0f'} 100%)`,
+                            padding: '16px',
+                            borderRadius: 8,
+                            marginBottom: 16,
+                            border: `2px solid ${item.result.label === 'Real' ? '#2d5016' : '#5b1a2e'}`,
+                            boxShadow: `0 4px 12px ${item.result.label === 'Real' ? 'rgba(74, 222, 128, 0.1)' : 'rgba(248, 113, 113, 0.1)'}`
                           }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                              <span style={{ fontSize: 12, color: '#999' }}>Classification:</span>
-                              <strong style={{ 
-                                fontSize: 16,
-                                color: item.result.label === 'Real' ? '#4ade80' : '#f87171'
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                              <span style={{ fontSize: 13, color: '#999', fontWeight: 600 }}>Classification Result</span>
+                              <div style={{ 
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 8,
+                                padding: '6px 14px',
+                                borderRadius: 20,
+                                background: item.result.label === 'Real' ? 'rgba(74, 222, 128, 0.2)' : 'rgba(248, 113, 113, 0.2)',
+                                border: `1px solid ${item.result.label === 'Real' ? '#4ade80' : '#f87171'}`
                               }}>
-                                {item.result.label}
-                              </strong>
-                            </div>
-                            <div style={{ height: 1, background: '#2a2a2a', margin: '8px 0' }}></div>
-                            <div style={{ display: 'grid', gap: 6, fontSize: 12 }}>
-                              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#999' }}>Confidence (Fake):</span>
-                                <strong style={{ color: '#f87171' }}>{formatPct(item.result.prob_fake)}</strong>
+                                {item.result.label === 'Real' ? (
+                                  <FaCheckCircle size={14} color="#4ade80" />
+                                ) : (
+                                  <FaTimesCircle size={14} color="#f87171" />
+                                )}
+                                <strong style={{ 
+                                  fontSize: 16,
+                                  color: item.result.label === 'Real' ? '#4ade80' : '#f87171'
+                                }}>
+                                  {item.result.label}
+                                </strong>
                               </div>
-                              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#999' }}>Confidence (Real):</span>
-                                <strong style={{ color: '#4ade80' }}>{formatPct(1 - item.result.prob_fake)}</strong>
+                            </div>
+                            
+                            {/* Confidence Bars */}
+                            <div style={{ display: 'grid', gap: 10, marginTop: 12 }}>
+                              <div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                                  <span style={{ color: '#999', fontSize: 12 }}>Fake Probability</span>
+                                  <strong style={{ color: '#f87171', fontSize: 13 }}>{formatPct(item.result.prob_fake)}</strong>
+                                </div>
+                                <div style={{ 
+                                  width: '100%', 
+                                  height: 8, 
+                                  background: '#1a1a1a', 
+                                  borderRadius: 4,
+                                  overflow: 'hidden'
+                                }}>
+                                  <div style={{ 
+                                    width: formatPct(item.result.prob_fake),
+                                    height: '100%',
+                                    background: 'linear-gradient(90deg, #f87171 0%, #dc2626 100%)',
+                                    borderRadius: 4,
+                                    transition: 'width 0.5s ease'
+                                  }}></div>
+                                </div>
+                              </div>
+                              <div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                                  <span style={{ color: '#999', fontSize: 12 }}>Real Probability</span>
+                                  <strong style={{ color: '#4ade80', fontSize: 13 }}>{formatPct(1 - item.result.prob_fake)}</strong>
+                                </div>
+                                <div style={{ 
+                                  width: '100%', 
+                                  height: 8, 
+                                  background: '#1a1a1a', 
+                                  borderRadius: 4,
+                                  overflow: 'hidden'
+                                }}>
+                                  <div style={{ 
+                                    width: formatPct(1 - item.result.prob_fake),
+                                    height: '100%',
+                                    background: 'linear-gradient(90deg, #4ade80 0%, #16a34a 100%)',
+                                    borderRadius: 4,
+                                    transition: 'width 0.5s ease'
+                                  }}></div>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -498,9 +816,122 @@ export default function Detection({ onNavigateToHome }) {
                               <span style={{ color: '#999' }}>{item.timestamp}</span>
                             </div>
                           </div>
+
+                          {/* AI Explanation Section */}
+                          {item.result.explanation && (
+                            <div style={{ marginTop: 16, padding: 16, background: '#0a0a0a', borderRadius: 8, border: '1px solid #2a2a2a' }}>
+                              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12, color: '#E94E1B', display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <FaRobot size={16} />
+                                <span>AI Analysis & Explanation</span>
+                              </div>
+                              
+                              {/* Summary */}
+                              <div style={{ fontSize: 12, color: '#ccc', marginBottom: 12, lineHeight: 1.6 }}>
+                                {item.result.explanation.summary}
+                              </div>
+
+                              {/* Confidence Badge */}
+                              <div style={{ 
+                                display: 'inline-block',
+                                padding: '4px 10px',
+                                borderRadius: 4,
+                                background: item.result.explanation.confidence_level === 'Very High' || item.result.explanation.confidence_level === 'High' ? '#1a2e1a' : '#2e2e1a',
+                                border: `1px solid ${item.result.explanation.confidence_level === 'Very High' || item.result.explanation.confidence_level === 'High' ? '#2d5016' : '#5b5b16'}`,
+                                fontSize: 11,
+                                fontWeight: 600,
+                                marginBottom: 12
+                              }}>
+                                Confidence: {item.result.explanation.confidence_level}
+                              </div>
+
+                              {/* Detected Patterns */}
+                              {item.result.explanation.detected_patterns && item.result.explanation.detected_patterns.length > 0 && (
+                                <div style={{ marginTop: 12 }}>
+                                  <div style={{ fontSize: 11, fontWeight: 600, marginBottom: 8, color: '#999' }}>
+                                    Detected Patterns:
+                                  </div>
+                                  <div style={{ display: 'grid', gap: 8 }}>
+                                    {item.result.explanation.detected_patterns.map((pattern, idx) => {
+                                      const SeverityIcon = pattern.severity === 'high' ? FaExclamationTriangle :
+                                                          pattern.severity === 'medium' ? MdWarning :
+                                                          pattern.severity === 'warning' ? MdWarning :
+                                                          pattern.severity === 'info' ? MdInfo :
+                                                          FaCheckCircle;
+                                      const iconColor = pattern.severity === 'high' ? '#f87171' :
+                                                       pattern.severity === 'medium' ? '#fb923c' :
+                                                       pattern.severity === 'warning' ? '#fbbf24' :
+                                                       pattern.severity === 'info' ? '#60a5fa' :
+                                                       '#4ade80';
+                                      
+                                      return (
+                                        <div key={idx} style={{ 
+                                          padding: 10, 
+                                          background: '#141414', 
+                                          borderRadius: 6,
+                                          borderLeft: `3px solid ${iconColor}`,
+                                          display: 'flex',
+                                          gap: 10
+                                        }}>
+                                          <div style={{ flexShrink: 0, paddingTop: 2 }}>
+                                            <SeverityIcon size={14} color={iconColor} />
+                                          </div>
+                                          <div style={{ flex: 1 }}>
+                                            <div style={{ fontSize: 11, fontWeight: 600, marginBottom: 4, color: '#fff' }}>
+                                              {pattern.indicator}
+                                            </div>
+                                            <div style={{ fontSize: 10, color: '#999', lineHeight: 1.5 }}>
+                                              {pattern.description}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Recommendation */}
+                              {item.result.explanation.recommendation && (
+                                <div style={{ 
+                                  marginTop: 12, 
+                                  padding: 10, 
+                                  background: '#141414', 
+                                  borderRadius: 6,
+                                  fontSize: 11,
+                                  color: '#ccc',
+                                  lineHeight: 1.5
+                                }}>
+                                  <strong style={{ color: '#E94E1B' }}>Recommendation:</strong> {item.result.explanation.recommendation}
+                                </div>
+                              )}
+
+                              {/* Technical Insights (Collapsible) */}
+                              {item.result.explanation.technical_insights && item.result.explanation.technical_insights.length > 0 && (
+                                <details style={{ marginTop: 12 }}>
+                                  <summary style={{ 
+                                    fontSize: 11, 
+                                    fontWeight: 600, 
+                                    color: '#999', 
+                                    cursor: 'pointer',
+                                    userSelect: 'none'
+                                  }}>
+                                    Technical Details ▼
+                                  </summary>
+                                  <div style={{ marginTop: 8, paddingLeft: 12, borderLeft: '2px solid #2a2a2a' }}>
+                                    {item.result.explanation.technical_insights.map((insight, idx) => (
+                                      <div key={idx} style={{ fontSize: 10, color: '#666', marginBottom: 6, lineHeight: 1.5 }}>
+                                        • {insight}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </details>
+                              )}
+                            </div>
+                          )}
                         </div>
                       )}
-                    </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -512,20 +943,22 @@ export default function Detection({ onNavigateToHome }) {
       {/* Footer */}
       <footer style={{ 
         background: '#0d0d0d', 
-        padding: '40px 60px',
-        marginTop: 80,
+        padding: isMobile ? '30px 20px' : '40px 60px',
+        marginTop: isMobile ? 40 : 80,
         borderTop: '1px solid #2a2a2a'
       }}>
         <div style={{ 
           display: 'flex', 
+          flexDirection: isMobile ? 'column' : 'row',
           justifyContent: 'space-between',
           maxWidth: 1100,
-          margin: '0 auto'
+          margin: '0 auto',
+          gap: isMobile ? 30 : 0
         }}>
           <div>
             <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 20 }}>Fact.it</div>
           </div>
-          <div style={{ display: 'flex', gap: 80 }}>
+          <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 24 : 80 }}>
             <div>
               <div style={{ fontWeight: 600, marginBottom: 12 }}>About us</div>
               <div style={{ color: '#666', fontSize: 14, display: 'grid', gap: 8 }}>

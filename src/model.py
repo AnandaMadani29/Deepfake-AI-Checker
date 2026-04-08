@@ -20,6 +20,7 @@ MODEL_REGISTRY = {
     "efficientnet_b0": {"timm_name": "efficientnet_b0", "params": "~4.3M"},
     "resnet50":        {"timm_name": "resnet50",         "params": "~23M"},
     "densenet121":     {"timm_name": "densenet121",      "params": "~7M"},
+    "resnet_revised":  {"timm_name": "resnet50",         "params": "~23M"},  # Custom trained ResNet50
 }
 
 
