@@ -134,6 +134,7 @@ def _startup() -> None:
         download_model_weights()
     except Exception as e:
         print(f"⚠️  Could not download model weights: {e}")
+        print(f"⚠️  Continuing without auto-download...")
     
     # Load ML model (optional - skip if weights not found)
     try:

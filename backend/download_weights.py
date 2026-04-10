@@ -28,12 +28,21 @@ def download_model_weights():
     
     try:
         # Use gdown to download from Google Drive
+        # fuzzy=True helps with virus scan warnings on large files
         url = f"https://drive.google.com/uc?id={GOOGLE_DRIVE_FILE_ID}"
-        gdown.download(url, str(weights_path), quiet=False)
-        print(f"✅ Model weights downloaded successfully!")
+        gdown.download(url, str(weights_path), quiet=False, fuzzy=True)
+        
+        # Verify file was downloaded
+        if weights_path.exists():
+            file_size = weights_path.stat().st_size / (1024 * 1024)  # MB
+            print(f"✅ Model weights downloaded successfully! ({file_size:.1f} MB)")
+        else:
+            raise FileNotFoundError("Download completed but file not found")
     except Exception as e:
         print(f"❌ Failed to download model weights: {e}")
-        raise
+        print(f"⚠️  You may need to manually upload the model weights")
+        # Don't raise - let the app continue without model
+        return
 
 if __name__ == "__main__":
     download_model_weights()
