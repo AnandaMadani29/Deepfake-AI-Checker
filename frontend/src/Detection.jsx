@@ -194,11 +194,25 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
             headers['Authorization'] = `Bearer ${token}`
           }
 
+          // Show helpful message for production
+          const isProduction = DEFAULT_API_BASE.includes('railway.app')
+          if (isProduction && i === 0) {
+            toast.loading('First detection may take 30-60s as server loads AI model...', {
+              id: 'production-loading',
+              duration: 60000
+            })
+          }
+
           const res = await fetch(`${DEFAULT_API_BASE}/predict`, {
             method: 'POST',
             headers: headers,
             body: form,
           })
+          
+          // Dismiss production loading message
+          if (isProduction && i === 0) {
+            toast.dismiss('production-loading')
+          }
 
           const data = await res.json().catch(() => null)
           if (!res.ok) {
