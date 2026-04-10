@@ -128,6 +128,13 @@ def _startup() -> None:
     init_db()
     print("✅ Database initialized successfully")
     
+    # Download model weights if not present (optional)
+    try:
+        from backend.download_weights import download_model_weights
+        download_model_weights()
+    except Exception as e:
+        print(f"⚠️  Could not download model weights: {e}")
+    
     # Load ML model (optional - skip if weights not found)
     try:
         weights_path = _resolve_weights_path(MODEL_NAME)
