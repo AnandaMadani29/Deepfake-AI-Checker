@@ -27,7 +27,8 @@ def download_model_weights():
     
     try:
         # Download from Hugging Face with streaming
-        response = requests.get(HUGGINGFACE_URL, stream=True)
+        # allow_redirects=True handles Hugging Face's CDN redirects
+        response = requests.get(HUGGINGFACE_URL, stream=True, allow_redirects=True, timeout=300)
         response.raise_for_status()
         
         # Get file size from headers
