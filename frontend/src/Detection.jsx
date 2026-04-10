@@ -699,17 +699,23 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
                             <button
                               type="button"
                               onClick={(e) => {
+                                e.nativeEvent.stopImmediatePropagation()
                                 e.stopPropagation()
                                 e.preventDefault()
+                                
                                 // Immediate check before async call
                                 if (!user) {
-                                  toast.error('Please login to download detection results', {
-                                    duration: 4000,
-                                    icon: '🔒'
-                                  })
+                                  // Use setTimeout to ensure toast appears before any navigation
+                                  setTimeout(() => {
+                                    toast.error('Please login to download detection results', {
+                                      duration: 4000,
+                                      icon: '🔒'
+                                    })
+                                  }, 0)
                                   return false
                                 }
                                 downloadResult(item)
+                                return false
                               }}
                               style={{
                                 background: '#2a2a2a',
