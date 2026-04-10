@@ -2,36 +2,8 @@
 Download model weights from Google Drive if not present locally
 """
 import os
-import requests
+import gdown
 from pathlib import Path
-
-def download_file_from_google_drive(file_id: str, destination: str):
-    """Download file from Google Drive"""
-    # Use direct download URL for Google Drive
-    URL = f"https://drive.google.com/uc?export=download&id={file_id}"
-    
-    session = requests.Session()
-    
-    # First request to get confirmation token for large files
-    response = session.get(URL, stream=True)
-    
-    # Check if we need confirmation (for large files)
-    for key, value in response.cookies.items():
-        if key.startswith('download_warning'):
-            URL = f"https://drive.google.com/uc?export=download&id={file_id}&confirm={value}"
-            response = session.get(URL, stream=True)
-            break
-    
-    save_response_content(response, destination)
-
-def save_response_content(response, destination):
-    """Save downloaded content to file"""
-    CHUNK_SIZE = 32768
-    
-    with open(destination, "wb") as f:
-        for chunk in response.iter_content(CHUNK_SIZE):
-            if chunk:
-                f.write(chunk)
 
 def download_model_weights():
     """Download model weights if not present"""
@@ -54,7 +26,9 @@ def download_model_weights():
     print(f"   Destination: {weights_path}")
     
     try:
-        download_file_from_google_drive(GOOGLE_DRIVE_FILE_ID, str(weights_path))
+        # Use gdown to download from Google Drive
+        url = f"https://drive.google.com/uc?id={GOOGLE_DRIVE_FILE_ID}"
+        gdown.download(url, str(weights_path), quiet=False)
         print(f"✅ Model weights downloaded successfully!")
     except Exception as e:
         print(f"❌ Failed to download model weights: {e}")
