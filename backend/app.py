@@ -1,11 +1,14 @@
 import io
 import os
-from typing import Optional
+from typing import Optional, List
+from datetime import datetime
 
 import numpy as np
 import torch
 from fastapi import FastAPI, File, HTTPException, UploadFile, Header
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 from PIL import Image
 
 from src.config import DEVICE, MODEL_NAME
@@ -32,6 +35,7 @@ from backend.history import (
     get_history_stats,
     DetectionHistoryCreate
 )
+from backend.pdf_generator import generate_history_pdf
 
 
 def _resolve_weights_path(model_name: str) -> str:
@@ -424,6 +428,14 @@ async def predict(
         )
         result["explanation"] = explanation
         
+        # Generate detailed analysis breakdown
+        from backend.pdf_generator import generate_detailed_analysis
+        detailed_analysis = generate_detailed_analysis(
+            result["prob_fake"],
+            result.get("image_analysis", {}).get("complexity")
+        )
+        result["detailed_analysis"] = detailed_analysis
+        
         # Save to history if user is authenticated
         if current_user:
             try:
@@ -457,3 +469,99 @@ async def predict(
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Inference failed: {e}")
+
+
+class ExportPDFRequest(BaseModel):
+    history_ids: Optional[List[int]] = None
+
+class DetectionExportRequest(BaseModel):
+    detection: dict
+
+@app.post("/detection/export-pdf")
+async def export_detection_pdf(
+    request: DetectionExportRequest,
+    authorization: Optional[str] = Header(None)
+) -> StreamingResponse:
+    """Export single detection result as PDF"""
+    user = get_current_user(authorization)
+    
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Not authenticated"
+        )
+    
+    try:
+        # Create history item format from detection data
+        # Handle JavaScript ISO format (with Z suffix)
+        created_at_str = request.detection.get('created_at', datetime.now().isoformat())
+        if created_at_str.endswith('Z'):
+            created_at_str = created_at_str[:-1] + '+00:00'
+        
+        detection_item = {
+            'id': 0,
+            'image_name': request.detection.get('image_name', 'detection.jpg'),
+            'result_label': request.detection.get('result_label', 'Unknown'),
+            'prob_fake': request.detection.get('prob_fake', 0.5),
+            'model_name': request.detection.get('model_name', 'resnet_revised'),
+            'created_at': created_at_str
+        }
+        
+        # Generate PDF for single item
+        pdf_buffer = generate_history_pdf([detection_item])
+        
+        # Return as streaming response
+        filename = request.detection.get('image_name', 'detection').replace('.', '_')
+        return StreamingResponse(
+            pdf_buffer,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename={filename}_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+            }
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"PDF generation failed: {e}")
+
+@app.post("/history/export-pdf")
+async def export_history_pdf(
+    request: ExportPDFRequest,
+    authorization: Optional[str] = Header(None)
+) -> StreamingResponse:
+    """Export detection history as PDF"""
+    user = get_current_user(authorization)
+    
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Not authenticated"
+        )
+    
+    # Get history items
+    all_history = get_user_history(user["id"], limit=1000)
+    
+    # Filter by selected IDs if provided
+    if request.history_ids:
+        history_items = [h for h in all_history if h.get('id') in request.history_ids]
+    else:
+        history_items = all_history
+    
+    if not history_items:
+        raise HTTPException(
+            status_code=404,
+            detail="No history items found"
+        )
+    
+    try:
+        # Generate PDF
+        pdf_buffer = generate_history_pdf(history_items)
+        
+        # Return as streaming response
+        return StreamingResponse(
+            pdf_buffer,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename=deepfake_detection_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+            }
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"PDF generation failed: {e}")

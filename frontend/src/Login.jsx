@@ -56,42 +56,32 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
       overflow: 'hidden',
       padding: '20px'
     }}>
-      {/* Organic Blob Shape - Left */}
-      <div style={{
-        position: 'absolute',
-        top: '-15%',
-        left: '-8%',
-        width: '45%',
-        height: '130%',
-        background: '#FF5733',
-        borderRadius: '0% 100% 50% 50% / 0% 50% 50% 100%',
-        zIndex: 1
-      }} />
-      
-      {/* Organic Blob Shape - Right */}
-      <div style={{
-        position: 'absolute',
-        top: '-15%',
-        right: '-8%',
-        width: '45%',
-        height: '130%',
-        background: '#FF5733',
-        borderRadius: '100% 0% 50% 50% / 50% 0% 100% 50%',
-        zIndex: 1
-      }} />
-      
-      {/* Dark Center Blob */}
-      <div style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: isMobile ? '95%' : '70%',
-        height: isMobile ? '85%' : '75%',
-        background: '#1a1a1a',
-        borderRadius: '40% 60% 60% 40% / 60% 40% 60% 40%',
-        zIndex: 1
-      }} />
+      {/* SVG Wavy Shape with 3 Waves */}
+      <svg
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 1
+        }}
+        viewBox="0 0 1440 900"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M 250,0 
+             Q 150,150 250,300 
+             Q 350,450 250,600 
+             Q 150,750 250,900 
+             L 1190,900 
+             Q 1290,750 1190,600 
+             Q 1090,450 1190,300 
+             Q 1290,150 1190,0 
+             Z"
+          fill="#1a1a1a"
+        />
+      </svg>
       
       {/* Logo */}
       <div style={{

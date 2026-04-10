@@ -15,6 +15,8 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
   const [searchQuery, setSearchQuery] = useState('')
   const [filterResult, setFilterResult] = useState('all') // 'all', 'fake', 'real'
+  const [selectedItems, setSelectedItems] = useState([])
+  const [selectMode, setSelectMode] = useState(false)
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768)
@@ -127,42 +129,80 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
     }
   }
 
-  const handleDownloadHistory = () => {
-    if (history.length === 0) {
-      toast.error('No history to download')
+  const handleToggleSelect = (itemId) => {
+    setSelectedItems(prev => 
+      prev.includes(itemId) 
+        ? prev.filter(id => id !== itemId)
+        : [...prev, itemId]
+    )
+  }
+
+  const handleSelectAll = () => {
+    if (selectedItems.length === filteredHistory.length) {
+      setSelectedItems([])
+    } else {
+      setSelectedItems(filteredHistory.map(item => item.id))
+    }
+  }
+
+  const handleDownloadHistory = async () => {
+    const itemsToDownload = selectMode && selectedItems.length > 0
+      ? history.filter(item => selectedItems.includes(item.id))
+      : history
+
+    if (itemsToDownload.length === 0) {
+      toast.error(selectMode ? 'No items selected' : 'No history to download')
       return
     }
     
-    toast.success('Downloading history...')
+    const loadingToast = toast.loading(`Generating PDF report for ${itemsToDownload.length} item(s)...`)
 
-    // Prepare CSV data
-    const headers = ['Date', 'Image Name', 'Result', 'Confidence (%)', 'Model', 'Image Size', 'Complexity']
-    const rows = history.map(item => [
-      new Date(item.created_at).toLocaleString(),
-      item.image_name,
-      item.result_label,
-      (item.prob_fake * 100).toFixed(2),
-      item.model_name,
-      item.image_size || 'N/A',
-      item.complexity_level || 'N/A'
-    ])
+    try {
+      const token = localStorage.getItem('access_token')
+      
+      if (!token) {
+        throw new Error('No authentication token found')
+      }
 
-    // Create CSV content
-    const csvContent = [
-      headers.join(','),
-      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
-    ].join('\n')
+      // Get IDs of items to download
+      const historyIds = selectMode && selectedItems.length > 0 
+        ? selectedItems 
+        : null
 
-    // Create download link
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const link = document.createElement('a')
-    const url = URL.createObjectURL(blob)
-    link.setAttribute('href', url)
-    link.setAttribute('download', `deepfake_detection_history_${new Date().toISOString().split('T')[0]}.csv`)
-    link.style.visibility = 'hidden'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+      const requestBody = historyIds ? { history_ids: historyIds } : {}
+      
+      const response = await fetch(`${DEFAULT_API_BASE}/history/export-pdf`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.detail || 'Failed to generate PDF')
+      }
+
+      // Get the PDF blob
+      const blob = await response.blob()
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `deepfake_detection_report_${new Date().toISOString().split('T')[0]}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+
+      toast.success('PDF report downloaded successfully!', { id: loadingToast })
+    } catch (err) {
+      console.error('PDF download error:', err)
+      toast.error(err.message || 'Failed to download PDF report', { id: loadingToast })
+    }
   }
 
   const handleDeleteAll = async () => {
@@ -369,16 +409,85 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
           </div>
         )}
 
+        {/* Select Mode Toggle - Centered */}
+        {history.length > 0 && selectMode && (
+          <div style={{ 
+            marginBottom: 24, 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            gap: 16,
+            padding: '16px',
+            background: '#0d0d0d',
+            borderRadius: 8,
+            border: '1px solid #2a2a2a'
+          }}>
+            <button 
+              onClick={handleSelectAll}
+              style={{ 
+                background: 'transparent', 
+                color: '#3b82f6', 
+                border: '1px solid #3b82f6', 
+                padding: '10px 20px', 
+                borderRadius: 4, 
+                cursor: 'pointer', 
+                fontSize: 14, 
+                fontWeight: 600
+              }}
+            >
+              {selectedItems.length === filteredHistory.length ? 'Deselect All' : 'Select All'}
+            </button>
+            <span style={{ color: '#999', fontSize: 14, fontWeight: 500 }}>
+              {selectedItems.length} of {filteredHistory.length} selected
+            </span>
+            <button 
+              onClick={() => {
+                setSelectMode(false)
+                setSelectedItems([])
+              }}
+              style={{ 
+                background: 'transparent', 
+                color: '#dc2626', 
+                border: '1px solid #dc2626', 
+                padding: '10px 20px', 
+                borderRadius: 4, 
+                cursor: 'pointer', 
+                fontSize: 14, 
+                fontWeight: 600
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        )}
+
         {/* Actions */}
         {history.length > 0 && (
-          <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+          <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+            {!selectMode && (
+              <button 
+                onClick={() => setSelectMode(true)}
+                style={{ 
+                  background: '#2a2a2a', 
+                  color: '#fff', 
+                  border: 'none', 
+                  padding: '10px 20px', 
+                  borderRadius: 4, 
+                  cursor: 'pointer', 
+                  fontSize: 14, 
+                  fontWeight: 600
+                }}
+              >
+                Select Items
+              </button>
+            )}
             <button 
               onClick={handleDownloadHistory}
               style={{ 
-                background: '#16a34a', 
+                background: '#E94E1B', 
                 color: '#fff', 
                 border: 'none', 
-                padding: '10px 20px', 
+                padding: '12px 24px', 
                 borderRadius: 4, 
                 cursor: 'pointer', 
                 fontSize: 14, 
@@ -389,14 +498,18 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
               }}
             >
               <HiDownload size={16} />
-              Download History
+              {selectMode && selectedItems.length > 0 
+                ? `Download (${selectedItems.length})` 
+                : 'Download'}
             </button>
-            <button 
-              onClick={handleDeleteAll}
-              style={{ background: '#dc2626', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
-            >
-              Delete All History
-            </button>
+            {!selectMode && (
+              <button 
+                onClick={handleDeleteAll}
+                style={{ background: '#dc2626', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
+              >
+                Delete All
+              </button>
+            )}
           </div>
         )}
 
@@ -477,6 +590,23 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
           <div style={{ display: 'grid', gap: 16 }}>
             {filteredHistory.map((item) => (
               <div key={item.id} style={{ background: '#0d0d0d', padding: 24, borderRadius: 8, border: '1px solid #2a2a2a', display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+                {/* Checkbox (Select Mode) */}
+                {selectMode && (
+                  <div style={{ flexShrink: 0, paddingTop: 4 }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedItems.includes(item.id)}
+                      onChange={() => handleToggleSelect(item.id)}
+                      style={{
+                        width: 20,
+                        height: 20,
+                        cursor: 'pointer',
+                        accentColor: '#3b82f6'
+                      }}
+                    />
+                  </div>
+                )}
+                
                 {/* Thumbnail */}
                 {item.image_data && (
                   <div style={{ flexShrink: 0 }}>

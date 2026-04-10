@@ -91,41 +91,63 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
     setExpandedResults({})
   }
 
-  const downloadResult = (item) => {
+  const downloadResult = async (item) => {
     if (!item.result) {
       toast.error('No result to download')
       return
     }
     
-    toast.success('Downloading result...')
+    const loadingToast = toast.loading('Generating PDF report...')
 
-    // Prepare result data
-    const resultData = {
-      filename: item.filename,
-      timestamp: item.timestamp,
-      classification: item.result.label,
-      confidence: {
-        fake: (item.result.prob_fake * 100).toFixed(2) + '%',
-        real: ((1 - item.result.prob_fake) * 100).toFixed(2) + '%'
-      },
-      model: item.result.model_name,
-      threshold: ((item.result.threshold || 0.5) * 100).toFixed(0) + '%',
-      explanation: item.result.explanation || null
+    try {
+      const token = localStorage.getItem('access_token')
+      
+      if (!token) {
+        throw new Error('No authentication token found')
+      }
+
+      // Prepare detection data for PDF
+      const detectionData = {
+        image_name: item.filename,
+        result_label: item.result.label,
+        prob_fake: item.result.prob_fake,
+        model_name: item.result.model_name,
+        created_at: new Date().toISOString()
+      }
+
+      const response = await fetch(`${DEFAULT_API_BASE}/detection/export-pdf`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ detection: detectionData })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.detail || 'Failed to generate PDF')
+      }
+
+      // Get the PDF blob
+      const blob = await response.blob()
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      const filename = item.filename.replace(/\.[^/.]+$/, '') // Remove extension
+      link.download = `${filename}_detection_report.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+
+      toast.success('PDF report downloaded successfully!', { id: loadingToast })
+    } catch (err) {
+      console.error('PDF download error:', err)
+      toast.error(err.message || 'Failed to download PDF report', { id: loadingToast })
     }
-
-    // Create JSON file
-    const jsonContent = JSON.stringify(resultData, null, 2)
-    const blob = new Blob([jsonContent], { type: 'application/json' })
-    const link = document.createElement('a')
-    const url = URL.createObjectURL(blob)
-    const filename = item.filename.replace(/\.[^/.]+$/, '') // Remove extension
-    link.setAttribute('href', url)
-    link.setAttribute('download', `${filename}_detection_result.json`)
-    link.style.visibility = 'hidden'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
   }
 
   const handleDrag = (e) => {
@@ -660,8 +682,18 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
                               </span>
                             </div>
                             <button
+                              type="button"
                               onClick={(e) => {
                                 e.stopPropagation()
+                                e.preventDefault()
+                                // Immediate check before async call
+                                if (!user) {
+                                  toast.error('Please login to download detection results', {
+                                    duration: 4000,
+                                    icon: '🔒'
+                                  })
+                                  return false
+                                }
                                 downloadResult(item)
                               }}
                               style={{
@@ -926,6 +958,72 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
                                   </div>
                                 </details>
                               )}
+                            </div>
+                          )}
+
+                          {/* Detailed Analysis Breakdown */}
+                          {item.result.detailed_analysis && (
+                            <div style={{ marginTop: 16, padding: 16, background: '#0a0a0a', borderRadius: 8, border: '1px solid #2a2a2a' }}>
+                              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12, color: '#E94E1B', display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <BiAnalyse size={16} />
+                                <span>Detailed Breakdown</span>
+                              </div>
+                              
+                              {/* Analysis Summary */}
+                              <div style={{ fontSize: 12, color: '#ccc', marginBottom: 16, lineHeight: 1.6, padding: 12, background: '#141414', borderRadius: 6 }}>
+                                {item.result.detailed_analysis.summary}
+                              </div>
+
+                              {/* Analysis Items */}
+                              <div style={{ display: 'grid', gap: 10 }}>
+                                {item.result.detailed_analysis.items.map((analysisItem, idx) => {
+                                  const bgColor = analysisItem.level === 'CRITICAL' ? 'rgba(220, 38, 38, 0.1)' :
+                                                 analysisItem.level === 'WARNING' ? 'rgba(245, 158, 11, 0.1)' :
+                                                 'rgba(64, 64, 64, 0.1)';
+                                  const borderColor = analysisItem.level === 'CRITICAL' ? '#dc2626' :
+                                                     analysisItem.level === 'WARNING' ? '#f59e0b' :
+                                                     '#404040';
+                                  const scoreColor = analysisItem.level === 'CRITICAL' ? '#f87171' :
+                                                    analysisItem.level === 'WARNING' ? '#fbbf24' :
+                                                    '#4ade80';
+                                  
+                                  return (
+                                    <div key={idx} style={{ 
+                                      padding: 12, 
+                                      background: bgColor,
+                                      borderRadius: 6,
+                                      border: `2px solid ${borderColor}`,
+                                      transition: 'all 0.2s'
+                                    }}>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                          <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>
+                                            {analysisItem.name}
+                                          </span>
+                                          {analysisItem.level !== 'NORMAL' && (
+                                            <span style={{ 
+                                              fontSize: 9, 
+                                              fontWeight: 700, 
+                                              padding: '2px 6px', 
+                                              borderRadius: 3,
+                                              background: borderColor,
+                                              color: '#fff'
+                                            }}>
+                                              {analysisItem.level}
+                                            </span>
+                                          )}
+                                        </div>
+                                        <span style={{ fontSize: 14, fontWeight: 700, color: scoreColor }}>
+                                          {analysisItem.score.toFixed(0)}%
+                                        </span>
+                                      </div>
+                                      <div style={{ fontSize: 11, color: '#999', lineHeight: 1.5 }}>
+                                        {analysisItem.description}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
                             </div>
                           )}
                         </div>
