@@ -7,24 +7,22 @@ from pathlib import Path
 
 def download_file_from_google_drive(file_id: str, destination: str):
     """Download file from Google Drive"""
-    URL = "https://docs.google.com/uc?export=download"
+    # Use direct download URL for Google Drive
+    URL = f"https://drive.google.com/uc?export=download&id={file_id}"
     
     session = requests.Session()
-    response = session.get(URL, params={'id': file_id}, stream=True)
-    token = get_confirm_token(response)
     
-    if token:
-        params = {'id': file_id, 'confirm': token}
-        response = session.get(URL, params=params, stream=True)
+    # First request to get confirmation token for large files
+    response = session.get(URL, stream=True)
     
-    save_response_content(response, destination)
-
-def get_confirm_token(response):
-    """Get confirmation token for large files"""
+    # Check if we need confirmation (for large files)
     for key, value in response.cookies.items():
         if key.startswith('download_warning'):
-            return value
-    return None
+            URL = f"https://drive.google.com/uc?export=download&id={file_id}&confirm={value}"
+            response = session.get(URL, stream=True)
+            break
+    
+    save_response_content(response, destination)
 
 def save_response_content(response, destination):
     """Save downloaded content to file"""
