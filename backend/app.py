@@ -48,8 +48,8 @@ def _resolve_weights_path(model_name: str) -> str:
     elif os.path.exists(simple_path):
         return simple_path
     else:
-        # Return fold4 path as default (will error if not found)
-        return fold4_path
+        # Return simple path as default (more likely to exist)
+        return simple_path
 
 
 class Predictor:
