@@ -14,6 +14,7 @@ def download_model_weights():
     weights_dir = Path("outputs/models")
     weights_dir.mkdir(parents=True, exist_ok=True)
     
+    # Match the actual filename in Google Drive
     weights_path = weights_dir / "resnet_revised.pth"
     
     # Check if weights already exist
