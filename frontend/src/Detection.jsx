@@ -106,13 +106,14 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
         throw new Error('No authentication token found')
       }
 
-      // Prepare detection data for PDF
+      // Prepare detection data for PDF (include image)
       const detectionData = {
         image_name: item.filename,
         result_label: item.result.label,
         prob_fake: item.result.prob_fake,
         model_name: item.result.model_name,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        image_data: item.preview // Include preview image for PDF
       }
 
       const response = await fetch(`${DEFAULT_API_BASE}/detection/export-pdf`, {

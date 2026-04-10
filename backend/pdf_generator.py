@@ -176,6 +176,43 @@ def create_pdf_report(history_items):
         elements.append(Paragraph(f"Detection #{idx}: {item.get('image_name', 'Unknown')}", heading_style))
         elements.append(Spacer(1, 0.1*inch))
         
+        # Add compressed image if available
+        if item.get('image_data'):
+            try:
+                # Extract base64 image data
+                image_data = item.get('image_data', '')
+                if image_data.startswith('data:image'):
+                    # Remove data URL prefix
+                    image_data = image_data.split(',')[1]
+                
+                # Decode base64
+                img_bytes = base64.b64decode(image_data)
+                img = PILImage.open(BytesIO(img_bytes))
+                
+                # Compress image - resize to max 400px width and reduce quality
+                max_width = 400
+                if img.width > max_width:
+                    ratio = max_width / img.width
+                    new_height = int(img.height * ratio)
+                    img = img.resize((max_width, new_height), PILImage.Resampling.LANCZOS)
+                
+                # Convert to RGB if needed (for JPEG)
+                if img.mode in ('RGBA', 'P'):
+                    img = img.convert('RGB')
+                
+                # Save compressed image to buffer
+                img_buffer = BytesIO()
+                img.save(img_buffer, format='JPEG', quality=70, optimize=True)
+                img_buffer.seek(0)
+                
+                # Add to PDF with max width of 3 inches
+                pdf_img = RLImage(img_buffer, width=3*inch, height=3*inch*img.height/img.width)
+                elements.append(pdf_img)
+                elements.append(Spacer(1, 0.2*inch))
+            except Exception as e:
+                print(f"Failed to add image to PDF: {e}")
+                # Continue without image if there's an error
+        
         # Basic Info
         result_label = item.get('result_label', 'Unknown')
         prob_fake = item.get('prob_fake', 0)

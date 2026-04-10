@@ -504,7 +504,8 @@ async def export_detection_pdf(
             'result_label': request.detection.get('result_label', 'Unknown'),
             'prob_fake': request.detection.get('prob_fake', 0.5),
             'model_name': request.detection.get('model_name', 'resnet_revised'),
-            'created_at': created_at_str
+            'created_at': created_at_str,
+            'image_data': request.detection.get('image_data')  # Include image for PDF
         }
         
         # Generate PDF for single item
