@@ -440,21 +440,51 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
             position: 'relative',
             overflow: 'hidden'
           }}>
-            <div style={{ fontSize: isMobile ? 80 : 120, opacity: 0.9 }}>🧠</div>
+            {/* Background Pattern */}
             <div style={{
               position: 'absolute',
-              top: 20,
-              right: 20,
-              fontSize: isMobile ? 30 : 40,
-              opacity: 0.3
-            }}>⚡</div>
+              width: '100%',
+              height: '100%',
+              opacity: 0.1,
+              background: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px)'
+            }}></div>
+            
+            {/* Main Icon */}
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              gap: 16,
+              zIndex: 1
+            }}>
+              <FaRobot size={isMobile ? 80 : 120} color="rgba(255,255,255,0.9)" />
+              <div style={{ 
+                fontSize: isMobile ? 12 : 14, 
+                fontWeight: 600, 
+                color: 'rgba(255,255,255,0.8)',
+                letterSpacing: 2
+              }}>
+                AI POWERED
+              </div>
+            </div>
+            
+            {/* Decorative Elements */}
             <div style={{
               position: 'absolute',
-              bottom: 20,
-              left: 20,
-              fontSize: isMobile ? 30 : 40,
+              top: 30,
+              right: 30,
               opacity: 0.3
-            }}>🔍</div>
+            }}>
+              <HiShieldCheck size={isMobile ? 30 : 40} color="#fff" />
+            </div>
+            <div style={{
+              position: 'absolute',
+              bottom: 30,
+              left: 30,
+              opacity: 0.3
+            }}>
+              <BiAnalyse size={isMobile ? 30 : 40} color="#fff" />
+            </div>
           </div>
           <div style={{ flex: 1 }}>
             <h2 style={{ fontSize: isMobile ? 28 : 42, fontWeight: 700, margin: '0 0 16px 0' }}>
@@ -505,21 +535,51 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
             position: 'relative',
             overflow: 'hidden'
           }}>
-            <div style={{ fontSize: isMobile ? 80 : 120, opacity: 0.9 }}>⚡</div>
+            {/* Background Pattern */}
             <div style={{
               position: 'absolute',
-              top: 20,
-              left: 20,
-              fontSize: isMobile ? 30 : 40,
-              opacity: 0.3
-            }}>⏱️</div>
+              width: '100%',
+              height: '100%',
+              opacity: 0.1,
+              background: 'radial-gradient(circle at 30% 50%, rgba(255,255,255,0.2) 0%, transparent 50%)'
+            }}></div>
+            
+            {/* Main Icon */}
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              gap: 16,
+              zIndex: 1
+            }}>
+              <HiLightningBolt size={isMobile ? 80 : 120} color="rgba(255,255,255,0.9)" />
+              <div style={{ 
+                fontSize: isMobile ? 12 : 14, 
+                fontWeight: 600, 
+                color: 'rgba(255,255,255,0.8)',
+                letterSpacing: 2
+              }}>
+                REAL-TIME
+              </div>
+            </div>
+            
+            {/* Decorative Elements */}
             <div style={{
               position: 'absolute',
-              bottom: 20,
-              right: 20,
-              fontSize: isMobile ? 30 : 40,
+              top: 30,
+              left: 30,
               opacity: 0.3
-            }}>🚀</div>
+            }}>
+              <FaCheckCircle size={isMobile ? 30 : 40} color="#fff" />
+            </div>
+            <div style={{
+              position: 'absolute',
+              bottom: 30,
+              right: 30,
+              opacity: 0.3
+            }}>
+              <MdVerified size={isMobile ? 30 : 40} color="#fff" />
+            </div>
           </div>
         </div>
       </section>
