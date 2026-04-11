@@ -1,8 +1,57 @@
 import React, { useEffect } from 'react'
-import { FaShieldAlt, FaRobot, FaCheckCircle, FaHistory, FaArrowUp } from 'react-icons/fa'
+import { FaShieldAlt, FaRobot, FaCheckCircle, FaHistory, FaArrowUp, FaChevronDown, FaChevronUp } from 'react-icons/fa'
 import { HiLightningBolt, HiShieldCheck } from 'react-icons/hi'
 import { BiAnalyse } from 'react-icons/bi'
 import { MdSecurity, MdVerified } from 'react-icons/md'
+
+// FAQ Item Component
+function FAQItem({ question, answer }) {
+  const [isOpen, setIsOpen] = React.useState(false)
+
+  return (
+    <div style={{
+      background: '#141414',
+      border: '1px solid #2a2a2a',
+      borderRadius: 8,
+      overflow: 'hidden'
+    }}>
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        style={{
+          padding: '20px 24px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          cursor: 'pointer',
+          background: isOpen ? '#1a1a1a' : 'transparent',
+          transition: 'background 0.2s'
+        }}
+      >
+        <h3 style={{ 
+          fontSize: 16, 
+          fontWeight: 600, 
+          margin: 0,
+          color: isOpen ? '#E94E1B' : '#fff'
+        }}>
+          {question}
+        </h3>
+        <div style={{ color: '#E94E1B', fontSize: 16 }}>
+          {isOpen ? <FaChevronUp /> : <FaChevronDown />}
+        </div>
+      </div>
+      {isOpen && (
+        <div style={{
+          padding: '0 24px 20px 24px',
+          fontSize: 14,
+          lineHeight: 1.8,
+          color: '#ccc'
+        }}>
+          {answer}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavigateToRegister, onNavigateToHistory, onNavigateToArticles, onLogout, targetSection, onSectionScrolled, user }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768)
@@ -520,6 +569,68 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section id="faq" style={{ 
+        padding: '80px 60px',
+        background: '#0a0a0a'
+      }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+          <h2 style={{ 
+            fontSize: 42, 
+            fontWeight: 700, 
+            textAlign: 'center',
+            marginBottom: 16,
+            background: 'linear-gradient(135deg, #E94E1B 0%, #FF7A50 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          }}>
+            FAQs
+          </h2>
+          <p style={{ 
+            fontSize: 16, 
+            color: '#999', 
+            textAlign: 'center',
+            marginBottom: 50,
+            maxWidth: 600,
+            margin: '0 auto 50px auto'
+          }}>
+            Find answers to common questions about our deepfake detection service
+          </p>
+
+          <div style={{ display: 'grid', gap: 12 }}>
+            {[
+              {
+                q: "What is Deepfake?",
+                a: "Deepfake detection is the process of using software, usually AI algorithms, to discern whether a piece of media contains a deepfake or otherwise AI-generated elements. It helps prevent misinformation and fraud due to media manipulation."
+              },
+              {
+                q: "Is the deepfake detector 100% accurate?",
+                a: "Our AI model achieves high accuracy rates typically above 90%. However, accuracy can vary depending on the quality and sophistication of the deepfake. The system provides a confidence score with each detection."
+              },
+              {
+                q: "What file types does the product support?",
+                a: "We support common image formats including JPG, JPEG, PNG, and WebP. For best results, we recommend using high-quality images with clear facial features. Maximum file size is 10MB per image."
+              },
+              {
+                q: "How do I interpret the detection result?",
+                a: "Results include a label (Real/Fake), confidence score, and detailed analysis of 7 indicators. Each indicator is scored and categorized as CRITICAL, WARNING, or NORMAL to help you understand the authenticity."
+              },
+              {
+                q: "Is my data safe?",
+                a: "Yes, we take privacy seriously. Images are processed securely and are not stored permanently unless you're logged in and choose to save them. You can delete your history at any time."
+              },
+              {
+                q: "Is there a free version or trial?",
+                a: "Yes! You can use the basic detection feature without an account. Creating a free account allows you to save detection history and download detailed PDF reports."
+              }
+            ].map((faq, idx) => (
+              <FAQItem key={idx} question={faq.q} answer={faq.a} />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer style={{ 
         padding: '40px 60px 20px 60px',
@@ -557,7 +668,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
               <div style={{ color: '#666', fontSize: 14, display: 'grid', gap: 8 }}>
                 <a onClick={() => scrollToSection('how-to-use')} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer' }}>How To Use</a>
                 <a onClick={onNavigateToArticles} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer' }}>Articles & Guides</a>
-                <a onClick={() => scrollToSection('how-to-use')} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer' }}>FAQ</a>
+                <a onClick={() => scrollToSection('faq')} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer' }}>FAQ</a>
               </div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
