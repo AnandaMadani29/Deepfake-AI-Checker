@@ -985,9 +985,14 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
                           {/* Detailed Analysis Breakdown */}
                           {item.result.detailed_analysis && (
                             <div style={{ marginTop: 16, padding: 16, background: '#0a0a0a', borderRadius: 8, border: '1px solid #2a2a2a' }}>
-                              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12, color: '#E94E1B', display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8, color: '#E94E1B', display: 'flex', alignItems: 'center', gap: 8 }}>
                                 <BiAnalyse size={16} />
                                 <span>Detailed Breakdown</span>
+                              </div>
+                              
+                              {/* Percentage Explanation */}
+                              <div style={{ fontSize: 11, color: '#999', marginBottom: 12, padding: 10, background: '#141414', borderRadius: 6, border: '1px solid #2a2a2a' }}>
+                                <strong style={{ color: '#E94E1B' }}>How to read:</strong> Each indicator shows a <strong>suspicion score (0-100%)</strong>. Higher percentages indicate stronger signs of manipulation. CRITICAL (red) means high concern, WARNING (orange) means moderate concern, NORMAL (gray) means low concern.
                               </div>
                               
                               {/* Analysis Summary */}

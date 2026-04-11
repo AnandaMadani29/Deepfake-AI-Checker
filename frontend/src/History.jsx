@@ -280,14 +280,29 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
         <div onClick={onNavigateToHome} style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, letterSpacing: 1, cursor: 'pointer' }}>
           Fact.it
         </div>
-        <div style={{ display: 'flex', gap: isMobile ? 8 : 16, alignItems: 'center' }}>
-          <button onClick={onNavigateToDetection} style={{ background: '#E94E1B', color: '#fff', border: 'none', padding: '10px 24px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>
-            New Detection
-          </button>
-          <button onClick={onNavigateToHome} style={{ background: 'transparent', color: '#fff', border: '1px solid #2a2a2a', padding: '10px 20px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>
-            Home
-          </button>
-        </div>
+        {isMobile ? (
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <button onClick={onNavigateToDetection} style={{ background: '#E94E1B', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 13 }}>
+              Get Started
+            </button>
+            <button onClick={onNavigateToHome} style={{ background: 'transparent', color: '#fff', border: '1px solid #2a2a2a', padding: '10px 16px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 13 }}>
+              Home
+            </button>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', gap: 40, alignItems: 'center' }}>
+            <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>About us</a>
+            <a onClick={() => onNavigateToHome('services')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>Services</a>
+            <a onClick={() => onNavigateToHome('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>How To Use</a>
+            <a onClick={() => onNavigateToHome('resources')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>Resources</a>
+            <button onClick={onNavigateToDetection} style={{ background: '#E94E1B', color: '#fff', border: 'none', padding: '10px 24px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>
+              Get Started
+            </button>
+            <button onClick={onNavigateToHome} style={{ background: 'transparent', color: '#fff', border: '1px solid #2a2a2a', padding: '10px 20px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>
+              Home
+            </button>
+          </div>
+        )}
       </nav>
 
       {/* Content */}

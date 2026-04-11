@@ -30,7 +30,8 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome }
     }}>
       {/* Header */}
       <header style={{ 
-        padding: isMobile ? '20px' : '20px 60px',
+        background: '#0d0d0d',
+        padding: isMobile ? '16px 20px' : '20px 60px',
         borderBottom: '1px solid #2a2a2a',
         display: 'flex',
         justifyContent: 'space-between',
@@ -39,18 +40,29 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome }
         <div 
           onClick={onNavigateToHome}
           style={{ 
-            fontSize: 24, 
+            fontSize: isMobile ? 20 : 24, 
             fontWeight: 700,
+            letterSpacing: 1,
             cursor: 'pointer'
           }}
         >
           Fact.it
         </div>
-        <nav style={{ display: 'flex', gap: isMobile ? 20 : 40, fontSize: 14 }}>
-          <a onClick={onNavigateToHome} style={{ color: '#999', cursor: 'pointer', textDecoration: 'none' }}>Home</a>
-          <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', cursor: 'pointer', textDecoration: 'none' }}>About</a>
-          <a style={{ color: '#E94E1B', cursor: 'pointer', textDecoration: 'none' }}>Resources</a>
-        </nav>
+        {isMobile ? (
+          <button onClick={onNavigateToHome} style={{ background: 'transparent', color: '#fff', border: '1px solid #2a2a2a', padding: '10px 16px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 13 }}>
+            Home
+          </button>
+        ) : (
+          <nav style={{ display: 'flex', gap: 40, alignItems: 'center' }}>
+            <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>About us</a>
+            <a onClick={() => onNavigateToHome('services')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>Services</a>
+            <a onClick={() => onNavigateToHome('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>How To Use</a>
+            <a style={{ color: '#E94E1B', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 600 }}>Resources</a>
+            <button onClick={onNavigateToHome} style={{ background: 'transparent', color: '#fff', border: '1px solid #2a2a2a', padding: '10px 20px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>
+              Home
+            </button>
+          </nav>
+        )}
       </header>
 
       {/* Hero Section */}
