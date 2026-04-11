@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { FaShieldAlt, FaRobot, FaCheckCircle, FaHistory, FaArrowUp, FaChevronDown, FaChevronUp } from 'react-icons/fa'
+import { FaShieldAlt, FaRobot, FaCheckCircle, FaHistory, FaArrowUp, FaChevronDown, FaChevronUp, FaYoutube, FaInstagram, FaLinkedin } from 'react-icons/fa'
 import { HiLightningBolt, HiShieldCheck } from 'react-icons/hi'
 import { BiAnalyse } from 'react-icons/bi'
 import { MdSecurity, MdVerified } from 'react-icons/md'
@@ -279,7 +279,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
       }}>
         <div style={{ flex: 1 }}>
           <h1 style={{ 
-            fontSize: 64, 
+            fontSize: isMobile ? 36 : 64, 
             fontWeight: 700, 
             margin: 0,
             lineHeight: 1.1
@@ -289,9 +289,9 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
             <span style={{ color: '#fff' }}>with AI Technology</span>
           </h1>
           <p style={{ 
-            fontSize: 16, 
+            fontSize: isMobile ? 14 : 16, 
             color: '#999', 
-            margin: '24px 0 40px 0',
+            margin: isMobile ? '20px 0 30px 0' : '24px 0 40px 0',
             lineHeight: 1.6,
             maxWidth: 500
           }}>
@@ -417,27 +417,50 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
 
       {/* Feature Section 1 - Services */}
       <section id="services" style={{ 
-        padding: '80px 60px',
+        padding: isMobile ? '40px 20px' : '80px 60px',
         background: '#0d0d0d'
       }}>
         <div style={{ 
           maxWidth: 1400,
           margin: '0 auto',
           display: 'flex',
-          gap: 60,
+          flexDirection: isMobile ? 'column' : 'row',
+          gap: isMobile ? 30 : 60,
           alignItems: 'center'
         }}>
           <div style={{ 
             flex: 1,
-            background: '#E94E1B',
-            height: 350,
-            borderRadius: 8
-          }}></div>
+            width: isMobile ? '100%' : 'auto',
+            background: 'linear-gradient(135deg, #E94E1B 0%, #FF7A50 100%)',
+            height: isMobile ? 250 : 350,
+            borderRadius: 8,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{ fontSize: isMobile ? 80 : 120, opacity: 0.9 }}>🧠</div>
+            <div style={{
+              position: 'absolute',
+              top: 20,
+              right: 20,
+              fontSize: isMobile ? 30 : 40,
+              opacity: 0.3
+            }}>⚡</div>
+            <div style={{
+              position: 'absolute',
+              bottom: 20,
+              left: 20,
+              fontSize: isMobile ? 30 : 40,
+              opacity: 0.3
+            }}>🔍</div>
+          </div>
           <div style={{ flex: 1 }}>
-            <h2 style={{ fontSize: 42, fontWeight: 700, margin: '0 0 20px 0' }}>
+            <h2 style={{ fontSize: isMobile ? 28 : 42, fontWeight: 700, margin: '0 0 16px 0' }}>
               Advanced AI Detection
             </h2>
-            <p style={{ fontSize: 16, color: '#999', lineHeight: 1.7 }}>
+            <p style={{ fontSize: isMobile ? 14 : 16, color: '#999', lineHeight: 1.7 }}>
               Our cutting-edge neural network analyzes images at the pixel level to identify 
               subtle manipulation artifacts. Using EfficientNet architecture trained on thousands 
               of real and fake images, we achieve industry-leading accuracy in deepfake detection.
@@ -448,21 +471,22 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
 
       {/* Feature Section 2 - Reversed */}
       <section style={{ 
-        padding: '80px 60px',
+        padding: isMobile ? '40px 20px' : '80px 60px',
         background: '#1a1a1a'
       }}>
         <div style={{ 
           maxWidth: 1400,
           margin: '0 auto',
           display: 'flex',
-          gap: 60,
+          flexDirection: isMobile ? 'column' : 'row',
+          gap: isMobile ? 30 : 60,
           alignItems: 'center'
         }}>
-          <div style={{ flex: 1 }}>
-            <h2 style={{ fontSize: 42, fontWeight: 700, margin: '0 0 20px 0' }}>
+          <div style={{ flex: 1, order: isMobile ? 2 : 1 }}>
+            <h2 style={{ fontSize: isMobile ? 28 : 42, fontWeight: 700, margin: '0 0 16px 0' }}>
               Real-Time Analysis
             </h2>
-            <p style={{ fontSize: 16, color: '#999', lineHeight: 1.7 }}>
+            <p style={{ fontSize: isMobile ? 14 : 16, color: '#999', lineHeight: 1.7 }}>
               Get instant results within seconds. Our optimized inference pipeline processes 
               images quickly without compromising accuracy. Upload, analyze, and verify 
               authenticity in real-time.
@@ -470,23 +494,46 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
           </div>
           <div style={{ 
             flex: 1,
-            background: '#E94E1B',
-            height: 350,
-            borderRadius: 8
-          }}></div>
+            order: isMobile ? 1 : 2,
+            width: isMobile ? '100%' : 'auto',
+            background: 'linear-gradient(135deg, #E94E1B 0%, #FF7A50 100%)',
+            height: isMobile ? 250 : 350,
+            borderRadius: 8,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{ fontSize: isMobile ? 80 : 120, opacity: 0.9 }}>⚡</div>
+            <div style={{
+              position: 'absolute',
+              top: 20,
+              left: 20,
+              fontSize: isMobile ? 30 : 40,
+              opacity: 0.3
+            }}>⏱️</div>
+            <div style={{
+              position: 'absolute',
+              bottom: 20,
+              right: 20,
+              fontSize: isMobile ? 30 : 40,
+              opacity: 0.3
+            }}>🚀</div>
+          </div>
         </div>
       </section>
 
       {/* How To Use Section */}
       <section id="how-to-use" style={{ 
-        padding: '100px 60px',
+        padding: isMobile ? '60px 20px' : '100px 60px',
         background: '#0d0d0d',
         textAlign: 'center'
       }}>
         <h2 style={{ 
-          fontSize: 48, 
+          fontSize: isMobile ? 32 : 48, 
           fontWeight: 700, 
-          margin: '0 0 60px 0' 
+          margin: isMobile ? '0 0 40px 0' : '0 0 60px 0' 
         }}>
           How To Use Deepfake Detection
         </h2>
@@ -571,12 +618,12 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
 
       {/* FAQ Section */}
       <section id="faq" style={{ 
-        padding: '80px 60px',
+        padding: isMobile ? '60px 20px' : '80px 60px',
         background: '#0a0a0a'
       }}>
         <div style={{ maxWidth: 900, margin: '0 auto' }}>
           <h2 style={{ 
-            fontSize: 42, 
+            fontSize: isMobile ? 32 : 42, 
             fontWeight: 700, 
             textAlign: 'center',
             marginBottom: 16,
@@ -588,12 +635,12 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
             FAQs
           </h2>
           <p style={{ 
-            fontSize: 16, 
+            fontSize: isMobile ? 14 : 16, 
             color: '#999', 
             textAlign: 'center',
-            marginBottom: 50,
+            marginBottom: isMobile ? 30 : 50,
             maxWidth: 600,
-            margin: '0 auto 50px auto'
+            margin: isMobile ? '0 auto 30px auto' : '0 auto 50px auto'
           }}>
             Find answers to common questions about our deepfake detection service
           </p>
@@ -633,20 +680,22 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
 
       {/* Footer */}
       <footer style={{ 
-        padding: '40px 60px 20px 60px',
+        padding: isMobile ? '30px 20px 20px 20px' : '40px 60px 20px 60px',
         borderTop: '1px solid #2a2a2a',
         margin: 0
       }}>
         <div style={{ 
           display: 'flex', 
+          flexDirection: isMobile ? 'column' : 'row',
           justifyContent: 'space-between',
           maxWidth: 1400,
-          margin: '0 auto'
+          margin: '0 auto',
+          gap: isMobile ? 30 : 0
         }}>
           <div>
-            <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 20 }}>Fact.it</div>
+            <div style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, marginBottom: isMobile ? 10 : 20 }}>Fact.it</div>
           </div>
-          <div style={{ display: 'flex', gap: 80 }}>
+          <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 20 : 80 }}>
             <div>
               <div style={{ fontWeight: 600, marginBottom: 12 }}>About us</div>
               <div style={{ color: '#666', fontSize: 14, display: 'grid', gap: 8 }}>
@@ -672,14 +721,14 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
               </div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20 }}>
-                <HiLightningBolt size={20} />
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20, transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E94E1B'} onMouseLeave={(e) => e.currentTarget.style.color = '#666'}>
+                <FaYoutube size={20} />
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20 }}>
-                <HiLightningBolt size={20} />
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20, transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E94E1B'} onMouseLeave={(e) => e.currentTarget.style.color = '#666'}>
+                <FaInstagram size={20} />
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20 }}>
-                <HiLightningBolt size={20} />
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20, transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E94E1B'} onMouseLeave={(e) => e.currentTarget.style.color = '#666'}>
+                <FaLinkedin size={20} />
               </a>
             </div>
           </div>
