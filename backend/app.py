@@ -372,7 +372,17 @@ async def predict(
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid image: {e}")
     
-    # Validate that image contains a face and get face count
+    # === IMPROVEMENT 1: Metadata Analysis ===
+    from backend.metadata_analyzer import get_metadata_analyzer
+    metadata_analyzer = get_metadata_analyzer()
+    metadata_suspicious, metadata_score, metadata_details = metadata_analyzer.analyze(content)
+    
+    # === IMPROVEMENT 2: AI-Generated Image Detection ===
+    from backend.ai_generated_detector import get_ai_detector
+    ai_detector = get_ai_detector()
+    is_ai_generated, ai_score, ai_details = ai_detector.detect(img)
+    
+    # === IMPROVEMENT 3: Face Validation (without strict quality checks) ===
     from backend.face_validator import get_face_validator
     validator = get_face_validator()
     has_face, face_count, detection_msg = validator.detect_faces(img)
@@ -382,7 +392,21 @@ async def predict(
             status_code=400,
             detail="❌ No face detected. Please upload an image containing a person's face."
         )
+    
+    # Set quality_info to None since we're not doing quality checks
+    quality_info = None
 
+    # === IMPROVEMENT 4: Image Enhancement === (DISABLED - reduces accuracy for AI-generated images)
+    # from backend.image_enhancer import get_image_enhancer
+    # enhancer = get_image_enhancer()
+    # enhanced_img, enhancement_info = enhancer.auto_enhance(img)
+    
+    # Use original image for detection (no enhancement)
+    enhanced_img = img
+    enhancement_info = {
+        "applied": False,
+        "reason": "Enhancement disabled - can reduce accuracy for AI-generated images"
+    }
     img_rgb = np.array(img)
     
     # Adaptive Model Selection
@@ -412,20 +436,49 @@ async def predict(
     current_user = get_current_user(authorization)
     
     try:
-        result = _predictor.predict(img_rgb, img_pil=img)
+        result = _predictor.predict(img_rgb, img_pil=enhanced_img)
         
-        # Add adaptive selection info
+        # Combine model prediction with AI-generated detection
+        # If AI detector is confident, boost probability if AI-generated indicators detected (very aggressive)
+        if is_ai_generated:
+            # If AI detector says it's AI-generated, boost significantly
+            boost = ai_score * 0.6  # Increased from 0.4 to 0.6 for higher sensitivity
+            result["prob_fake"] = min(0.99, result["prob_fake"] + boost)
+            result["label"] = "Fake" if result["prob_fake"] > 0.5 else "Real"
+        
+        # Add all improvement results
         if selection_reason:
             result["model_selection"] = selection_reason
             result["adaptive_mode"] = adaptive
         
-        # Generate AI explanation
+        result["ai_detection"] = {
+            "is_ai_generated": bool(is_ai_generated),
+            "confidence": float(round(ai_score, 3)),
+            "details": ai_details
+        }
+        
+        result["metadata_analysis"] = {
+            "is_suspicious": bool(metadata_suspicious),
+            "suspicion_score": float(round(metadata_score, 3)),
+            "details": metadata_details
+        }
+        
+        result["image_enhancement"] = enhancement_info
+        
+        result["face_quality"] = quality_info
+        
+        # Generate AI explanation with enhanced context
         explanation = generate_explanation(
             prob_fake=result["prob_fake"],
             model_name=result["model_name"],
             image_analysis=result.get("image_analysis"),
             face_count=face_count
         )
+        
+        # Add AI-generated warning if detected
+        if is_ai_generated:
+            explanation["summary"] += f" ⚠️ AI-generated image indicators detected (confidence: {ai_score*100:.1f}%)."
+        
         result["explanation"] = explanation
         
         # Generate detailed analysis breakdown
