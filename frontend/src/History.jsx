@@ -17,6 +17,8 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
   const [filterResult, setFilterResult] = useState('all') // 'all', 'fake', 'real'
   const [selectedItems, setSelectedItems] = useState([])
   const [selectMode, setSelectMode] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768)
@@ -251,6 +253,17 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
     
     return matchesSearch && matchesResult
   })
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredHistory.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedHistory = filteredHistory.slice(startIndex, endIndex)
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, filterResult])
 
   if (!user) {
     return (
@@ -603,7 +616,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
           </div>
         ) : (
           <div style={{ display: 'grid', gap: 16 }}>
-            {filteredHistory.map((item) => (
+            {paginatedHistory.map((item) => (
               <div key={item.id} style={{ background: '#0d0d0d', padding: 24, borderRadius: 8, border: '1px solid #2a2a2a', display: 'flex', gap: 20, alignItems: 'flex-start' }}>
                 {/* Checkbox (Select Mode) */}
                 {selectMode && (
@@ -713,6 +726,100 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {!loading && filteredHistory.length > 0 && (
+          <div style={{ 
+            marginTop: 40, 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center',
+            gap: 12,
+            flexWrap: 'wrap'
+          }}>
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              disabled={currentPage === 1}
+              style={{
+                background: currentPage === 1 ? '#1a1a1a' : '#E94E1B',
+                color: currentPage === 1 ? '#666' : '#fff',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: 6,
+                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                fontSize: 14,
+                fontWeight: 600,
+                opacity: currentPage === 1 ? 0.5 : 1
+              }}
+            >
+              Previous
+            </button>
+
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => {
+                // Show first page, last page, current page, and pages around current
+                const showPage = page === 1 || 
+                                page === totalPages || 
+                                (page >= currentPage - 1 && page <= currentPage + 1)
+                
+                if (!showPage && page === currentPage - 2) {
+                  return <span key={page} style={{ color: '#666' }}>...</span>
+                }
+                if (!showPage && page === currentPage + 2) {
+                  return <span key={page} style={{ color: '#666' }}>...</span>
+                }
+                if (!showPage) return null
+
+                return (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    style={{
+                      background: currentPage === page ? '#E94E1B' : '#1a1a1a',
+                      color: '#fff',
+                      border: currentPage === page ? 'none' : '1px solid #2a2a2a',
+                      padding: '8px 14px',
+                      borderRadius: 6,
+                      cursor: 'pointer',
+                      fontSize: 14,
+                      fontWeight: currentPage === page ? 600 : 400,
+                      minWidth: 40
+                    }}
+                  >
+                    {page}
+                  </button>
+                )
+              })}
+            </div>
+
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              disabled={currentPage === totalPages}
+              style={{
+                background: currentPage === totalPages ? '#1a1a1a' : '#E94E1B',
+                color: currentPage === totalPages ? '#666' : '#fff',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: 6,
+                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                fontSize: 14,
+                fontWeight: 600,
+                opacity: currentPage === totalPages ? 0.5 : 1
+              }}
+            >
+              Next
+            </button>
+
+            <div style={{ 
+              marginLeft: 16, 
+              fontSize: 14, 
+              color: '#999',
+              whiteSpace: 'nowrap'
+            }}>
+              Page {currentPage} of {totalPages} ({filteredHistory.length} items)
+            </div>
           </div>
         )}
       </div>
