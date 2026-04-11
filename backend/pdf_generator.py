@@ -181,6 +181,8 @@ def create_pdf_report(history_items):
             try:
                 # Extract base64 image data
                 image_data = item.get('image_data', '')
+                print(f"[PDF] Processing image for {item.get('image_name')}, data length: {len(image_data)}")
+                
                 if image_data.startswith('data:image'):
                     # Remove data URL prefix
                     image_data = image_data.split(',')[1]
@@ -188,9 +190,10 @@ def create_pdf_report(history_items):
                 # Decode base64
                 img_bytes = base64.b64decode(image_data)
                 img = PILImage.open(BytesIO(img_bytes))
+                print(f"[PDF] Image loaded successfully: {img.size}")
                 
-                # Compress image - resize to max 400px width and reduce quality
-                max_width = 400
+                # Compress image - resize to max 600px width for better quality
+                max_width = 600
                 if img.width > max_width:
                     ratio = max_width / img.width
                     new_height = int(img.height * ratio)
@@ -200,9 +203,9 @@ def create_pdf_report(history_items):
                 if img.mode in ('RGBA', 'P'):
                     img = img.convert('RGB')
                 
-                # Save compressed image to buffer
+                # Save compressed image to buffer with higher quality
                 img_buffer = BytesIO()
-                img.save(img_buffer, format='JPEG', quality=70, optimize=True)
+                img.save(img_buffer, format='JPEG', quality=85, optimize=True)
                 img_buffer.seek(0)
                 
                 # Add to PDF with max width of 3 inches

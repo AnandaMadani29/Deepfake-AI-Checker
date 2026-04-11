@@ -498,6 +498,11 @@ async def export_detection_pdf(
         if created_at_str.endswith('Z'):
             created_at_str = created_at_str[:-1] + '+00:00'
         
+        image_data = request.detection.get('image_data')
+        print(f"[DEBUG] Detection PDF export - image_data present: {image_data is not None}")
+        if image_data:
+            print(f"[DEBUG] Image data length: {len(str(image_data))}")
+        
         detection_item = {
             'id': 0,
             'image_name': request.detection.get('image_name', 'detection.jpg'),
@@ -505,7 +510,7 @@ async def export_detection_pdf(
             'prob_fake': request.detection.get('prob_fake', 0.5),
             'model_name': request.detection.get('model_name', 'resnet_revised'),
             'created_at': created_at_str,
-            'image_data': request.detection.get('image_data')  # Include image for PDF
+            'image_data': image_data  # Include image for PDF
         }
         
         # Generate PDF for single item
