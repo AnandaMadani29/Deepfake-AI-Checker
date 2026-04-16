@@ -15,8 +15,9 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
   const [searchQuery, setSearchQuery] = useState('')
   const [filterResult, setFilterResult] = useState('all') // 'all', 'fake', 'real'
+  const [filterDropdownOpen, setFilterDropdownOpen] = useState(false)
   const [selectedItems, setSelectedItems] = useState([])
-  const [selectMode, setSelectMode] = useState(false)
+  const [selectMode, setSelectMode] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
 
@@ -208,35 +209,84 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
   }
 
   const handleDeleteAll = async () => {
-    if (!window.confirm('Are you sure you want to delete ALL history records? This cannot be undone.')) {
-      return
-    }
-
-    setLoading(true)
-    
-    try {
-      const token = localStorage.getItem('access_token')
-      const response = await fetch(`${DEFAULT_API_BASE}/history`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to delete all records')
+    // If items are selected, delete only selected items
+    if (selectedItems.length > 0) {
+      if (!window.confirm(`Are you sure you want to delete ${selectedItems.length} selected item(s)? This cannot be undone.`)) {
+        return
       }
 
-      setHistory([])
-      setStats({
-        total_detections: 0,
-        fake_count: 0,
-        real_count: 0
-      })
-    } catch (err) {
-      toast.error(err.message || 'Failed to delete all records')
-    } finally {
-      setLoading(false)
+      setLoading(true)
+      try {
+        const token = localStorage.getItem('access_token')
+        
+        // Delete each selected item
+        for (const id of selectedItems) {
+          const response = await fetch(`${DEFAULT_API_BASE}/history/${id}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
+
+          if (!response.ok) {
+            throw new Error(`Failed to delete item ${id}`)
+          }
+        }
+
+        // Remove deleted items from state
+        setHistory(prev => prev.filter(item => !selectedItems.includes(item.id)))
+        setSelectedItems([])
+        
+        // Update stats
+        const deletedFakeCount = history.filter(item => selectedItems.includes(item.id) && item.result_label === 'Fake').length
+        const deletedRealCount = history.filter(item => selectedItems.includes(item.id) && item.result_label === 'Real').length
+        
+        setStats(prev => ({
+          total_count: prev.total_count - selectedItems.length,
+          fake_count: prev.fake_count - deletedFakeCount,
+          real_count: prev.real_count - deletedRealCount
+        }))
+        
+        toast.success(`${selectedItems.length} item(s) deleted successfully`)
+      } catch (err) {
+        toast.error(err.message || 'Failed to delete selected items')
+      } finally {
+        setLoading(false)
+      }
+    } else {
+      // Delete all items
+      if (!window.confirm('Are you sure you want to delete ALL history records? This cannot be undone.')) {
+        return
+      }
+
+      setLoading(true)
+      try {
+        const token = localStorage.getItem('access_token')
+        const response = await fetch(`${DEFAULT_API_BASE}/history/delete-all`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to delete all records')
+        }
+
+        setHistory([])
+        setSelectedItems([])
+        setStats({
+          total_count: 0,
+          fake_count: 0,
+          real_count: 0
+        })
+        
+        toast.success('All history deleted successfully')
+      } catch (err) {
+        toast.error(err.message || 'Failed to delete all records')
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
@@ -343,18 +393,10 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
           </div>
         )}
 
-        {/* Search and Filter */}
+        {/* Search Input */}
         {history.length > 0 && (
-          <div style={{ 
-            marginBottom: 24, 
-            display: 'flex', 
-            flexDirection: isMobile ? 'column' : 'row',
-            gap: 12,
-            alignItems: isMobile ? 'stretch' : 'center',
-            justifyContent: 'space-between'
-          }}>
-            {/* Search Input */}
-            <div style={{ position: 'relative', flex: isMobile ? 'auto' : '1', maxWidth: isMobile ? '100%' : 400 }}>
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ position: 'relative', maxWidth: isMobile ? '100%' : 400 }}>
               <HiSearch 
                 size={20} 
                 style={{ 
@@ -382,162 +424,180 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
                 }}
               />
             </div>
-
-            {/* Filter Buttons */}
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button
-                onClick={() => setFilterResult('all')}
-                style={{
-                  padding: '10px 16px',
-                  background: filterResult === 'all' ? '#E94E1B' : '#2a2a2a',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: 4,
-                  cursor: 'pointer',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  transition: 'background 0.2s'
-                }}
-              >
-                All
-              </button>
-              <button
-                onClick={() => setFilterResult('fake')}
-                style={{
-                  padding: '10px 16px',
-                  background: filterResult === 'fake' ? '#f87171' : '#2a2a2a',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: 4,
-                  cursor: 'pointer',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  transition: 'background 0.2s'
-                }}
-              >
-                Fake
-              </button>
-              <button
-                onClick={() => setFilterResult('real')}
-                style={{
-                  padding: '10px 16px',
-                  background: filterResult === 'real' ? '#4ade80' : '#2a2a2a',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: 4,
-                  cursor: 'pointer',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  transition: 'background 0.2s'
-                }}
-              >
-                Real
-              </button>
-            </div>
           </div>
         )}
 
-        {/* Select Mode Toggle - Centered */}
-        {history.length > 0 && selectMode && (
+
+        {/* Filter and Actions - Single Row */}
+        {history.length > 0 && (
           <div style={{ 
             marginBottom: 24, 
             display: 'flex', 
-            justifyContent: 'center', 
+            justifyContent: 'space-between', 
             alignItems: 'center', 
-            gap: 16,
-            padding: '16px',
-            background: '#0d0d0d',
-            borderRadius: 8,
-            border: '1px solid #2a2a2a'
+            gap: 12, 
+            flexWrap: 'wrap' 
           }}>
-            <button 
-              onClick={handleSelectAll}
-              style={{ 
-                background: 'transparent', 
-                color: '#3b82f6', 
-                border: '1px solid #3b82f6', 
-                padding: '10px 20px', 
-                borderRadius: 4, 
-                cursor: 'pointer', 
-                fontSize: 14, 
-                fontWeight: 600
-              }}
-            >
-              {selectedItems.length === filteredHistory.length ? 'Deselect All' : 'Select All'}
-            </button>
-            <span style={{ color: '#999', fontSize: 14, fontWeight: 500 }}>
-              {selectedItems.length} of {filteredHistory.length} selected
-            </span>
-            <button 
-              onClick={() => {
-                setSelectMode(false)
-                setSelectedItems([])
-              }}
-              style={{ 
-                background: 'transparent', 
-                color: '#dc2626', 
-                border: '1px solid #dc2626', 
-                padding: '10px 20px', 
-                borderRadius: 4, 
-                cursor: 'pointer', 
-                fontSize: 14, 
-                fontWeight: 600
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        )}
+            {/* Filter Dropdown and Clear Button */}
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
+                  style={{
+                    padding: '10px 16px',
+                    background: '#2a2a2a',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 4,
+                    cursor: 'pointer',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    minWidth: 120
+                  }}
+                >
+                  {filterResult === 'all' ? 'All' : filterResult === 'fake' ? 'Fake' : 'Real'}
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" style={{ transform: filterDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
+                    <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              {filterDropdownOpen && (
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  marginTop: 4,
+                  background: '#0d0d0d',
+                  border: '1px solid #2a2a2a',
+                  borderRadius: 4,
+                  overflow: 'hidden',
+                  zIndex: 10,
+                  minWidth: 120
+                }}>
+                  <button
+                    onClick={() => {
+                      setFilterResult('all')
+                      setFilterDropdownOpen(false)
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '10px 16px',
+                      background: filterResult === 'all' ? '#E94E1B' : 'transparent',
+                      color: '#fff',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      textAlign: 'left'
+                    }}
+                  >
+                    All
+                  </button>
+                  <button
+                    onClick={() => {
+                      setFilterResult('fake')
+                      setFilterDropdownOpen(false)
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '10px 16px',
+                      background: filterResult === 'fake' ? '#f87171' : 'transparent',
+                      color: '#fff',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      textAlign: 'left'
+                    }}
+                  >
+                    Fake
+                  </button>
+                  <button
+                    onClick={() => {
+                      setFilterResult('real')
+                      setFilterDropdownOpen(false)
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '10px 16px',
+                      background: filterResult === 'real' ? '#4ade80' : 'transparent',
+                      color: '#fff',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      textAlign: 'left'
+                    }}
+                  >
+                    Real
+                  </button>
+                </div>
+              )}
+              </div>
+              
+              {/* Clear Selection Button */}
+              {selectedItems.length > 0 && (
+                <button
+                  onClick={() => setSelectedItems([])}
+                  style={{
+                    padding: '10px 16px',
+                    background: 'transparent',
+                    color: '#dc2626',
+                    border: '1px solid #dc2626',
+                    borderRadius: 4,
+                    cursor: 'pointer',
+                    fontSize: 13,
+                    fontWeight: 600
+                  }}
+                >
+                  Clear ({selectedItems.length})
+                </button>
+              )}
+            </div>
 
-        {/* Actions */}
-        {history.length > 0 && (
-          <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-            {!selectMode && (
+            {/* Action Buttons */}
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
               <button 
-                onClick={() => setSelectMode(true)}
+                onClick={handleDownloadHistory}
                 style={{ 
-                  background: '#2a2a2a', 
+                  background: '#E94E1B', 
+                  color: '#fff', 
+                  border: 'none', 
+                  padding: '12px 24px', 
+                  borderRadius: 4, 
+                  cursor: 'pointer', 
+                  fontSize: 14, 
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8
+                }}
+              >
+                <HiDownload size={16} />
+                {selectedItems.length > 0 
+                  ? `Download (${selectedItems.length})` 
+                  : 'Download All'}
+              </button>
+              <button 
+                onClick={handleDeleteAll}
+                style={{ 
+                  background: '#dc2626', 
                   color: '#fff', 
                   border: 'none', 
                   padding: '10px 20px', 
                   borderRadius: 4, 
                   cursor: 'pointer', 
                   fontSize: 14, 
-                  fontWeight: 600
+                  fontWeight: 600 
                 }}
               >
-                Select Items
+                {selectedItems.length > 0 
+                  ? `Delete (${selectedItems.length})` 
+                  : 'Delete All'}
               </button>
-            )}
-            <button 
-              onClick={handleDownloadHistory}
-              style={{ 
-                background: '#E94E1B', 
-                color: '#fff', 
-                border: 'none', 
-                padding: '12px 24px', 
-                borderRadius: 4, 
-                cursor: 'pointer', 
-                fontSize: 14, 
-                fontWeight: 600,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8
-              }}
-            >
-              <HiDownload size={16} />
-              {selectMode && selectedItems.length > 0 
-                ? `Download (${selectedItems.length})` 
-                : 'Download'}
-            </button>
-            {!selectMode && (
-              <button 
-                onClick={handleDeleteAll}
-                style={{ background: '#dc2626', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 4, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
-              >
-                Delete All
-              </button>
-            )}
+            </div>
           </div>
         )}
 
@@ -616,24 +676,22 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
           </div>
         ) : (
           <div style={{ display: 'grid', gap: 16 }}>
-            {paginatedHistory.map((item) => (
-              <div key={item.id} style={{ background: '#0d0d0d', padding: 24, borderRadius: 8, border: '1px solid #2a2a2a', display: 'flex', gap: 20, alignItems: 'flex-start' }}>
-                {/* Checkbox (Select Mode) */}
-                {selectMode && (
-                  <div style={{ flexShrink: 0, paddingTop: 4 }}>
-                    <input
-                      type="checkbox"
-                      checked={selectedItems.includes(item.id)}
-                      onChange={() => handleToggleSelect(item.id)}
-                      style={{
-                        width: 20,
-                        height: 20,
-                        cursor: 'pointer',
-                        accentColor: '#3b82f6'
-                      }}
-                    />
-                  </div>
-                )}
+            {paginatedHistory.map((item, index) => (
+              <div key={item.id} className={`animate-fade-in-up stagger-${Math.min(index + 1, 6)}`} style={{ background: '#0d0d0d', padding: 24, borderRadius: 8, border: selectedItems.includes(item.id) ? '2px solid #3b82f6' : '1px solid #2a2a2a', display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+                {/* Checkbox (Always visible) */}
+                <div style={{ flexShrink: 0, paddingTop: 4 }}>
+                  <input
+                    type="checkbox"
+                    checked={selectedItems.includes(item.id)}
+                    onChange={() => handleToggleSelect(item.id)}
+                    style={{
+                      width: 20,
+                      height: 20,
+                      cursor: 'pointer',
+                      accentColor: '#3b82f6'
+                    }}
+                  />
+                </div>
                 
                 {/* Thumbnail */}
                 {item.image_data && (
@@ -652,77 +710,57 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
                   </div>
                 )}
                 
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 12, flexWrap: 'wrap' }}>
-                    <div style={{ fontSize: 18, fontWeight: 600, wordBreak: 'break-word' }}>{item.image_name}</div>
+                <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>
+                  {/* Badge - Top Right */}
+                  <div style={{ 
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    padding: '4px 12px', 
+                    borderRadius: 4, 
+                    fontSize: 12, 
+                    fontWeight: 600,
+                    background: item.result_label === 'Fake' ? '#dc262620' : '#4ade8020',
+                    color: item.result_label === 'Fake' ? '#f87171' : '#4ade80'
+                  }}>
+                    {item.result_label}
+                  </div>
+                  
+                  {/* Filename */}
+                  <div style={{ fontSize: 18, fontWeight: 600, wordBreak: 'break-word', marginBottom: 8, paddingRight: 80 }}>{item.image_name}</div>
+                  
+                  {/* Probabilities */}
+                  <div style={{ display: 'flex', gap: 16, marginBottom: 8, fontSize: 13, flexWrap: 'wrap' }}>
+                    <div>
+                      <span style={{ color: '#666' }}>Real Probability:</span> <span style={{ color: '#4ade80', fontWeight: 600 }}>{((1 - item.prob_fake) * 100).toFixed(1)}%</span>
+                    </div>
+                    <div>
+                      <span style={{ color: '#666' }}>Fake Probability:</span> <span style={{ color: '#f87171', fontWeight: 600 }}>{(item.prob_fake * 100).toFixed(1)}%</span>
+                    </div>
+                  </div>
+                  
+                  {/* Summary */}
+                  {item.detailed_analysis?.summary && (
                     <div style={{ 
-                      padding: '4px 12px', 
-                      borderRadius: 4, 
-                      fontSize: 12, 
-                      fontWeight: 600,
-                      background: item.result_label === 'Fake' ? '#dc262620' : '#4ade8020',
-                      color: item.result_label === 'Fake' ? '#f87171' : '#4ade80'
+                      fontSize: 13, 
+                      color: '#999', 
+                      marginBottom: 8,
+                      lineHeight: 1.5
                     }}>
-                      {item.result_label}
-                    </div>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, fontSize: 13, color: '#999' }}>
-                    <div>
-                      <span style={{ color: '#666' }}>Confidence Fake:</span> <span style={{ color: '#f87171', fontWeight: 600 }}>{(item.prob_fake * 100).toFixed(2)}%</span>
-                    </div>
-                    <div>
-                      <span style={{ color: '#666' }}>Confidence Real:</span> <span style={{ color: '#4ade80', fontWeight: 600 }}>{((1 - item.prob_fake) * 100).toFixed(2)}%</span>
-                    </div>
-                    <div>
-                      <span style={{ color: '#666' }}>Model:</span> {item.model_name}
-                    </div>
-                    {item.image_size && (
-                      <div>
-                        <span style={{ color: '#666' }}>Size:</span> {item.image_size}
-                      </div>
-                    )}
-                    {item.complexity_level && (
-                      <div>
-                        <span style={{ color: '#666' }}>Complexity:</span> {item.complexity_level}
-                      </div>
-                    )}
-                    <div>
-                      <span style={{ color: '#666' }}>Detection Time:</span> {new Date(item.created_at).toLocaleString('id-ID', { 
-                        year: 'numeric', 
-                        month: 'short', 
-                        day: 'numeric', 
-                        hour: '2-digit', 
-                        minute: '2-digit',
-                        second: '2-digit'
-                      })}
-                    </div>
-                  </div>
-                  {item.model_selection_reason && (
-                    <div style={{ marginTop: 8, fontSize: 12, color: '#666', fontStyle: 'italic' }}>
-                      {item.model_selection_reason}
+                      {item.detailed_analysis.summary}
                     </div>
                   )}
-                </div>
-                
-                <div style={{ flexShrink: 0, alignSelf: 'center' }}>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    disabled={deleteLoading === item.id}
-                    style={{ 
-                      background: 'transparent', 
-                      color: '#dc2626', 
-                      border: '1px solid #dc2626', 
-                      padding: '8px 16px', 
-                      borderRadius: 4, 
-                      cursor: deleteLoading === item.id ? 'not-allowed' : 'pointer',
-                      fontSize: 13,
-                      fontWeight: 600,
-                      opacity: deleteLoading === item.id ? 0.5 : 1,
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    {deleteLoading === item.id ? 'Deleting...' : 'Delete'}
-                  </button>
+                  
+                  {/* Detection Time */}
+                  <div style={{ fontSize: 12, color: '#666' }}>
+                    Detection time: {new Date(item.created_at).toLocaleString('id-ID', { 
+                      year: 'numeric', 
+                      month: 'short', 
+                      day: 'numeric', 
+                      hour: '2-digit', 
+                      minute: '2-digit'
+                    })}
+                  </div>
                 </div>
               </div>
             ))}

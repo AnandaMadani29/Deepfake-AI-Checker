@@ -2,6 +2,7 @@ import os
 import sqlite3
 from datetime import datetime, timedelta
 from typing import Optional
+import secrets
 
 import bcrypt
 import jwt
@@ -188,6 +189,20 @@ def authenticate_user(email: str, password: str) -> Optional[dict]:
         "email": user["email"],
         "full_name": user["full_name"]
     }
+
+
+def get_or_create_google_user(email: str, full_name: str) -> dict:
+    """Get an existing user by email or create a new one for Google login"""
+    user = get_user_by_email(email)
+    if user:
+        return {
+            "id": user["id"],
+            "email": user["email"],
+            "full_name": user.get("full_name") or full_name
+        }
+
+    random_password = secrets.token_urlsafe(32)
+    return create_user(email=email, password=random_password, full_name=full_name or "Google User")
 
 
 def create_reset_token(email: str) -> str:

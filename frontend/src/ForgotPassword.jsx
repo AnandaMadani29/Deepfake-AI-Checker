@@ -243,7 +243,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                     fontWeight: 600
                   }}
                 >
-                  Sign in
+                  Login
                 </a>
               </div>
             </form>
@@ -518,7 +518,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                     fontWeight: 600
                   }}
                 >
-                  Sign in
+                  Login
                 </a>
               </div>
             </form>

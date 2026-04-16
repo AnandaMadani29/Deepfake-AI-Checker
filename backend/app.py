@@ -9,6 +9,9 @@ from fastapi import FastAPI, File, HTTPException, UploadFile, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+
+from google.oauth2 import id_token as google_id_token
+from google.auth.transport import requests as google_requests
 from PIL import Image
 
 from src.config import DEVICE, MODEL_NAME
@@ -17,7 +20,7 @@ from src.model import get_model
 from backend.auth import (
     UserRegister, UserLogin, ForgotPassword, ResetPassword, TokenResponse,
     create_user, authenticate_user, create_access_token, create_reset_token,
-    reset_password_with_token, decode_token, init_db
+    reset_password_with_token, decode_token, init_db, get_or_create_google_user
 )
 from backend.explanation_generator import generate_explanation
 from backend.adaptive_selector import (
@@ -159,6 +162,10 @@ def health() -> dict:
     return {"status": "ok", "device": str(DEVICE), "model_name": MODEL_NAME}
 
 
+class GoogleLoginRequest(BaseModel):
+    id_token: str
+
+
 def get_current_user(authorization: Optional[str] = Header(None)) -> Optional[dict]:
     """Get current user from JWT token (optional)"""
     if not authorization:
@@ -191,6 +198,45 @@ async def register(user_data: UserRegister) -> TokenResponse:
     }
     access_token = create_access_token(token_data)
     
+    return TokenResponse(
+        access_token=access_token,
+        token_type="bearer",
+        user={
+            "id": user["id"],
+            "email": user["email"],
+            "full_name": user["full_name"]
+        }
+    )
+
+
+@app.post("/auth/google", response_model=TokenResponse)
+async def google_login(payload: GoogleLoginRequest) -> TokenResponse:
+    google_client_id = os.getenv("GOOGLE_CLIENT_ID")
+    if not google_client_id:
+        raise HTTPException(status_code=500, detail="GOOGLE_CLIENT_ID is not configured")
+
+    try:
+        idinfo = google_id_token.verify_oauth2_token(
+            payload.id_token,
+            google_requests.Request(),
+            google_client_id
+        )
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid Google token")
+
+    email = idinfo.get("email")
+    if not email:
+        raise HTTPException(status_code=400, detail="Google token missing email")
+
+    full_name = idinfo.get("name") or idinfo.get("given_name") or "Google User"
+    user = get_or_create_google_user(email=email, full_name=full_name)
+
+    token_data = {
+        "user_id": user["id"],
+        "email": user["email"]
+    }
+    access_token = create_access_token(token_data)
+
     return TokenResponse(
         access_token=access_token,
         token_type="bearer",
@@ -492,13 +538,13 @@ async def predict(
         # Save to history if user is authenticated
         if current_user:
             try:
-                # Convert image to base64 for thumbnail
+                # Convert image to base64 for thumbnail and PDF
                 import base64
                 buffered = io.BytesIO()
-                # Resize image for thumbnail (max 200px width)
+                # Resize image for thumbnail and PDF (max 800px width for better quality)
                 thumb_img = img.copy()
-                thumb_img.thumbnail((200, 200), Image.Resampling.LANCZOS)
-                thumb_img.save(buffered, format="JPEG", quality=85)
+                thumb_img.thumbnail((800, 800), Image.Resampling.LANCZOS)
+                thumb_img.save(buffered, format="JPEG", quality=90)
                 img_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
                 
                 history_data = DetectionHistoryCreate(
@@ -509,7 +555,9 @@ async def predict(
                     model_selection_reason=result.get("model_selection"),
                     image_size=result.get("image_analysis", {}).get("size"),
                     complexity_level=result.get("image_analysis", {}).get("complexity"),
-                    image_data=f"data:image/jpeg;base64,{img_base64}"
+                    image_data=f"data:image/jpeg;base64,{img_base64}",
+                    detailed_analysis=result.get("detailed_analysis"),
+                    explanation=result.get("explanation")
                 )
                 history_id = save_detection_history(current_user["id"], history_data)
                 result["saved_to_history"] = True
@@ -624,3 +672,8 @@ async def export_history_pdf(
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"PDF generation failed: {e}")
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -174,47 +174,66 @@ def create_pdf_report(history_items):
         
         # Detection Header
         elements.append(Paragraph(f"Detection #{idx}: {item.get('image_name', 'Unknown')}", heading_style))
-        elements.append(Spacer(1, 0.1*inch))
+        elements.append(Spacer(1, 0.08*inch))
         
         # Add compressed image if available
-        if item.get('image_data'):
-            try:
-                # Extract base64 image data
-                image_data = item.get('image_data', '')
-                print(f"[PDF] Processing image for {item.get('image_name')}, data length: {len(image_data)}")
-                
-                if image_data.startswith('data:image'):
-                    # Remove data URL prefix
-                    image_data = image_data.split(',')[1]
-                
-                # Decode base64
-                img_bytes = base64.b64decode(image_data)
-                img = PILImage.open(BytesIO(img_bytes))
-                print(f"[PDF] Image loaded successfully: {img.size}")
-                
-                # Compress image - resize to max 600px width for better quality
-                max_width = 600
-                if img.width > max_width:
-                    ratio = max_width / img.width
-                    new_height = int(img.height * ratio)
-                    img = img.resize((max_width, new_height), PILImage.Resampling.LANCZOS)
-                
-                # Convert to RGB if needed (for JPEG)
-                if img.mode in ('RGBA', 'P'):
-                    img = img.convert('RGB')
-                
-                # Save compressed image to buffer with higher quality
-                img_buffer = BytesIO()
-                img.save(img_buffer, format='JPEG', quality=85, optimize=True)
-                img_buffer.seek(0)
-                
-                # Add to PDF with max width of 3 inches
-                pdf_img = RLImage(img_buffer, width=3*inch, height=3*inch*img.height/img.width)
-                elements.append(pdf_img)
-                elements.append(Spacer(1, 0.2*inch))
-            except Exception as e:
-                print(f"Failed to add image to PDF: {e}")
-                # Continue without image if there's an error
+        try:
+            # Extract base64 image data
+            image_data = item.get('image_data', '')
+            print(f"[PDF] Processing image for {item.get('image_name')}, data length: {len(image_data)}")
+            
+            if not image_data:
+                print(f"[PDF] No image data for {item.get('image_name')}")
+                continue
+            
+            # Handle both data URL and pure base64
+            if image_data.startswith('data:image'):
+                # Remove data URL prefix
+                base64_data = image_data.split(',')[1] if ',' in image_data else image_data
+            else:
+                base64_data = image_data
+            
+            if not base64_data:
+                print(f"[PDF] No base64 data for {item.get('image_name')}")
+                continue
+            
+            # Decode base64
+            img_bytes = base64.b64decode(base64_data)
+            img = PILImage.open(BytesIO(img_bytes))
+            print(f"[PDF] Image loaded successfully: {img.size}, mode: {img.mode}")
+            
+            # Compress image - resize to max 800px width for better quality
+            max_width = 800
+            if img.width > max_width:
+                ratio = max_width / img.width
+                new_height = int(img.height * ratio)
+                img = img.resize((max_width, new_height), PILImage.Resampling.LANCZOS)
+                print(f"[PDF] Image resized to: {img.size}")
+            
+            # Convert to RGB if necessary
+            if img.mode != 'RGB':
+                img = img.convert('RGB')
+                print(f"[PDF] Image converted to RGB")
+            
+            # Save to buffer
+            img_buffer = BytesIO()
+            img.save(img_buffer, format='JPEG', quality=90, optimize=True)
+            img_buffer.seek(0)
+            
+            # Calculate dimensions for PDF (max width 3.5 inches for balanced layout)
+            img_width = 3.5*inch
+            img_height = 3.5*inch * img.height / img.width
+            
+            # Add to PDF
+            pdf_img = RLImage(img_buffer, width=img_width, height=img_height)
+            elements.append(pdf_img)
+            elements.append(Spacer(1, 0.15*inch))
+            print(f"[PDF] Image added to PDF successfully")
+        except Exception as e:
+            print(f"[PDF] Failed to add image to PDF: {e}")
+            import traceback
+            traceback.print_exc()
+            # Continue without image if there's an error
         
         # Basic Info
         result_label = item.get('result_label', 'Unknown')
@@ -252,6 +271,35 @@ def create_pdf_report(history_items):
         # Detailed Breakdown
         elements.append(Paragraph("Detailed Breakdown", heading_style))
         
+        # Add AI Generated Content percentage first
+        ai_confidence = prob_fake * 100
+        ai_level = 'CRITICAL' if ai_confidence > 70 else 'WARNING' if ai_confidence > 50 else 'NORMAL'
+        ai_bg_color = colors.HexColor('#fee2e2') if ai_level == 'CRITICAL' else colors.HexColor('#fef3c7') if ai_level == 'WARNING' else colors.HexColor('#f5f5f5')
+        ai_border_color = colors.HexColor('#dc2626') if ai_level == 'CRITICAL' else colors.HexColor('#f59e0b') if ai_level == 'WARNING' else colors.HexColor('#d4d4d4')
+        
+        ai_data = [
+            [Paragraph(f"<b>AI Generated Content</b>", normal_style), 
+             Paragraph(f"<b>{ai_confidence:.0f}%</b>", normal_style)],
+            [Paragraph('Strong indicators of AI-generated content detected. Image shows characteristics typical of synthetic generation.' if ai_confidence > 50 else 'Low probability of AI generation. Image appears to be authentic or traditionally edited.', normal_style), '']
+        ]
+        
+        ai_table = Table(ai_data, colWidths=[5*inch, 1*inch])
+        ai_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), ai_bg_color),
+            ('BOX', (0, 0), (-1, -1), 2, ai_border_color),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('TOPPADDING', (0, 0), (-1, -1), 6),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+            ('SPAN', (0, 1), (1, 1)),
+        ]))
+        
+        elements.append(ai_table)
+        elements.append(Spacer(1, 0.08*inch))
+        
         for analysis_item in analysis['items']:
             # Analysis item box
             item_data = [
@@ -278,15 +326,15 @@ def create_pdf_report(history_items):
                 ('VALIGN', (0, 0), (-1, -1), 'TOP'),
                 ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
                 ('FONTSIZE', (0, 0), (-1, -1), 9),
-                ('TOPPADDING', (0, 0), (-1, -1), 8),
-                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('TOPPADDING', (0, 0), (-1, -1), 5),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
                 ('LEFTPADDING', (0, 0), (-1, -1), 10),
                 ('RIGHTPADDING', (0, 0), (-1, -1), 10),
                 ('SPAN', (0, 1), (1, 1)),
             ]))
             
             elements.append(item_table)
-            elements.append(Spacer(1, 0.1*inch))
+            elements.append(Spacer(1, 0.08*inch))
     
     # Build PDF
     doc.build(elements)

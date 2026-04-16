@@ -155,12 +155,12 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome }
             onMouseLeave={(e) => e.currentTarget.style.borderColor = '#2a2a2a'}
           >
             <div style={{ 
-              background: '#2a2a2a',
+              background: 'linear-gradient(180deg, #2a2a2a 0%, #333 100%)',
               minHeight: isMobile ? 200 : 350,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#666',
+              color: '#333',
               fontSize: 14
             }}>
               Featured Image
@@ -377,49 +377,48 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome }
 
       {/* Footer */}
       <footer style={{ 
-        background: '#0d0d0d', 
+        background: 'linear-gradient(to bottom, #0d0d0d 0%, #0d0d0d 15%, rgba(13, 13, 13, 0.8) 20%, rgba(13, 13, 13, 0.5) 30%, rgba(13, 13, 13, 0.2) 40%, rgba(51, 51, 51, 0) 45%, rgba(102, 102, 102, 0.25) 60%, rgba(102, 102, 102, 0.5) 75%, rgba(102, 102, 102, 0.75) 90%, rgba(102, 102, 102, 1) 100%)', 
         padding: isMobile ? '40px 20px' : '60px 60px',
-        borderTop: '1px solid #2a2a2a'
+        borderTop: 'none'
       }}>
-        <div style={{ 
-          maxWidth: 1200,
-          margin: '0 auto',
-          display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
-          gap: 40
-        }}>
-          <div>
-            <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 16 }}>Fact.it</div>
-            <p style={{ fontSize: 14, color: '#666', lineHeight: 1.6 }}>
-              AI-powered deepfake detection to protect digital media authenticity.
-            </p>
-          </div>
-          <div>
-            <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Resources</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14, color: '#666' }}>
-              <a style={{ cursor: 'pointer' }}>Guidance</a>
-              <a style={{ cursor: 'pointer' }}>Blog</a>
-              <a style={{ cursor: 'pointer' }}>News</a>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{ 
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+            gap: 40
+          }}>
+            <div>
+              <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 16 }}>Fact.it</div>
+              <p style={{ fontSize: 14, color: '#666', lineHeight: 1.6 }}>
+                AI-powered deepfake detection to protect digital media authenticity.
+              </p>
+            </div>
+            <div>
+              <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16, color: '#222' }}>Resources</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14, color: '#666' }}>
+                <a style={{ cursor: 'pointer' }}>Guidance</a>
+                <a style={{ cursor: 'pointer' }}>Blog</a>
+                <a style={{ cursor: 'pointer' }}>News</a>
+              </div>
+            </div>
+            <div>
+              <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16, color: '#222' }}>Company</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14, color: '#666' }}>
+                <a onClick={onNavigateToHome} style={{ cursor: 'pointer' }}>About Us</a>
+                <a onClick={onNavigateToHome} style={{ cursor: 'pointer' }}>Contact</a>
+              </div>
             </div>
           </div>
-          <div>
-            <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Company</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14, color: '#666' }}>
-              <a onClick={onNavigateToHome} style={{ cursor: 'pointer' }}>About Us</a>
-              <a onClick={onNavigateToHome} style={{ cursor: 'pointer' }}>Contact</a>
-            </div>
+          <div style={{ 
+            marginTop: 40,
+            paddingTop: 30,
+            borderTop: '1px solid #2a2a2a',
+            textAlign: 'center',
+            fontSize: 12,
+            color: '#666'
+          }}>
+            © 2026 Fact.it. All rights reserved.
           </div>
-        </div>
-        <div style={{ 
-          maxWidth: 1200,
-          margin: '40px auto 0',
-          paddingTop: 30,
-          borderTop: '1px solid #2a2a2a',
-          textAlign: 'center',
-          fontSize: 12,
-          color: '#666'
-        }}>
-          © 2026 Fact.it. All rights reserved.
         </div>
       </footer>
     </div>

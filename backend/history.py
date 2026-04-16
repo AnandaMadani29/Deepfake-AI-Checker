@@ -22,6 +22,8 @@ class DetectionHistoryCreate(BaseModel):
     image_size: Optional[str] = None
     complexity_level: Optional[str] = None
     image_data: Optional[str] = None
+    detailed_analysis: Optional[dict] = None
+    explanation: Optional[dict] = None
 
 
 class DetectionHistory(BaseModel):
@@ -36,6 +38,8 @@ class DetectionHistory(BaseModel):
     image_size: Optional[str] = None
     complexity_level: Optional[str] = None
     image_data: Optional[str] = None
+    detailed_analysis: Optional[dict] = None
+    explanation: Optional[dict] = None
     created_at: str
 
 
@@ -56,10 +60,27 @@ def init_history_table():
             image_size TEXT,
             complexity_level TEXT,
             image_data TEXT,
+            detailed_analysis TEXT,
+            explanation TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
         )
     """)
+    
+    # Migration: Add new columns if they don't exist
+    try:
+        cursor.execute("PRAGMA table_info(detection_history)")
+        columns = [row[1] for row in cursor.fetchall()]
+        
+        if 'detailed_analysis' not in columns:
+            cursor.execute("ALTER TABLE detection_history ADD COLUMN detailed_analysis TEXT")
+            print("✅ Added column: detailed_analysis")
+        
+        if 'explanation' not in columns:
+            cursor.execute("ALTER TABLE detection_history ADD COLUMN explanation TEXT")
+            print("✅ Added column: explanation")
+    except Exception as e:
+        print(f"⚠️  Migration error: {e}")
     
     # Create index for faster queries
     cursor.execute("""
@@ -93,11 +114,14 @@ def save_detection_history(
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
+    import json
+    
     cursor.execute("""
         INSERT INTO detection_history (
             user_id, image_name, result_label, prob_fake, model_name,
-            model_selection_reason, image_size, complexity_level, image_data
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            model_selection_reason, image_size, complexity_level, image_data,
+            detailed_analysis, explanation
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         user_id,
         detection_data.image_name,
@@ -107,7 +131,9 @@ def save_detection_history(
         detection_data.model_selection_reason,
         detection_data.image_size,
         detection_data.complexity_level,
-        detection_data.image_data
+        detection_data.image_data,
+        json.dumps(detection_data.detailed_analysis) if detection_data.detailed_analysis else None,
+        json.dumps(detection_data.explanation) if detection_data.explanation else None
     ))
     
     history_id = cursor.lastrowid
@@ -141,6 +167,7 @@ def get_user_history(
         SELECT 
             id, user_id, image_name, result_label, prob_fake, model_name,
             model_selection_reason, image_size, complexity_level, image_data,
+            detailed_analysis, explanation,
             datetime(created_at, 'localtime') as created_at
         FROM detection_history
         WHERE user_id = ?
@@ -151,7 +178,24 @@ def get_user_history(
     rows = cursor.fetchall()
     conn.close()
     
-    return [dict(row) for row in rows]
+    import json
+    results = []
+    for row in rows:
+        row_dict = dict(row)
+        # Parse JSON fields
+        if row_dict.get('detailed_analysis'):
+            try:
+                row_dict['detailed_analysis'] = json.loads(row_dict['detailed_analysis'])
+            except:
+                row_dict['detailed_analysis'] = None
+        if row_dict.get('explanation'):
+            try:
+                row_dict['explanation'] = json.loads(row_dict['explanation'])
+            except:
+                row_dict['explanation'] = None
+        results.append(row_dict)
+    
+    return results
 
 
 def get_history_count(user_id: int) -> int:

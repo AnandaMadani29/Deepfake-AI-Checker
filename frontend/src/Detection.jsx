@@ -107,13 +107,32 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
       }
 
       // Prepare detection data for PDF (include image)
+      let imageData = null
+      try {
+        // Convert image to base64 for PDF
+        const response = await fetch(item.preview)
+        const blob = await response.blob()
+        imageData = await new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = () => {
+            // Remove data URL prefix, keep only base64
+            const base64 = reader.result.split(',')[1]
+            resolve(base64)
+          }
+          reader.onerror = reject
+          reader.readAsDataURL(blob)
+        })
+      } catch (err) {
+        console.warn('Failed to convert image to base64:', err)
+      }
+
       const detectionData = {
         image_name: item.filename,
         result_label: item.result.label,
         prob_fake: item.result.prob_fake,
         model_name: item.result.model_name,
         created_at: new Date().toISOString(),
-        image_data: item.preview // Include preview image for PDF
+        image_data: imageData // Include base64 image for PDF
       }
 
       const response = await fetch(`${DEFAULT_API_BASE}/detection/export-pdf`, {
@@ -295,34 +314,6 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
         </div>
       </nav>
 
-      {/* History Button - Top Right */}
-      {user && (
-        <div style={{ 
-          position: 'absolute', 
-          top: isMobile ? '70px' : '80px', 
-          right: isMobile ? '20px' : '60px',
-          zIndex: 10
-        }}>
-          <button 
-            onClick={onNavigateToHistory}
-            style={{
-              background: '#E94E1B',
-              color: '#fff',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: 6,
-              fontWeight: 600,
-              cursor: 'pointer',
-              fontSize: 14,
-              boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8
-            }}>
-            View History
-          </button>
-        </div>
-      )}
 
       {/* Hero Section */}
       <div style={{ padding: isMobile ? '40px 20px 30px' : '60px 60px 40px', textAlign: 'center', flex: 1, position: 'relative' }}>
@@ -338,20 +329,47 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
           Upload up to {MAX_FILES} images to verify their authenticity using advanced machine learning
         </p>
         <div style={{ 
-          maxWidth: 700, 
+          maxWidth: 1100, 
           margin: '0 auto 32px auto',
-          padding: isMobile ? '10px 16px' : '12px 20px',
-          background: '#0d0d0d',
-          borderRadius: 6,
-          border: '1px solid #2a2a2a',
-          fontSize: isMobile ? 12 : 13,
-          color: '#999',
-          textAlign: 'left'
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          justifyContent: 'center'
         }}>
-          <div style={{ fontWeight: 600, color: '#E94E1B', marginBottom: 6 }}>ℹ️ How it works:</div>
-          Our AI analyzes each image and gives a <strong style={{ color: '#fff' }}>confidence score</strong>. 
-          If the Fake confidence is <strong style={{ color: '#fff' }}>above 50%</strong>, the image is classified as <strong style={{ color: '#f87171' }}>Fake</strong>. 
-          Otherwise, it's classified as <strong style={{ color: '#4ade80' }}>Real</strong>.
+          <div style={{ 
+            flex: 1,
+            maxWidth: 700,
+            padding: isMobile ? '10px 16px' : '12px 20px',
+            background: '#0d0d0d',
+            borderRadius: 6,
+            border: '1px solid #2a2a2a',
+            fontSize: isMobile ? 12 : 13,
+            color: '#999',
+            textAlign: 'left'
+          }}>
+            <div style={{ fontWeight: 600, color: '#E94E1B', marginBottom: 6 }}>ℹ️ How it works:</div>
+            Our AI analyzes each image and gives a <strong style={{ color: '#fff' }}>confidence score</strong>. 
+            If the Fake confidence is <strong style={{ color: '#fff' }}>above 50%</strong>, the image is classified as <strong style={{ color: '#f87171' }}>Fake</strong>. 
+            Otherwise, it's classified as <strong style={{ color: '#4ade80' }}>Real</strong>.
+          </div>
+          {user && (
+            <button 
+              onClick={onNavigateToHistory}
+              style={{
+                background: '#2a2a2a',
+                color: '#fff',
+                border: '1px solid #444',
+                padding: '10px 20px',
+                borderRadius: 6,
+                fontWeight: 600,
+                cursor: 'pointer',
+                fontSize: 14,
+                whiteSpace: 'nowrap',
+                flexShrink: 0
+              }}>
+              View History
+            </button>
+          )}
         </div>
 
         {/* Main Content */}
@@ -370,22 +388,61 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
               onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
               style={{
                 border: dragActive ? '3px dashed #E94E1B' : '3px dashed #444',
                 borderRadius: 8,
-                padding: 80,
+                padding: files.length === 1 ? 0 : 80,
                 textAlign: 'center',
-                cursor: 'pointer',
                 background: dragActive ? '#2a1a15' : '#0d0d0d',
-                transition: 'all 0.2s'
+                transition: 'all 0.2s',
+                position: 'relative',
+                overflow: 'hidden'
               }}
             >
-              <div style={{ fontSize: 60, marginBottom: 16 }}>☁️</div>
-              <div style={{ fontSize: 16, color: '#ccc', marginBottom: 8 }}>
-                Drag & drop images or click
-              </div>
-              <div style={{ fontSize: 12, color: '#666' }}>PNG, JPG up to 10MB each • Max {MAX_FILES} images</div>
+              {files.length === 1 ? (
+                <div 
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{ 
+                    cursor: 'pointer',
+                    position: 'relative'
+                  }}
+                >
+                  <img 
+                    src={files[0].preview} 
+                    alt="Preview" 
+                    style={{ 
+                      width: '100%', 
+                      height: 'auto',
+                      maxHeight: 400,
+                      objectFit: 'contain',
+                      display: 'block'
+                    }} 
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    bottom: 12,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'rgba(0,0,0,0.8)',
+                    color: '#fff',
+                    padding: '8px 16px',
+                    borderRadius: 6,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    whiteSpace: 'nowrap'
+                  }}>
+                    Click to add more images
+                  </div>
+                </div>
+              ) : (
+                <div onClick={() => fileInputRef.current?.click()} style={{ cursor: 'pointer' }}>
+                  <div style={{ fontSize: 60, marginBottom: 16 }}>☁️</div>
+                  <div style={{ fontSize: 16, color: '#ccc', marginBottom: 8 }}>
+                    Drag & drop images or click
+                  </div>
+                  <div style={{ fontSize: 12, color: '#666' }}>PNG, JPG up to 10MB each • Max {MAX_FILES} images</div>
+                </div>
+              )}
               <input
                 ref={fileInputRef}
                 type="file"
@@ -492,75 +549,295 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
                 <strong>Error:</strong> {error}
               </div>
             )}
+
+            {/* Single Image Result - Full Width */}
+            {results.length === 1 && results[0] && (
+              <div className="animate-fade-in-up" style={{ marginTop: 30 }}>
+                <div style={{ 
+                  background: '#0d0d0d',
+                  borderRadius: 8,
+                  border: '1px solid #2a2a2a',
+                  overflow: 'hidden'
+                }}>
+                  <div style={{ position: 'relative' }}>
+                    <img
+                      src={results[0].preview}
+                      alt={results[0].filename}
+                      style={{ 
+                        width: '100%', 
+                        maxHeight: 500,
+                        objectFit: 'contain',
+                        background: '#000'
+                      }}
+                    />
+                    {results[0].result && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: 12,
+                        left: 12,
+                        background: results[0].result.label === 'Real' ? '#2d5016' : '#5b1a2e',
+                        color: '#fff',
+                        padding: '8px 16px',
+                        borderRadius: 6,
+                        fontSize: 16,
+                        fontWeight: 700,
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.4)'
+                      }}>
+                        {results[0].result.label === 'Fake' ? '🚫 Fake' : '✓ Real'}
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ padding: 20 }}>
+                    <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 16, color: '#fff' }}>
+                      {results[0].filename}
+                    </div>
+                    {results[0].result && (
+                      <>
+                        {/* Classification Result */}
+                        <div style={{ marginBottom: 16 }}>
+                          <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 12, color: '#E94E1B' }}>Classification Result</div>
+                          <div style={{ display: 'grid', gap: 8 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <span style={{ fontSize: 13, color: '#999' }}>Fake Probability</span>
+                              <span style={{ fontSize: 14, fontWeight: 700, color: '#f87171' }}>{formatPct(results[0].result.prob_fake)}</span>
+                            </div>
+                            <div style={{ width: '100%', height: 8, background: '#2a2a2a', borderRadius: 4, overflow: 'hidden' }}>
+                              <div style={{ width: `${results[0].result.prob_fake * 100}%`, height: '100%', background: '#f87171' }} />
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
+                              <span style={{ fontSize: 13, color: '#999' }}>Real Probability</span>
+                              <span style={{ fontSize: 14, fontWeight: 700, color: '#4ade80' }}>{formatPct(1 - results[0].result.prob_fake)}</span>
+                            </div>
+                            <div style={{ width: '100%', height: 8, background: '#2a2a2a', borderRadius: 4, overflow: 'hidden' }}>
+                              <div style={{ width: `${(1 - results[0].result.prob_fake) * 100}%`, height: '100%', background: '#4ade80' }} />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Confidence Badge */}
+                        {results[0].result.explanation && (
+                          <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center' }}>
+                            <div style={{ 
+                              display: 'inline-block',
+                              padding: '8px 16px',
+                              borderRadius: 6,
+                              background: results[0].result.explanation.confidence_level === 'Very High' || results[0].result.explanation.confidence_level === 'High' ? '#1a2e1a' : '#2e2e1a',
+                              border: `1px solid ${results[0].result.explanation.confidence_level === 'Very High' || results[0].result.explanation.confidence_level === 'High' ? '#2d5016' : '#5b5b16'}`,
+                              fontSize: 13,
+                              fontWeight: 600
+                            }}>
+                              Confidence: {results[0].result.explanation.confidence_level}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Detailed Breakdown */}
+                        {results[0].result.detailed_analysis && (
+                          <div style={{ marginTop: 16, padding: 16, background: '#0a0a0a', borderRadius: 8, border: '1px solid #2a2a2a' }}>
+                            <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8, color: '#E94E1B', display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <BiAnalyse size={16} />
+                              <span>Detailed Breakdown</span>
+                            </div>
+                            
+                            {/* Percentage Explanation */}
+                            <div style={{ fontSize: 11, color: '#999', marginBottom: 12, padding: 10, background: '#141414', borderRadius: 6, border: '1px solid #2a2a2a' }}>
+                              <strong style={{ color: '#E94E1B' }}>How to read:</strong> Each indicator shows a <strong>suspicion score (0-100%)</strong>. Higher percentages indicate stronger signs of manipulation. CRITICAL (red) means high concern, WARNING (orange) means moderate concern, NORMAL (gray) means low concern.
+                            </div>
+                            
+                            {/* Analysis Summary */}
+                            <div style={{ fontSize: 12, color: '#ccc', marginBottom: 16, lineHeight: 1.6, padding: 12, background: '#141414', borderRadius: 6 }}>
+                              {results[0].result.detailed_analysis.summary}
+                            </div>
+
+                            {/* AI Generated Percentage */}
+                            {results[0].result.ai_detection && (() => {
+                              const aiConfidence = results[0].result.ai_detection.confidence * 100;
+                              const aiLevel = aiConfidence > 70 ? 'CRITICAL' : aiConfidence > 50 ? 'WARNING' : 'NORMAL';
+                              const aiBgColor = aiLevel === 'CRITICAL' ? 'rgba(220, 38, 38, 0.1)' :
+                                                aiLevel === 'WARNING' ? 'rgba(245, 158, 11, 0.1)' :
+                                                'rgba(64, 64, 64, 0.1)';
+                              const aiBorderColor = aiLevel === 'CRITICAL' ? '#dc2626' :
+                                                    aiLevel === 'WARNING' ? '#f59e0b' :
+                                                    '#404040';
+                              const aiScoreColor = aiLevel === 'CRITICAL' ? '#f87171' :
+                                                   aiLevel === 'WARNING' ? '#fbbf24' :
+                                                   '#4ade80';
+                              
+                              return (
+                                <div style={{ 
+                                  padding: 12, 
+                                  background: aiBgColor,
+                                  borderRadius: 6,
+                                  border: `2px solid ${aiBorderColor}`,
+                                  marginBottom: 10,
+                                  transition: 'all 0.2s'
+                                }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                                    <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>
+                                      AI Generated Content
+                                    </span>
+                                    <span style={{ fontSize: 14, fontWeight: 700, color: aiScoreColor }}>
+                                      {aiConfidence.toFixed(0)}%
+                                    </span>
+                                  </div>
+                                  <div style={{ fontSize: 11, color: '#999', lineHeight: 1.5 }}>
+                                    {results[0].result.ai_detection.is_ai_generated 
+                                      ? 'Strong indicators of AI-generated content detected. Image shows characteristics typical of synthetic generation.'
+                                      : 'Low probability of AI generation. Image appears to be authentic or traditionally edited.'}
+                                  </div>
+                                </div>
+                              );
+                            })()}
+
+                            {/* Analysis Items */}
+                            <div style={{ display: 'grid', gap: 10 }}>
+                              {results[0].result.detailed_analysis.items.map((analysisItem, idx) => {
+                                const bgColor = analysisItem.level === 'CRITICAL' ? 'rgba(220, 38, 38, 0.1)' :
+                                               analysisItem.level === 'WARNING' ? 'rgba(245, 158, 11, 0.1)' :
+                                               'rgba(64, 64, 64, 0.1)';
+                                const borderColor = analysisItem.level === 'CRITICAL' ? '#dc2626' :
+                                                   analysisItem.level === 'WARNING' ? '#f59e0b' :
+                                                   '#404040';
+                                const scoreColor = analysisItem.level === 'CRITICAL' ? '#f87171' :
+                                                  analysisItem.level === 'WARNING' ? '#fbbf24' :
+                                                  '#4ade80';
+                                
+                                return (
+                                  <div key={idx} style={{ 
+                                    padding: 12, 
+                                    background: bgColor,
+                                    borderRadius: 6,
+                                    border: `2px solid ${borderColor}`,
+                                    transition: 'all 0.2s'
+                                  }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                                      <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>
+                                        {analysisItem.name}
+                                      </span>
+                                      <span style={{ fontSize: 14, fontWeight: 700, color: scoreColor }}>
+                                        {analysisItem.score.toFixed(0)}%
+                                      </span>
+                                    </div>
+                                    <div style={{ fontSize: 11, color: '#999', lineHeight: 1.5 }}>
+                                      {analysisItem.description}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Action Buttons */}
+                        <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
+                          <button
+                            onClick={() => downloadResult(results[0])}
+                            style={{
+                              flex: 1,
+                              background: '#E94E1B',
+                              color: '#fff',
+                              border: 'none',
+                              padding: '12px 24px',
+                              borderRadius: 6,
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              fontSize: 14,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: 8
+                            }}
+                          >
+                            <FaDownload size={14} />
+                            Download Report
+                          </button>
+                          <button
+                            onClick={clearAll}
+                            style={{
+                              flex: 1,
+                              background: 'transparent',
+                              color: '#f87171',
+                              border: '1px solid #5b1a2e',
+                              padding: '12px 24px',
+                              borderRadius: 6,
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              fontSize: 14,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: 8
+                            }}
+                          >
+                            Clear & Upload New
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Results Area */}
-          {results.length > 0 && (
-            <div style={{ flex: 1 }}>
+          {results.length > 0 && results.length === 1 ? null : results.length > 0 && (
+            <div className="animate-fade-in" style={{ flex: 1 }}>
               <div style={{ marginBottom: 20 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                   <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>Results ({results.length})</h3>
-                  <button
-                    onClick={clearAll}
-                    style={{
-                      background: 'transparent',
-                      color: '#f87171',
-                      border: '1px solid #5b1a2e',
-                      padding: '8px 16px',
-                      borderRadius: 4,
-                      fontSize: 13,
-                      cursor: 'pointer',
-                      fontWeight: 600
-                    }}
-                  >
-                    Clear All
-                  </button>
-                </div>
-                {/* Expand/Collapse Controls */}
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'flex-end', 
-                  gap: 12, 
-                  marginBottom: 16 
-                }}>
-                  <button
-                    onClick={expandAll}
-                    style={{
-                      background: '#2a2a2a',
-                      color: '#fff',
-                      border: 'none',
-                      padding: '8px 16px',
-                      borderRadius: 4,
-                      cursor: 'pointer',
-                      fontSize: 12,
-                      fontWeight: 600,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 6
-                    }}
-                  >
-                    <FaChevronDown size={12} />
-                    Expand All
-                  </button>
-                  <button
-                    onClick={collapseAll}
-                    style={{
-                      background: '#2a2a2a',
-                      color: '#fff',
-                      border: 'none',
-                      padding: '8px 16px',
-                      borderRadius: 4,
-                      cursor: 'pointer',
-                      fontSize: 12,
-                      fontWeight: 600,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 6
-                    }}
-                  >
-                    <FaChevronUp size={12} />
-                    Collapse All
-                  </button>
+                  <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                    <button
+                      onClick={() => {
+                        const allExpanded = results.every(r => expandedResults[r.id])
+                        if (allExpanded) {
+                          collapseAll()
+                        } else {
+                          expandAll()
+                        }
+                      }}
+                      style={{
+                        background: '#2a2a2a',
+                        color: '#fff',
+                        border: 'none',
+                        padding: '8px 16px',
+                        borderRadius: 4,
+                        cursor: 'pointer',
+                        fontSize: 13,
+                        fontWeight: 600,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6
+                      }}
+                    >
+                      {results.every(r => expandedResults[r.id]) ? (
+                        <>
+                          <FaChevronUp size={12} />
+                          Collapse All
+                        </>
+                      ) : (
+                        <>
+                          <FaChevronDown size={12} />
+                          Expand All
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={clearAll}
+                      style={{
+                        background: 'transparent',
+                        color: '#f87171',
+                        border: '1px solid #5b1a2e',
+                        padding: '8px 16px',
+                        borderRadius: 4,
+                        fontSize: 13,
+                        cursor: 'pointer',
+                        fontWeight: 600
+                      }}
+                    >
+                      Clear All
+                    </button>
+                  </div>
                 </div>
 
                 {/* Summary Statistics */}
@@ -870,115 +1147,20 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
                             </div>
                           </div>
 
-                          {/* AI Explanation Section */}
+                          {/* Confidence Badge Only */}
                           {item.result.explanation && (
-                            <div style={{ marginTop: 16, padding: 16, background: '#0a0a0a', borderRadius: 8, border: '1px solid #2a2a2a' }}>
-                              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12, color: '#E94E1B', display: 'flex', alignItems: 'center', gap: 8 }}>
-                                <FaRobot size={16} />
-                                <span>AI Analysis & Explanation</span>
-                              </div>
-                              
-                              {/* Summary */}
-                              <div style={{ fontSize: 12, color: '#ccc', marginBottom: 12, lineHeight: 1.6 }}>
-                                {item.result.explanation.summary}
-                              </div>
-
-                              {/* Confidence Badge */}
+                            <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center' }}>
                               <div style={{ 
                                 display: 'inline-block',
-                                padding: '4px 10px',
-                                borderRadius: 4,
+                                padding: '8px 16px',
+                                borderRadius: 6,
                                 background: item.result.explanation.confidence_level === 'Very High' || item.result.explanation.confidence_level === 'High' ? '#1a2e1a' : '#2e2e1a',
                                 border: `1px solid ${item.result.explanation.confidence_level === 'Very High' || item.result.explanation.confidence_level === 'High' ? '#2d5016' : '#5b5b16'}`,
-                                fontSize: 11,
-                                fontWeight: 600,
-                                marginBottom: 12
+                                fontSize: 13,
+                                fontWeight: 600
                               }}>
                                 Confidence: {item.result.explanation.confidence_level}
                               </div>
-
-                              {/* Detected Patterns */}
-                              {item.result.explanation.detected_patterns && item.result.explanation.detected_patterns.length > 0 && (
-                                <div style={{ marginTop: 12 }}>
-                                  <div style={{ fontSize: 11, fontWeight: 600, marginBottom: 8, color: '#999' }}>
-                                    Detected Patterns:
-                                  </div>
-                                  <div style={{ display: 'grid', gap: 8 }}>
-                                    {item.result.explanation.detected_patterns.map((pattern, idx) => {
-                                      const SeverityIcon = pattern.severity === 'high' ? FaExclamationTriangle :
-                                                          pattern.severity === 'medium' ? MdWarning :
-                                                          pattern.severity === 'warning' ? MdWarning :
-                                                          pattern.severity === 'info' ? MdInfo :
-                                                          FaCheckCircle;
-                                      const iconColor = pattern.severity === 'high' ? '#f87171' :
-                                                       pattern.severity === 'medium' ? '#fb923c' :
-                                                       pattern.severity === 'warning' ? '#fbbf24' :
-                                                       pattern.severity === 'info' ? '#60a5fa' :
-                                                       '#4ade80';
-                                      
-                                      return (
-                                        <div key={idx} style={{ 
-                                          padding: 10, 
-                                          background: '#141414', 
-                                          borderRadius: 6,
-                                          borderLeft: `3px solid ${iconColor}`,
-                                          display: 'flex',
-                                          gap: 10
-                                        }}>
-                                          <div style={{ flexShrink: 0, paddingTop: 2 }}>
-                                            <SeverityIcon size={14} color={iconColor} />
-                                          </div>
-                                          <div style={{ flex: 1 }}>
-                                            <div style={{ fontSize: 11, fontWeight: 600, marginBottom: 4, color: '#fff' }}>
-                                              {pattern.indicator}
-                                            </div>
-                                            <div style={{ fontSize: 10, color: '#999', lineHeight: 1.5 }}>
-                                              {pattern.description}
-                                            </div>
-                                          </div>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* Recommendation */}
-                              {item.result.explanation.recommendation && (
-                                <div style={{ 
-                                  marginTop: 12, 
-                                  padding: 10, 
-                                  background: '#141414', 
-                                  borderRadius: 6,
-                                  fontSize: 11,
-                                  color: '#ccc',
-                                  lineHeight: 1.5
-                                }}>
-                                  <strong style={{ color: '#E94E1B' }}>Recommendation:</strong> {item.result.explanation.recommendation}
-                                </div>
-                              )}
-
-                              {/* Technical Insights (Collapsible) */}
-                              {item.result.explanation.technical_insights && item.result.explanation.technical_insights.length > 0 && (
-                                <details style={{ marginTop: 12 }}>
-                                  <summary style={{ 
-                                    fontSize: 11, 
-                                    fontWeight: 600, 
-                                    color: '#999', 
-                                    cursor: 'pointer',
-                                    userSelect: 'none'
-                                  }}>
-                                    Technical Details ▼
-                                  </summary>
-                                  <div style={{ marginTop: 8, paddingLeft: 12, borderLeft: '2px solid #2a2a2a' }}>
-                                    {item.result.explanation.technical_insights.map((insight, idx) => (
-                                      <div key={idx} style={{ fontSize: 10, color: '#666', marginBottom: 6, lineHeight: 1.5 }}>
-                                        • {insight}
-                                      </div>
-                                    ))}
-                                  </div>
-                                </details>
-                              )}
                             </div>
                           )}
 
@@ -999,6 +1181,46 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
                               <div style={{ fontSize: 12, color: '#ccc', marginBottom: 16, lineHeight: 1.6, padding: 12, background: '#141414', borderRadius: 6 }}>
                                 {item.result.detailed_analysis.summary}
                               </div>
+
+                              {/* AI Generated Percentage */}
+                              {item.result.ai_detection && (() => {
+                                const aiConfidence = item.result.ai_detection.confidence * 100;
+                                const aiLevel = aiConfidence > 70 ? 'CRITICAL' : aiConfidence > 50 ? 'WARNING' : 'NORMAL';
+                                const aiBgColor = aiLevel === 'CRITICAL' ? 'rgba(220, 38, 38, 0.1)' :
+                                                  aiLevel === 'WARNING' ? 'rgba(245, 158, 11, 0.1)' :
+                                                  'rgba(64, 64, 64, 0.1)';
+                                const aiBorderColor = aiLevel === 'CRITICAL' ? '#dc2626' :
+                                                      aiLevel === 'WARNING' ? '#f59e0b' :
+                                                      '#404040';
+                                const aiScoreColor = aiLevel === 'CRITICAL' ? '#f87171' :
+                                                     aiLevel === 'WARNING' ? '#fbbf24' :
+                                                     '#4ade80';
+                                
+                                return (
+                                  <div style={{ 
+                                    padding: 12, 
+                                    background: aiBgColor,
+                                    borderRadius: 6,
+                                    border: `2px solid ${aiBorderColor}`,
+                                    marginBottom: 10,
+                                    transition: 'all 0.2s'
+                                  }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                                      <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>
+                                        AI Generated Content
+                                      </span>
+                                      <span style={{ fontSize: 14, fontWeight: 700, color: aiScoreColor }}>
+                                        {aiConfidence.toFixed(0)}%
+                                      </span>
+                                    </div>
+                                    <div style={{ fontSize: 11, color: '#999', lineHeight: 1.5 }}>
+                                      {item.result.ai_detection.is_ai_generated 
+                                        ? 'Strong indicators of AI-generated content detected. Image shows characteristics typical of synthetic generation.'
+                                        : 'Low probability of AI generation. Image appears to be authentic or traditionally edited.'}
+                                    </div>
+                                  </div>
+                                );
+                              })()}
 
                               {/* Analysis Items */}
                               <div style={{ display: 'grid', gap: 10 }}>
@@ -1022,23 +1244,9 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
                                       transition: 'all 0.2s'
                                     }}>
                                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                          <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>
-                                            {analysisItem.name}
-                                          </span>
-                                          {analysisItem.level !== 'NORMAL' && (
-                                            <span style={{ 
-                                              fontSize: 9, 
-                                              fontWeight: 700, 
-                                              padding: '2px 6px', 
-                                              borderRadius: 3,
-                                              background: borderColor,
-                                              color: '#fff'
-                                            }}>
-                                              {analysisItem.level}
-                                            </span>
-                                          )}
-                                        </div>
+                                        <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>
+                                          {analysisItem.name}
+                                        </span>
                                         <span style={{ fontSize: 14, fontWeight: 700, color: scoreColor }}>
                                           {analysisItem.score.toFixed(0)}%
                                         </span>
@@ -1066,10 +1274,10 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
 
       {/* Footer */}
       <footer style={{ 
-        background: '#0d0d0d', 
+        background: 'linear-gradient(to bottom, #0d0d0d 0%, #0d0d0d 15%, rgba(13, 13, 13, 0.8) 20%, rgba(13, 13, 13, 0.5) 30%, rgba(13, 13, 13, 0.2) 40%, rgba(51, 51, 51, 0) 45%, rgba(102, 102, 102, 0.25) 60%, rgba(102, 102, 102, 0.5) 75%, rgba(102, 102, 102, 0.75) 90%, rgba(102, 102, 102, 1) 100%)', 
         padding: isMobile ? '30px 20px' : '40px 60px',
         marginTop: isMobile ? 40 : 80,
-        borderTop: '1px solid #2a2a2a'
+        borderTop: 'none'
       }}>
         <div style={{ 
           display: 'flex', 

@@ -35,8 +35,8 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
       return
     }
 
-    if (formData.password.length < 6) {
-      toast.error('Password must be at least 6 characters')
+    if (formData.password.length < 8) {
+      toast.error('Password must be at least 8 characters')
       return
     }
 
@@ -122,20 +122,63 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
         left: 40,
         zIndex: 3
       }}>
-        <h1 style={{ 
+        <h1
+          onClick={onNavigateToHome}
+          style={{ 
           fontSize: 32, 
           fontWeight: 400, 
           color: '#fff',
           margin: 0,
           fontFamily: 'Georgia, serif',
-          letterSpacing: 1
+          letterSpacing: 1,
+          cursor: onNavigateToHome ? 'pointer' : 'default'
         }}>
           Fact.it
         </h1>
       </div>
 
+      {/* Back to Home Button - Top Right */}
+      <button
+        type="button"
+        onClick={onNavigateToHome}
+        style={{
+          position: 'absolute',
+          top: 40,
+          right: 40,
+          zIndex: 3,
+          background: 'rgba(255,255,255,0.1)',
+          border: '1px solid rgba(255,255,255,0.3)',
+          color: '#fff',
+          padding: '10px 20px',
+          borderRadius: 8,
+          cursor: onNavigateToHome ? 'pointer' : 'not-allowed',
+          fontSize: 14,
+          fontWeight: 500,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          transition: 'all 0.2s ease'
+        }}
+        disabled={!onNavigateToHome}
+        onMouseEnter={(e) => {
+          if (onNavigateToHome) {
+            e.currentTarget.style.background = 'rgba(255,255,255,0.15)'
+            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
+          }
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(255,255,255,0.1)'
+          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'
+        }}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Back to Home
+      </button>
+
       {/* Form Content */}
-      <div style={{
+      <div className="animate-fade-in-up" style={{
         maxWidth: 420,
         width: '100%',
         position: 'relative',
@@ -150,7 +193,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
           color: '#fff', 
           textAlign: 'center' 
         }}>
-          Sign Up
+          Register
         </h2>
         <p style={{ 
           fontSize: 15, 
@@ -276,12 +319,26 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
                   border: 'none',
                   color: '#999',
                   cursor: 'pointer',
-                  fontSize: 18,
-                  padding: 4
+                  padding: 4,
+                  display: 'flex',
+                  alignItems: 'center'
                 }}
               >
-                👁
+                {showPassword ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                )}
               </button>
+            </div>
+            <div style={{ marginTop: 8, fontSize: 12, color: '#999' }}>
+              Password must be at least 8 characters.
             </div>
           </div>
 
@@ -331,11 +388,22 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
                   border: 'none',
                   color: '#999',
                   cursor: 'pointer',
-                  fontSize: 18,
-                  padding: 4
+                  padding: 4,
+                  display: 'flex',
+                  alignItems: 'center'
                 }}
               >
-                👁
+                {showConfirmPassword ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                )}
               </button>
             </div>
           </div>
@@ -364,6 +432,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
           <button
             type="submit"
             disabled={loading}
+            className="transition-all"
             style={{
               width: '100%',
               padding: '16px',
@@ -391,7 +460,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             or
           </div>
 
-          {/* Google Sign Up */}
+          {/* Google Register */}
           <button
             type="button"
             onClick={() => toast.info('Google Sign-up not implemented yet')}
@@ -418,7 +487,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
               <path d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707 0-.593.102-1.17.282-1.709V4.958H.957C.347 6.173 0 7.548 0 9c0 1.452.348 2.827.957 4.042l3.007-2.335z" fill="#FBBC05"/>
               <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
             </svg>
-            Sign up with Google
+            Register with Google
           </button>
 
           {/* Login Link */}
@@ -433,7 +502,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
                 fontWeight: 600
               }}
             >
-              Sign In
+              Login
             </a>
           </div>
         </form>
