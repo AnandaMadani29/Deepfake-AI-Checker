@@ -9,13 +9,14 @@ Untuk ganti model, ubah MODEL_NAME di bawah:
 ────────────────────────────────────────────────────────────
 """
 
+import os
 import torch
 import random
 import numpy as np
 
 # ════════════════════════════════════════════════════════════
 #  ▶ GANTI MODEL DI SINI
-MODEL_NAME = "resnet_curated_dataset"   # pilihan: efficientnet_b0 | resnet50 | densenet121 | resnet_revised | 2000datasetresnet | resnet1704 | resnet_curated_dataset
+MODEL_NAME = "resnet_curated_dataset"   # pilihan: efficientnet_b0 | resnet50 | densenet121 | resnet_revised | 2000datasetresnet | resnet1704 | resnet_curated_dataset | new_script_resnet
 # ════════════════════════════════════════════════════════════
 
 SEED = 42
