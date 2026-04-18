@@ -7,14 +7,25 @@ from pathlib import Path
 
 def download_model_weights():
     """Download model weights if not present"""
-    # Hugging Face model URL (use resolve instead of blob for direct download)
-    HUGGINGFACE_URL = "https://huggingface.co/anandamadani29/deepfake-detector-resnet/resolve/main/resnet_revised.pth"
+    # Get model name from environment or use default
+    from src.config import MODEL_NAME
+    
+    # Hugging Face base URL
+    HUGGINGFACE_BASE_URL = "https://huggingface.co/anandamadani29/deepfake-detector-resnet/resolve/main/"
     
     # Model weights path
     weights_dir = Path("outputs/models")
     weights_dir.mkdir(parents=True, exist_ok=True)
     
-    weights_path = weights_dir / "resnet_revised.pth"
+    # Construct filename based on model name
+    if MODEL_NAME in ["resnet_revised", "resnet_curated_dataset", "2000datasetresnet", "resnet1704"]:
+        weights_filename = f"{MODEL_NAME}.pth"
+    else:
+        # Fallback to resnet_revised for other models
+        weights_filename = "resnet_revised.pth"
+    
+    weights_path = weights_dir / weights_filename
+    HUGGINGFACE_URL = f"{HUGGINGFACE_BASE_URL}{weights_filename}"
     
     # Check if weights already exist
     if weights_path.exists():
