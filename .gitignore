@@ -108,3 +108,15 @@ dmypy.json
 
 # Pyre
 .pyre/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+users.db
+
+# Archive (old scripts and docs)
+archive/
+
+# Cleanup plan
+CLEANUP_PLAN.md
