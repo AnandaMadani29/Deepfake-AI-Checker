@@ -35,7 +35,7 @@ EPOCHS     = 40
 LR         = 5e-4
 
 DATA_DIR        = "Dataset"
-MODEL_SAVE_PATH = f"outputs/models/{MODEL_NAME}.pth"
+MODEL_SAVE_PATH = os.getenv("DEEFAKE_WEIGHTS_PATH", f"outputs/models/{MODEL_NAME}.pth")
 RESULTS_PATH    = f"outputs/results/{MODEL_NAME}_results.json"
 
 print(f"[CONFIG] Model  : {MODEL_NAME}")
