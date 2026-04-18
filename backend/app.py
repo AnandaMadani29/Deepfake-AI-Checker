@@ -399,6 +399,96 @@ async def delete_all_history(authorization: Optional[str] = Header(None)) -> dic
     }
 
 
+@app.post("/compare")
+async def compare(
+    file: UploadFile = File(...),
+    model1: Optional[str] = None,
+    model2: Optional[str] = None,
+    authorization: Optional[str] = Header(None)
+) -> dict:
+    """
+    Compare predictions from 2 models
+    
+    Parameters:
+    - file: Image to analyze
+    - model1: First model name (default: resnet_curated_dataset)
+    - model2: Second model name (default: 2000datasetresnet)
+    """
+    if not file.content_type or not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=415, detail="Unsupported file type. Please upload an image.")
+
+    content = await file.read()
+    if not content:
+        raise HTTPException(status_code=400, detail="Empty file")
+
+    try:
+        img = Image.open(io.BytesIO(content)).convert("RGB")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid image: {e}")
+    
+    # Set default models
+    model1 = model1 or "resnet_curated_dataset"
+    model2 = model2 or "2000datasetresnet"
+    
+    # Face validation
+    from backend.face_validator import get_face_validator
+    validator = get_face_validator()
+    has_face, face_count, detection_msg = validator.detect_faces(img)
+    
+    if not has_face:
+        raise HTTPException(
+            status_code=400,
+            detail="❌ No face detected. Please upload an image containing a person's face."
+        )
+    
+    img_rgb = np.array(img)
+    
+    # Get predictions from both models
+    results = {}
+    for model_name in [model1, model2]:
+        try:
+            weights_path = _resolve_weights_path(model_name)
+            _predictor.load(model_name, weights_path)
+            prediction = _predictor.predict(img_rgb, img_pil=img)
+            results[model_name] = prediction
+        except FileNotFoundError:
+            results[model_name] = {
+                "error": f"Model weights not found for {model_name}",
+                "label": "Error",
+                "prob_fake": None
+            }
+        except Exception as e:
+            results[model_name] = {
+                "error": f"Failed to load model: {e}",
+                "label": "Error",
+                "prob_fake": None
+            }
+    
+    # Add comparison summary
+    comparison = {
+        "image_info": {
+            "filename": file.filename or "unknown.jpg",
+            "face_count": face_count
+        },
+        "models": results,
+        "comparison": {
+            "model1": model1,
+            "model2": model2,
+            "agreement": results[model1].get("label") == results[model2].get("label") if results[model1].get("label") != "Error" and results[model2].get("label") != "Error" else None,
+            "avg_prob_fake": None
+        }
+    }
+    
+    # Calculate average probability if both models succeeded
+    if (results[model1].get("prob_fake") is not None and 
+        results[model2].get("prob_fake") is not None):
+        comparison["comparison"]["avg_prob_fake"] = (
+            results[model1]["prob_fake"] + results[model2]["prob_fake"]
+        ) / 2
+    
+    return comparison
+
+
 @app.post("/predict")
 async def predict(
     file: UploadFile = File(...),
@@ -485,12 +575,12 @@ async def predict(
         result = _predictor.predict(img_rgb, img_pil=enhanced_img)
         
         # Combine model prediction with AI-generated detection
-        # If AI detector is confident, boost probability if AI-generated indicators detected (very aggressive)
-        if is_ai_generated:
-            # If AI detector says it's AI-generated, boost significantly
-            boost = ai_score * 0.6  # Increased from 0.4 to 0.6 for higher sensitivity
-            result["prob_fake"] = min(0.99, result["prob_fake"] + boost)
-            result["label"] = "Fake" if result["prob_fake"] > 0.5 else "Real"
+        # DISABLED: AI-generated detection boost
+        # if is_ai_generated:
+        #     # If AI detector says it's AI-generated, boost significantly
+        #     boost = ai_score * 0.6  # Increased from 0.4 to 0.6 for higher sensitivity
+        #     result["prob_fake"] = min(0.99, result["prob_fake"] + boost)
+        #     result["label"] = "Fake" if result["prob_fake"] > 0.5 else "Real"
         
         # Add all improvement results
         if selection_reason:

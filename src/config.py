@@ -15,7 +15,7 @@ import numpy as np
 
 # ════════════════════════════════════════════════════════════
 #  ▶ GANTI MODEL DI SINI
-MODEL_NAME = "resnet_revised"   # pilihan: efficientnet_b0 | resnet50 | densenet121 | resnet_revised
+MODEL_NAME = "resnet_curated_dataset"   # pilihan: efficientnet_b0 | resnet50 | densenet121 | resnet_revised | 2000datasetresnet | resnet1704 | resnet_curated_dataset
 # ════════════════════════════════════════════════════════════
 
 SEED = 42
@@ -35,7 +35,7 @@ EPOCHS     = 40
 LR         = 5e-4
 
 DATA_DIR        = "Dataset"
-MODEL_SAVE_PATH = "outputs/models/resnet_revised.pth"
+MODEL_SAVE_PATH = f"outputs/models/{MODEL_NAME}.pth"
 RESULTS_PATH    = f"outputs/results/{MODEL_NAME}_results.json"
 
 print(f"[CONFIG] Model  : {MODEL_NAME}")
