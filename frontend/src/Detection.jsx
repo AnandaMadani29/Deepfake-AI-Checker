@@ -1591,6 +1591,26 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
                     {/* Detailed Breakdown - Expandable */}
                     {expandedResults[item.id] && item.result && (
                       <div style={{ padding: 16, background: '#0a0a0a', borderTop: '1px solid #2a2a2a' }}>
+                        {/* Analysis Summary */}
+                        <div style={{ marginBottom: 16 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8, color: '#fff' }}>
+                            Analysis Summary
+                          </div>
+                          <p style={{ 
+                            fontSize: 12, 
+                            lineHeight: 1.6, 
+                            color: '#999', 
+                            margin: 0,
+                            textAlign: 'justify'
+                          }}>
+                            {item.result.prob_fake > 0.7 
+                              ? 'This image shows strong evidence of AI generation or significant manipulation. Key indicators include unnatural eye reflections and overly smoothed skin textures, along with subtle distortions in facial features. The highly improbable scenario or gathering supports the assessment of fabrication.'
+                              : item.result.prob_fake > 0.5
+                              ? 'This image exhibits characteristic "processed" or "composited" look, where subjects appear to be artificially inserted or heavily altered within a genuine background. Moderate signs of manipulation detected.'
+                              : 'This image demonstrates a high degree of authenticity with no discernible signs of AI generation or deepfake manipulation. Key indicators include coherent and legible text, natural facial features, and consistent lighting throughout the scene.'}
+                          </p>
+                        </div>
+
                         {/* Probabilities */}
                         <div style={{ marginBottom: 16 }}>
                           <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12, color: '#fff' }}>

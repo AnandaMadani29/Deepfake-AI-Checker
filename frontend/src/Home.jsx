@@ -634,7 +634,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
             background: '#1a1a1a',
             padding: isMobile ? '30px 20px' : '40px',
             borderRadius: 12,
-            border: '2px dashed #333',
+            border: '2px solid #333',
             textAlign: 'left',
             transition: 'all 0.3s ease',
             cursor: 'pointer'
