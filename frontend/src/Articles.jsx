@@ -23,51 +23,83 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome }
 
   return (
     <div style={{ 
-      minHeight: '100vh',
-      background: '#000',
+      minHeight: '100vh', 
+      background: '#1a1a1a', 
       color: '#fff',
-      margin: 0
+      paddingBottom: 60,
+      position: 'relative'
     }}>
-      {/* Header */}
-      <header style={{ 
-        background: '#0d0d0d',
-        padding: isMobile ? '16px 20px' : '20px 60px',
-        borderBottom: '1px solid #2a2a2a',
+      {/* Logo - Fixed on Page */}
+      <div 
+        onClick={onNavigateToHome}
+        style={{ 
+          position: 'absolute',
+          top: isMobile ? 30 : 40,
+          left: isMobile ? 20 : 60,
+          fontSize: isMobile ? 20 : 24, 
+          fontWeight: 700, 
+          letterSpacing: 1,
+          zIndex: 1001,
+          cursor: 'pointer',
+          transition: 'all 0.3s ease'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.color = '#E94E1B';
+          e.currentTarget.style.transform = 'scale(1.05)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.color = '#fff';
+          e.currentTarget.style.transform = 'scale(1)';
+        }}
+      >
+        Fact.it
+      </div>
+
+      {/* Navbar - Floating Design */}
+      <nav style={{ 
+        position: 'absolute',
+        top: 20,
+        right: 60,
+        width: isMobile ? 'calc(100% - 40px)' : 'auto',
+        background: 'rgba(13, 13, 13, 0.8)',
+        backdropFilter: 'blur(10px)',
+        padding: isMobile ? '16px 20px' : '12px 20px',
         display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
+        justifyContent: isMobile ? 'flex-end' : 'flex-end',
+        alignItems: 'center',
+        gap: 24,
+        borderRadius: 8,
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)',
+        zIndex: 1000
       }}>
-        <div 
+        <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>About us</a>
+        <a onClick={() => onNavigateToDetection && onNavigateToDetection()} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Services</a>
+        <a style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'default', fontWeight: 600 }}>Resources</a>
+        <a onClick={() => onNavigateToHome('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>How to use</a>
+        <button 
           onClick={onNavigateToHome}
-          style={{ 
-            fontSize: isMobile ? 20 : 24, 
-            fontWeight: 700,
-            letterSpacing: 1,
-            cursor: 'pointer'
+          style={{
+            background: '#E94E1B',
+            color: '#fff',
+            border: 'none',
+            padding: '10px 20px',
+            borderRadius: 4,
+            fontWeight: 600,
+            cursor: 'pointer',
+            fontSize: 14,
+            transition: 'background 0.2s'
           }}
+          onMouseEnter={(e) => e.currentTarget.style.background = '#d43e0f'}
+          onMouseLeave={(e) => e.currentTarget.style.background = '#E94E1B'}
         >
-          Fact.it
-        </div>
-        {isMobile ? (
-          <button onClick={onNavigateToHome} style={{ background: 'transparent', color: '#fff', border: '1px solid #2a2a2a', padding: '10px 16px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 13 }}>
-            Home
-          </button>
-        ) : (
-          <nav style={{ display: 'flex', gap: 40, alignItems: 'center' }}>
-            <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>About us</a>
-            <a onClick={() => onNavigateToHome('services')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>Services</a>
-            <a onClick={() => onNavigateToHome('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>How To Use</a>
-            <a style={{ color: '#E94E1B', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 600 }}>Resources</a>
-            <button onClick={onNavigateToHome} style={{ background: 'transparent', color: '#fff', border: '1px solid #2a2a2a', padding: '10px 20px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>
-              Home
-            </button>
-          </nav>
-        )}
-      </header>
+          Home
+        </button>
+      </nav>
 
       {/* Hero Section */}
       <section style={{ 
-        padding: isMobile ? '60px 20px' : '80px 60px',
+        padding: isMobile ? '100px 20px 60px' : '140px 60px 80px',
         textAlign: 'center',
         background: '#0d0d0d'
       }}>
@@ -377,47 +409,65 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome }
 
       {/* Footer */}
       <footer style={{ 
-        background: 'linear-gradient(to bottom, #0d0d0d 0%, #0d0d0d 15%, rgba(13, 13, 13, 0.8) 20%, rgba(13, 13, 13, 0.5) 30%, rgba(13, 13, 13, 0.2) 40%, rgba(51, 51, 51, 0) 45%, rgba(102, 102, 102, 0.25) 60%, rgba(102, 102, 102, 0.5) 75%, rgba(102, 102, 102, 0.75) 90%, rgba(102, 102, 102, 1) 100%)', 
-        padding: isMobile ? '40px 20px' : '60px 60px',
-        borderTop: 'none'
+        background: '#E94E1B',
+        padding: isMobile ? '40px 20px' : '50px 60px',
+        borderTop: 'none',
+        margin: 0
       }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{ 
-            display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
-            gap: 40
-          }}>
-            <div>
-              <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 16 }}>Fact.it</div>
-              <p style={{ fontSize: 14, color: '#666', lineHeight: 1.6 }}>
-                AI-powered deepfake detection to protect digital media authenticity.
-              </p>
-            </div>
-            <div>
-              <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16, color: '#222' }}>Resources</h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14, color: '#666' }}>
-                <a style={{ cursor: 'pointer' }}>Guidance</a>
-                <a style={{ cursor: 'pointer' }}>Blog</a>
-                <a style={{ cursor: 'pointer' }}>News</a>
-              </div>
-            </div>
-            <div>
-              <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16, color: '#222' }}>Company</h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14, color: '#666' }}>
-                <a onClick={onNavigateToHome} style={{ cursor: 'pointer' }}>About Us</a>
-                <a onClick={onNavigateToHome} style={{ cursor: 'pointer' }}>Contact</a>
-              </div>
-            </div>
+        {/* Top Section */}
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: isMobile ? 'column' : 'row',
+          justifyContent: 'space-between',
+          alignItems: isMobile ? 'flex-start' : 'center',
+          maxWidth: 1400,
+          margin: '0 auto',
+          paddingBottom: 30,
+          borderBottom: '1px solid rgba(255,255,255,0.2)',
+          gap: isMobile ? 20 : 0
+        }}>
+          <div 
+            onClick={onNavigateToHome}
+            style={{ 
+              fontSize: isMobile ? 28 : 36, 
+              fontWeight: 700, 
+              color: '#fff',
+              cursor: 'pointer'
+            }}
+          >
+            FACT.IT
           </div>
+          
           <div style={{ 
-            marginTop: 40,
-            paddingTop: 30,
-            borderTop: '1px solid #2a2a2a',
-            textAlign: 'center',
-            fontSize: 12,
-            color: '#666'
+            display: 'flex', 
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: isMobile ? 12 : 40,
+            alignItems: isMobile ? 'flex-start' : 'center'
           }}>
-            © 2026 Fact.it. All rights reserved.
+            <a onClick={() => onNavigateToHome('about')} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>ABOUT US</a>
+            <a onClick={() => onNavigateToDetection && onNavigateToDetection()} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>SERVICE</a>
+            <a style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'default', fontWeight: 700 }}>RESOURCES</a>
+            <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>TERMS</a>
+            <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>PRIVACY POLICY</a>
+          </div>
+        </div>
+
+        {/* Bottom Section */}
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: isMobile ? 'column' : 'row',
+          justifyContent: 'space-between',
+          alignItems: isMobile ? 'flex-start' : 'center',
+          maxWidth: 1400,
+          margin: '0 auto',
+          paddingTop: 30,
+          gap: isMobile ? 12 : 0
+        }}>
+          <div style={{ color: '#fff', fontSize: 14 }}>
+            © 2025 Fact.it All rights reserved
+          </div>
+          <div style={{ color: '#fff', fontSize: 14 }}>
+            support@factit.com
           </div>
         </div>
       </footer>

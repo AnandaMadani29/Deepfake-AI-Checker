@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { FaShieldAlt, FaRobot, FaCheckCircle, FaHistory, FaArrowUp, FaChevronDown, FaChevronUp, FaYoutube, FaInstagram, FaLinkedin } from 'react-icons/fa'
-import { HiLightningBolt, HiShieldCheck } from 'react-icons/hi'
+import { HiLightningBolt, HiShieldCheck, HiUpload, HiPhotograph, HiDocumentText, HiClock } from 'react-icons/hi'
 import { BiAnalyse } from 'react-icons/bi'
 import { MdSecurity, MdVerified } from 'react-icons/md'
 
@@ -30,21 +30,19 @@ function FAQItem({ question, answer }) {
         <h3 style={{ 
           fontSize: 16, 
           fontWeight: 600, 
-          margin: 0,
-          color: isOpen ? '#E94E1B' : '#fff'
+          color: '#fff',
+          margin: 0
         }}>
           {question}
         </h3>
-        <div style={{ color: '#E94E1B', fontSize: 16 }}>
-          {isOpen ? <FaChevronUp /> : <FaChevronDown />}
-        </div>
+        {isOpen ? <FaChevronUp size={16} color="#E94E1B" /> : <FaChevronDown size={16} color="#999" />}
       </div>
       {isOpen && (
-        <div style={{
-          padding: '0 24px 20px 24px',
+        <div style={{ 
+          padding: '20px 24px 24px 24px',
+          color: '#999',
           fontSize: 14,
-          lineHeight: 1.8,
-          color: '#ccc'
+          lineHeight: 1.8
         }}>
           {answer}
         </div>
@@ -95,18 +93,48 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
     }
   }, [targetSection])
   return (
-    <div style={{ background: '#1a1a1a', color: '#fff' }}>
-      {/* Navbar */}
-      <nav style={{ 
-        background: '#0d0d0d', 
-        padding: isMobile ? '16px 20px' : '20px 60px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        borderBottom: '1px solid #2a2a2a',
-        position: 'relative'
+    <div style={{ background: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #666666 50%, #333333 100%)', color: '#fff' }}>
+      {/* Logo - Fixed on Page */}
+      <div style={{ 
+        position: 'absolute',
+        top: isMobile ? 30 : 40,
+        left: isMobile ? 20 : 60,
+        fontSize: isMobile ? 20 : 24, 
+        fontWeight: 700, 
+        letterSpacing: 1,
+        zIndex: 1001,
+        cursor: 'pointer',
+        transition: 'all 0.3s ease'
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.color = '#E94E1B';
+        e.currentTarget.style.transform = 'scale(1.05)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.color = '#fff';
+        e.currentTarget.style.transform = 'scale(1)';
       }}>
-        <div style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, letterSpacing: 1 }}>Fact.it</div>
+        Fact.it
+      </div>
+
+      {/* Navbar - Floating Design (without logo) */}
+      <nav style={{ 
+        position: 'absolute',
+        top: 20,
+        right: 60,
+        width: isMobile ? 'calc(100% - 40px)' : 'auto',
+        background: 'rgba(13, 13, 13, 0.8)',
+        backdropFilter: 'blur(10px)',
+        padding: isMobile ? '16px 20px' : '12px 20px',
+        display: 'flex',
+        justifyContent: isMobile ? 'flex-end' : 'flex-end',
+        alignItems: 'center',
+        gap: 12,
+        borderRadius: 8,
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)',
+        zIndex: 1000
+      }}>
         
         {isMobile ? (
           // Mobile Menu
@@ -127,25 +155,29 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
             {menuOpen && (
               <div style={{
                 position: 'absolute',
-                top: '100%',
+                top: 'calc(100% + 10px)',
                 left: 0,
                 right: 0,
-                background: '#0d0d0d',
-                borderBottom: '1px solid #2a2a2a',
+                background: 'rgba(13, 13, 13, 0.95)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: 12,
+                border: '1px solid rgba(255, 255, 255, 0.1)',
                 padding: '20px',
-                zIndex: 1000
+                zIndex: 999,
+                boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)'
               }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                   <a onClick={() => scrollToSection('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', padding: '8px 0' }}>About us</a>
-                  <a onClick={() => scrollToSection('services')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', padding: '8px 0' }}>Services</a>
                   <a onClick={() => scrollToSection('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', padding: '8px 0' }}>How To Use</a>
                   <a onClick={onNavigateToArticles} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', padding: '8px 0' }}>Resources</a>
                   {user ? (
                     <>
-                      <div style={{ color: '#999', fontSize: 14, padding: '8px 0' }}>Hi, {user.full_name || user.email}</div>
+                      <div style={{ color: '#999', fontSize: 14, padding: '8px 0' }}>
+                        Hi, <span style={{ color: '#fff', fontWeight: 600 }}>{user.full_name || user.email}</span>
+                      </div>
                       <button onClick={() => { onNavigateToDetection(); setMenuOpen(false); }} style={{ background: '#E94E1B', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>Get Started</button>
-                      <button onClick={() => { onNavigateToHistory(); setMenuOpen(false); }} style={{ background: 'transparent', color: '#fff', border: '1px solid #2a2a2a', padding: '10px 20px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>History</button>
-                      <button onClick={() => { onLogout(); setMenuOpen(false); }} style={{ background: 'transparent', color: '#999', border: '1px solid #2a2a2a', padding: '10px 16px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 13 }}>Logout</button>
+                      <button onClick={() => { onNavigateToHistory(); setMenuOpen(false); }} style={{ background: 'transparent', color: '#fff', border: '1px solid #2a2a2a', padding: '10px 20px', borderRadius: 4, fontWeight: 500, cursor: 'pointer', fontSize: 14 }}>History</button>
+                      <button onClick={() => { onLogout(); setMenuOpen(false); }} style={{ background: 'transparent', color: '#999', border: '1px solid #2a2a2a', padding: '10px 20px', borderRadius: 4, fontWeight: 500, cursor: 'pointer', fontSize: 14 }}>Logout</button>
                     </>
                   ) : (
                     <>
@@ -160,108 +192,90 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
           </>
         ) : (
           // Desktop Menu
-          <div style={{ display: 'flex', gap: 40, alignItems: 'center' }}>
-            <a onClick={() => scrollToSection('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>About us</a>
-            <a onClick={() => scrollToSection('services')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>Services</a>
-            <a onClick={() => scrollToSection('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>How To Use</a>
-            <a onClick={onNavigateToArticles} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>Resources</a>
+          <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+            <a onClick={() => scrollToSection('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>About us</a>
+            <a onClick={onNavigateToDetection} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Services</a>
+            <a onClick={onNavigateToArticles} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Resources</a>
+            
+            <a onClick={() => scrollToSection('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>How to use</a>
           
           {user ? (
-            // Logged in: Show user menu
+            // Logged in: Show user greeting and menu
             <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-              <button 
-                onClick={onNavigateToDetection}
-                style={{
-                  background: '#E94E1B',
-                  color: '#fff',
-                  border: 'none',
-                  padding: '10px 24px',
-                  borderRadius: 4,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  fontSize: 14
-                }}>
-                Get Started
-              </button>
               <button
                 onClick={onNavigateToHistory}
                 style={{
                   background: 'transparent',
-                  color: '#fff',
+                  color: '#999',
                   border: '1px solid #2a2a2a',
                   padding: '10px 20px',
                   borderRadius: 4,
-                  fontWeight: 600,
+                  fontWeight: 500,
                   cursor: 'pointer',
-                  fontSize: 14
+                  fontSize: 14,
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#2a2a2a';
+                  e.currentTarget.style.borderColor = '#E94E1B';
+                  e.currentTarget.style.color = '#fff';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.borderColor = '#2a2a2a';
+                  e.currentTarget.style.color = '#999';
                 }}
               >
                 History
               </button>
-              <div style={{ color: '#999', fontSize: 14 }}>
-                Hi, {user.full_name || user.email}
-              </div>
+              <span style={{ color: '#999', fontSize: 14 }}>
+                Hi, <span style={{ color: '#fff', fontWeight: 600 }}>{user.full_name || user.email}</span>
+              </span>
               <button
                 onClick={onLogout}
                 style={{
                   background: 'transparent',
                   color: '#999',
                   border: '1px solid #2a2a2a',
-                  padding: '8px 16px',
+                  padding: '10px 20px',
                   borderRadius: 4,
-                  fontWeight: 600,
+                  fontWeight: 500,
                   cursor: 'pointer',
-                  fontSize: 13
+                  fontSize: 14,
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#2a2a2a';
+                  e.currentTarget.style.color = '#fff';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = '#999';
                 }}
               >
                 Logout
               </button>
             </div>
           ) : (
-            // Logged out: Show detection/login/register buttons
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-              <button 
-                onClick={onNavigateToDetection}
-                style={{
-                  background: '#E94E1B',
-                  color: '#fff',
-                  border: 'none',
-                  padding: '10px 24px',
-                  borderRadius: 4,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  fontSize: 14
-                }}>
-                Get Started
-              </button>
-              <button
-                onClick={onNavigateToLogin}
-                style={{
-                  background: 'transparent',
-                  color: '#fff',
-                  border: '1px solid #2a2a2a',
-                  padding: '10px 20px',
-                  borderRadius: 4,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  fontSize: 14
-                }}
-              >
-                Login
-              </button>
-              <a
-                onClick={onNavigateToRegister}
-                style={{
-                  color: '#E94E1B',
-                  textDecoration: 'none',
-                  fontSize: 14,
-                  cursor: 'pointer',
-                  fontWeight: 600
-                }}
-              >
-                Register
-              </a>
-            </div>
+            // Logged out: Show Log in button only
+            <button
+              onClick={onNavigateToLogin}
+              style={{
+                background: '#E94E1B',
+                color: '#fff',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: 4,
+                fontWeight: 600,
+                cursor: 'pointer',
+                fontSize: 14,
+                transition: 'background 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#d43e0f'}
+              onMouseLeave={(e) => e.currentTarget.style.background = '#E94E1B'}
+            >
+              Log in
+            </button>
           )}
           </div>
         )}
@@ -269,47 +283,63 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
 
       {/* Hero Section */}
       <section style={{ 
-        padding: isMobile ? '40px 20px' : '80px 60px',
+        padding: isMobile ? '100px 20px 60px 20px' : '140px 60px 80px 60px',
         display: 'flex',
         flexDirection: isMobile ? 'column' : 'row',
         alignItems: 'center',
-        gap: isMobile ? 40 : 80,
+        gap: isMobile ? 40 : 100,
         maxWidth: 1400,
-        margin: '0 auto'
+        margin: '0 auto',
+        minHeight: isMobile ? 'auto' : '100vh',
+        position: 'relative'
       }}>
         <div style={{ flex: 1 }}>
           <h1 style={{ 
-            fontSize: isMobile ? 36 : 64, 
+            fontSize: isMobile ? 40 : 72, 
             fontWeight: 700, 
             margin: 0,
-            lineHeight: 1.1
+            lineHeight: 1.1,
+            letterSpacing: '-0.02em'
           }}>
             <span style={{ color: '#E94E1B' }}>Detect Deepfakes</span>
             <br />
-            <span style={{ color: '#fff' }}>with AI Technology</span>
+            <span style={{ color: '#fff' }}>with AI</span>
+            <br />
+            <span style={{ color: '#fff' }}>Technology</span>
           </h1>
           <p style={{ 
-            fontSize: isMobile ? 14 : 16, 
+            fontSize: isMobile ? 15 : 17, 
             color: '#999', 
-            margin: isMobile ? '20px 0 30px 0' : '24px 0 40px 0',
-            lineHeight: 1.6,
-            maxWidth: 500
+            margin: isMobile ? '24px 0 32px 0' : '32px 0 48px 0',
+            lineHeight: 1.7,
+            maxWidth: 520
           }}>
-            Verify image authenticity using advanced machine learning. 
-            Protect yourself from manipulated media with our state-of-the-art detection system.
+            Verify image authenticity using advanced machine learning. Protect yourself from manipulated media with our state-of-the-art detection system.
           </p>
-          <div style={{ display: 'flex', gap: 16 }}>
+          <div style={{ display: 'flex', gap: 16, flexDirection: isMobile ? 'column' : 'row' }}>
             <button 
               onClick={onNavigateToDetection}
               style={{
                 background: '#E94E1B',
                 color: '#fff',
                 border: 'none',
-                padding: '14px 32px',
-                borderRadius: 4,
+                padding: isMobile ? '16px 32px' : '18px 40px',
+                borderRadius: 6,
                 fontWeight: 600,
                 cursor: 'pointer',
-                fontSize: 16
+                fontSize: isMobile ? 15 : 16,
+                transition: 'all 0.2s',
+                boxShadow: '0 4px 12px rgba(233, 78, 27, 0.3)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#d43e0f';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 16px rgba(233, 78, 27, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#E94E1B';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(233, 78, 27, 0.3)';
               }}>
               Try Detection
             </button>
@@ -318,42 +348,90 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
               style={{
                 background: 'transparent',
                 color: '#fff',
-                border: '2px solid #444',
-                padding: '14px 32px',
-                borderRadius: 4,
+                border: '2px solid #333',
+                padding: isMobile ? '16px 32px' : '18px 40px',
+                borderRadius: 6,
                 fontWeight: 600,
                 cursor: 'pointer',
-                fontSize: 16
+                fontSize: isMobile ? 15 : 16,
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#E94E1B';
+                e.currentTarget.style.color = '#E94E1B';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = '#333';
+                e.currentTarget.style.color = '#fff';
               }}>
               Learn More
             </button>
           </div>
         </div>
         
-        {/* Hero Image */}
+        {/* Hero Image - 3D Face Mesh */}
         <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <div style={{ 
-            width: 400, 
-            height: 400, 
+            width: isMobile ? 300 : 500, 
+            height: isMobile ? 300 : 500, 
             position: 'relative',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-            {/* Corner brackets */}
-            <div style={{ position: 'absolute', top: 0, left: 0, width: 60, height: 60, borderTop: '3px solid #E94E1B', borderLeft: '3px solid #E94E1B' }}></div>
-            <div style={{ position: 'absolute', top: 0, right: 0, width: 60, height: 60, borderTop: '3px solid #E94E1B', borderRight: '3px solid #E94E1B' }}></div>
-            <div style={{ position: 'absolute', bottom: 0, left: 0, width: 60, height: 60, borderBottom: '3px solid #E94E1B', borderLeft: '3px solid #E94E1B' }}></div>
-            <div style={{ position: 'absolute', bottom: 0, right: 0, width: 60, height: 60, borderBottom: '3px solid #E94E1B', borderRight: '3px solid #E94E1B' }}></div>
+            {/* Corner brackets - Top Left */}
+            <div style={{ 
+              position: 'absolute', 
+              top: -10, 
+              left: -10, 
+              width: isMobile ? 40 : 60, 
+              height: isMobile ? 40 : 60, 
+              borderTop: '2px solid rgba(255,255,255,0.3)', 
+              borderLeft: '2px solid rgba(255,255,255,0.3)' 
+            }}></div>
             
-            {/* Hero Illustration */}
+            {/* Corner brackets - Top Right */}
+            <div style={{ 
+              position: 'absolute', 
+              top: -10, 
+              right: -10, 
+              width: isMobile ? 40 : 60, 
+              height: isMobile ? 40 : 60, 
+              borderTop: '2px solid rgba(255,255,255,0.3)', 
+              borderRight: '2px solid rgba(255,255,255,0.3)' 
+            }}></div>
+            
+            {/* Corner brackets - Bottom Left */}
+            <div style={{ 
+              position: 'absolute', 
+              bottom: -10, 
+              left: -10, 
+              width: isMobile ? 40 : 60, 
+              height: isMobile ? 40 : 60, 
+              borderBottom: '2px solid rgba(255,255,255,0.3)', 
+              borderLeft: '2px solid rgba(255,255,255,0.3)' 
+            }}></div>
+            
+            {/* Corner brackets - Bottom Right */}
+            <div style={{ 
+              position: 'absolute', 
+              bottom: -10, 
+              right: -10, 
+              width: isMobile ? 40 : 60, 
+              height: isMobile ? 40 : 60, 
+              borderBottom: '2px solid rgba(255,255,255,0.3)', 
+              borderRight: '2px solid rgba(255,255,255,0.3)' 
+            }}></div>
+            
+            {/* 3D Face Mesh Visualization */}
             <img 
               src="/hero-illustration.png" 
-              alt="AI Detection Illustration"
+              alt="AI Face Detection Mesh"
               style={{
-                width: '450px',
-                height: '500px',
-                objectFit: 'contain'
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                filter: 'drop-shadow(0 0 40px rgba(233, 78, 27, 0.2))'
               }}
             />
           </div>
@@ -362,223 +440,169 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
 
       {/* About Us Section */}
       <section id="about" style={{ 
-        padding: '100px 60px',
-        background: '#1a1a1a'
+        padding: isMobile ? '60px 20px' : '100px 60px',
+        background: '#0d0d0d'
       }}>
         <div style={{ 
           maxWidth: 1200,
           margin: '0 auto',
           textAlign: 'center'
         }}>
-          <h2 style={{ fontSize: 48, fontWeight: 700, margin: '0 0 24px 0' }}>
+          <h2 style={{ fontSize: isMobile ? 36 : 48, fontWeight: 700, margin: '0 0 60px 0' }}>
             About <span style={{ color: '#E94E1B' }}>Fact.it</span>
           </h2>
-          <p style={{ fontSize: 18, color: '#999', lineHeight: 1.8, maxWidth: 800, margin: '0 auto 60px auto' }}>
-            We're on a mission to combat misinformation and protect digital media authenticity. 
-            Our AI-powered deepfake detection technology helps individuals and organizations 
-            verify image authenticity with confidence.
-          </p>
+          
           <div style={{ 
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: 40,
-            marginTop: 60
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+            gap: isMobile ? 30 : 40,
+            marginTop: 0
           }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
-                <HiShieldCheck size={48} color="#E94E1B" />
-              </div>
-              <h3 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 12px 0' }}>Our Mission</h3>
-              <p style={{ fontSize: 14, color: '#999', lineHeight: 1.6 }}>
-                Empower everyone to distinguish real from fake in the digital age
-              </p>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
-                <FaRobot size={48} color="#E94E1B" />
-              </div>
-              <h3 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 12px 0' }}>Our Technology</h3>
-              <p style={{ fontSize: 14, color: '#999', lineHeight: 1.6 }}>
-                State-of-the-art deep learning models trained on millions of images
-              </p>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
-                <FaShieldAlt size={48} color="#E94E1B" />
-              </div>
-              <h3 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 12px 0' }}>Our Promise</h3>
-              <p style={{ fontSize: 14, color: '#999', lineHeight: 1.6 }}>
-                Fast, accurate, and privacy-focused detection you can trust
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Section 1 - Services */}
-      <section id="services" style={{ 
-        padding: isMobile ? '40px 20px' : '80px 60px',
-        background: '#0d0d0d'
-      }}>
-        <div style={{ 
-          maxWidth: 1400,
-          margin: '0 auto',
-          display: 'flex',
-          flexDirection: isMobile ? 'column' : 'row',
-          gap: isMobile ? 30 : 60,
-          alignItems: 'center'
-        }}>
-          <div style={{ 
-            flex: 1,
-            width: isMobile ? '100%' : 'auto',
-            background: 'linear-gradient(135deg, #E94E1B 0%, #FF7A50 100%)',
-            height: isMobile ? 250 : 350,
-            borderRadius: 8,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'relative',
-            overflow: 'hidden'
-          }}>
-            {/* Background Pattern */}
-            <div style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              opacity: 0.1,
-              background: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px)'
-            }}></div>
-            
-            {/* Main Icon */}
+            {/* Our Mission Card */}
             <div style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center', 
-              gap: 16,
-              zIndex: 1
+              background: '#1a1a1a',
+              borderRadius: 12,
+              padding: isMobile ? '40px 30px' : '50px 40px',
+              textAlign: 'center',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-8px)';
+              e.currentTarget.style.boxShadow = '0 12px 24px rgba(233, 78, 27, 0.2)';
+              e.currentTarget.style.background = '#222';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'none';
+              e.currentTarget.style.background = '#1a1a1a';
             }}>
-              <FaRobot size={isMobile ? 80 : 120} color="rgba(255,255,255,0.9)" />
+              {/* Icon */}
               <div style={{ 
-                fontSize: isMobile ? 12 : 14, 
-                fontWeight: 600, 
-                color: 'rgba(255,255,255,0.8)',
-                letterSpacing: 2
+                width: isMobile ? 60 : 80,
+                height: isMobile ? 60 : 80,
+                margin: '0 auto 24px auto',
+                borderRadius: '50%',
+                background: '#E94E1B',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
               }}>
-                AI POWERED
+                <FaShieldAlt size={isMobile ? 30 : 40} color="#fff" />
               </div>
+              
+              <h3 style={{ 
+                fontSize: isMobile ? 20 : 24, 
+                fontWeight: 700, 
+                margin: '0 0 20px 0',
+                color: '#fff'
+              }}>Our Mission</h3>
+              <p style={{ 
+                fontSize: isMobile ? 14 : 15, 
+                color: '#999', 
+                lineHeight: 1.8,
+                margin: 0 
+              }}>
+                We're on a mission to combat misinformation and protect digital media authenticity. Our AI-powered deepfake detection technology helps individuals and organizations verify image authenticity with confidence.
+              </p>
             </div>
-            
-            {/* Decorative Elements */}
-            <div style={{
-              position: 'absolute',
-              top: 30,
-              right: 30,
-              opacity: 0.3
-            }}>
-              <HiShieldCheck size={isMobile ? 30 : 40} color="#fff" />
-            </div>
-            <div style={{
-              position: 'absolute',
-              bottom: 30,
-              left: 30,
-              opacity: 0.3
-            }}>
-              <BiAnalyse size={isMobile ? 30 : 40} color="#fff" />
-            </div>
-          </div>
-          <div style={{ flex: 1 }}>
-            <h2 style={{ fontSize: isMobile ? 28 : 42, fontWeight: 700, margin: '0 0 16px 0' }}>
-              Advanced AI Detection
-            </h2>
-            <p style={{ fontSize: isMobile ? 14 : 16, color: '#999', lineHeight: 1.7 }}>
-              Our cutting-edge neural network analyzes images at the pixel level to identify 
-              subtle manipulation artifacts. Using EfficientNet architecture trained on thousands 
-              of real and fake images, we achieve industry-leading accuracy in deepfake detection.
-            </p>
-          </div>
-        </div>
-      </section>
 
-      {/* Feature Section 2 - Reversed */}
-      <section style={{ 
-        padding: isMobile ? '40px 20px' : '80px 60px',
-        background: '#1a1a1a'
-      }}>
-        <div style={{ 
-          maxWidth: 1400,
-          margin: '0 auto',
-          display: 'flex',
-          flexDirection: isMobile ? 'column' : 'row',
-          gap: isMobile ? 30 : 60,
-          alignItems: 'center'
-        }}>
-          <div style={{ flex: 1, order: isMobile ? 2 : 1 }}>
-            <h2 style={{ fontSize: isMobile ? 28 : 42, fontWeight: 700, margin: '0 0 16px 0' }}>
-              Real-Time Analysis
-            </h2>
-            <p style={{ fontSize: isMobile ? 14 : 16, color: '#999', lineHeight: 1.7 }}>
-              Get instant results within seconds. Our optimized inference pipeline processes 
-              images quickly without compromising accuracy. Upload, analyze, and verify 
-              authenticity in real-time.
-            </p>
-          </div>
-          <div style={{ 
-            flex: 1,
-            order: isMobile ? 1 : 2,
-            width: isMobile ? '100%' : 'auto',
-            background: 'linear-gradient(135deg, #E94E1B 0%, #FF7A50 100%)',
-            height: isMobile ? 250 : 350,
-            borderRadius: 8,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'relative',
-            overflow: 'hidden'
-          }}>
-            {/* Background Pattern */}
-            <div style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              opacity: 0.1,
-              background: 'radial-gradient(circle at 30% 50%, rgba(255,255,255,0.2) 0%, transparent 50%)'
-            }}></div>
-            
-            {/* Main Icon */}
+            {/* Our Technology Card */}
             <div style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center', 
-              gap: 16,
-              zIndex: 1
+              background: '#1a1a1a',
+              borderRadius: 12,
+              padding: isMobile ? '40px 30px' : '50px 40px',
+              textAlign: 'center',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-8px)';
+              e.currentTarget.style.boxShadow = '0 12px 24px rgba(233, 78, 27, 0.2)';
+              e.currentTarget.style.background = '#222';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'none';
+              e.currentTarget.style.background = '#1a1a1a';
             }}>
-              <HiLightningBolt size={isMobile ? 80 : 120} color="rgba(255,255,255,0.9)" />
+              {/* Icon */}
               <div style={{ 
-                fontSize: isMobile ? 12 : 14, 
-                fontWeight: 600, 
-                color: 'rgba(255,255,255,0.8)',
-                letterSpacing: 2
+                width: isMobile ? 60 : 80,
+                height: isMobile ? 60 : 80,
+                margin: '0 auto 24px auto',
+                borderRadius: '50%',
+                background: '#E94E1B',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
               }}>
-                REAL-TIME
+                <FaRobot size={isMobile ? 30 : 40} color="#fff" />
               </div>
+              
+              <h3 style={{ 
+                fontSize: isMobile ? 20 : 24, 
+                fontWeight: 700, 
+                margin: '0 0 20px 0',
+                color: '#fff'
+              }}>Our Technology</h3>
+              <p style={{ 
+                fontSize: isMobile ? 14 : 15, 
+                color: '#999', 
+                lineHeight: 1.8,
+                margin: 0 
+              }}>
+                We're on a mission to combat misinformation and protect digital media authenticity. Our AI-powered deepfake detection technology helps individuals and organizations verify image authenticity with confidence.
+              </p>
             </div>
-            
-            {/* Decorative Elements */}
-            <div style={{
-              position: 'absolute',
-              top: 30,
-              left: 30,
-              opacity: 0.3
+
+            {/* Our Promise Card */}
+            <div style={{ 
+              background: '#1a1a1a',
+              borderRadius: 12,
+              padding: isMobile ? '40px 30px' : '50px 40px',
+              textAlign: 'center',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-8px)';
+              e.currentTarget.style.boxShadow = '0 12px 24px rgba(233, 78, 27, 0.2)';
+              e.currentTarget.style.background = '#222';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'none';
+              e.currentTarget.style.background = '#1a1a1a';
             }}>
-              <FaCheckCircle size={isMobile ? 30 : 40} color="#fff" />
-            </div>
-            <div style={{
-              position: 'absolute',
-              bottom: 30,
-              right: 30,
-              opacity: 0.3
-            }}>
-              <MdVerified size={isMobile ? 30 : 40} color="#fff" />
+              {/* Icon */}
+              <div style={{ 
+                width: isMobile ? 60 : 80,
+                height: isMobile ? 60 : 80,
+                margin: '0 auto 24px auto',
+                borderRadius: '50%',
+                background: '#E94E1B',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <MdSecurity size={isMobile ? 30 : 40} color="#fff" />
+              </div>
+              
+              <h3 style={{ 
+                fontSize: isMobile ? 20 : 24, 
+                fontWeight: 700, 
+                margin: '0 0 20px 0',
+                color: '#fff'
+              }}>Our Promise</h3>
+              <p style={{ 
+                fontSize: isMobile ? 14 : 15, 
+                color: '#999', 
+                lineHeight: 1.8,
+                margin: 0 
+              }}>
+                We're on a mission to combat misinformation and protect digital media authenticity. Our AI-powered deepfake detection technology helps individuals and organizations verify image authenticity with confidence.
+              </p>
             </div>
           </div>
         </div>
@@ -602,75 +626,329 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
           maxWidth: 1200,
           margin: '0 auto',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: 40
+          gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
+          gap: isMobile ? 30 : 40
         }}>
-          {/* Step 1 */}
+          {/* Step 1: Upload Your Image */}
           <div style={{ 
             background: '#1a1a1a',
-            padding: 40,
-            borderRadius: 8,
-            border: '1px solid #2a2a2a'
+            padding: isMobile ? '30px 20px' : '40px',
+            borderRadius: 12,
+            border: '2px dashed #333',
+            textAlign: 'left',
+            transition: 'all 0.3s ease',
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-5px)';
+            e.currentTarget.style.borderColor = '#E94E1B';
+            e.currentTarget.style.boxShadow = '0 8px 16px rgba(233, 78, 27, 0.15)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.borderColor = '#333';
+            e.currentTarget.style.boxShadow = 'none';
           }}>
             <div style={{ 
-              fontSize: 48, 
-              color: '#E94E1B',
-              marginBottom: 20
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              marginBottom: 20,
+              color: '#E94E1B'
             }}>
-              <HiLightningBolt size={48} color="#E94E1B" />
+              <HiUpload size={28} />
+              <h3 style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, margin: 0 }}>
+                Step 1: Upload Your Image
+              </h3>
             </div>
-            <h3 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 16px 0' }}>
-              Upload Image
-            </h3>
-            <p style={{ fontSize: 14, color: '#999', lineHeight: 1.6 }}>
-              Select or drag & drop the image you want to verify. 
-              Supports JPG, PNG formats up to 10MB.
+            
+            {/* Upload Area Visual */}
+            <div style={{
+              background: '#2a2a2a',
+              borderRadius: 8,
+              padding: isMobile ? '30px 20px' : '40px',
+              marginBottom: 20,
+              border: '2px dashed #444',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: isMobile ? 120 : 150
+            }}>
+              <HiPhotograph size={isMobile ? 40 : 60} color="#E94E1B" />
+              <div style={{ 
+                fontSize: isMobile ? 13 : 14, 
+                color: '#999', 
+                marginTop: 12,
+                textAlign: 'center'
+              }}>
+                Drag & drop an image or click
+              </div>
+              <div style={{ 
+                fontSize: isMobile ? 11 : 12, 
+                color: '#666', 
+                marginTop: 4 
+              }}>
+                PNG, JPG, up to 3 MB
+              </div>
+            </div>
+            
+            <p style={{ fontSize: isMobile ? 13 : 14, color: '#999', lineHeight: 1.6, margin: 0 }}>
+              Start by uploading the image you want to analyze. You can select a file from your device or simply drag and drop it into the upload area. We support JPG, PNG, and other common image formats. No account is required—just upload your image and continue.
             </p>
           </div>
 
-          {/* Step 2 */}
+          {/* Step 2: Detect Image */}
           <div style={{ 
             background: '#1a1a1a',
-            padding: 40,
-            borderRadius: 8,
-            border: '1px solid #2a2a2a'
+            padding: isMobile ? '30px 20px' : '40px',
+            borderRadius: 12,
+            border: '2px solid #333',
+            textAlign: 'left',
+            transition: 'all 0.3s ease',
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-5px)';
+            e.currentTarget.style.borderColor = '#E94E1B';
+            e.currentTarget.style.boxShadow = '0 8px 16px rgba(233, 78, 27, 0.15)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.borderColor = '#333';
+            e.currentTarget.style.boxShadow = 'none';
           }}>
             <div style={{ 
-              fontSize: 48, 
-              color: '#E94E1B',
-              marginBottom: 20
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              marginBottom: 20,
+              color: '#E94E1B'
             }}>
-              <BiAnalyse size={48} color="#E94E1B" />
+              <BiAnalyse size={28} />
+              <h3 style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, margin: 0 }}>
+                Step 2: Detect Image
+              </h3>
             </div>
-            <h3 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 16px 0' }}>
-              AI Analysis
-            </h3>
-            <p style={{ fontSize: 14, color: '#999', lineHeight: 1.6 }}>
-              Our AI model processes the image and analyzes patterns 
-              to detect manipulation artifacts.
+            
+            {/* Detection Visual */}
+            <div style={{
+              background: '#2a2a2a',
+              borderRadius: 8,
+              padding: isMobile ? '20px' : '30px',
+              marginBottom: 20,
+              minHeight: isMobile ? 120 : 150,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Sample image placeholder with X button */}
+              <div style={{
+                width: '100%',
+                height: '100%',
+                background: 'linear-gradient(135deg, #333 0%, #2a2a2a 100%)',
+                borderRadius: 8,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'relative'
+              }}>
+                <HiPhotograph size={isMobile ? 50 : 80} color="#444" />
+                <div style={{
+                  position: 'absolute',
+                  top: 10,
+                  right: 10,
+                  width: 24,
+                  height: 24,
+                  borderRadius: '50%',
+                  background: '#E94E1B',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 14,
+                  color: '#fff',
+                  cursor: 'pointer'
+                }}>×</div>
+              </div>
+            </div>
+            
+            <p style={{ fontSize: isMobile ? 13 : 14, color: '#999', lineHeight: 1.6, margin: 0 }}>
+              Once your image is uploaded, our AI system immediately begins analyzing it. The technology examines elements such as lighting, shadows, pixel patterns, and facial details. It then compares these features against a large dataset of real and manipulated images to detect potential deepfake indicators.
             </p>
           </div>
 
-          {/* Step 3 */}
+          {/* Step 3: Review the Detection Report */}
           <div style={{ 
             background: '#1a1a1a',
-            padding: 40,
-            borderRadius: 8,
-            border: '1px solid #2a2a2a'
+            padding: isMobile ? '30px 20px' : '40px',
+            borderRadius: 12,
+            border: '2px solid #333',
+            textAlign: 'left',
+            transition: 'all 0.3s ease',
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-5px)';
+            e.currentTarget.style.borderColor = '#E94E1B';
+            e.currentTarget.style.boxShadow = '0 8px 16px rgba(233, 78, 27, 0.15)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.borderColor = '#333';
+            e.currentTarget.style.boxShadow = 'none';
           }}>
             <div style={{ 
-              fontSize: 48, 
-              color: '#E94E1B',
-              marginBottom: 20
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              marginBottom: 20,
+              color: '#E94E1B'
             }}>
-              <FaCheckCircle size={48} color="#E94E1B" />
+              <HiDocumentText size={28} />
+              <h3 style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, margin: 0 }}>
+                Step 3: Review the Detection Report
+              </h3>
             </div>
-            <h3 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 16px 0' }}>
-              Get Results
-            </h3>
-            <p style={{ fontSize: 14, color: '#999', lineHeight: 1.6 }}>
-              Receive instant classification with confidence scores 
-              showing Real or Fake probability.
+            
+            {/* Report Visual */}
+            <div style={{
+              background: '#2a2a2a',
+              borderRadius: 8,
+              padding: isMobile ? '15px' : '20px',
+              marginBottom: 20,
+              minHeight: isMobile ? 120 : 150
+            }}>
+              {/* Detailed Breakdown items */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{
+                  background: '#1a1a1a',
+                  padding: isMobile ? '8px 12px' : '10px 15px',
+                  borderRadius: 6,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  border: '1px solid #E94E1B'
+                }}>
+                  <span style={{ fontSize: isMobile ? 11 : 12, color: '#999' }}>Unnatural Eye Reflections</span>
+                  <span style={{ fontSize: isMobile ? 11 : 12, color: '#E94E1B', fontWeight: 600 }}>89%</span>
+                </div>
+                <div style={{
+                  background: '#1a1a1a',
+                  padding: isMobile ? '8px 12px' : '10px 15px',
+                  borderRadius: 6,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  border: '1px solid #f59e0b'
+                }}>
+                  <span style={{ fontSize: isMobile ? 11 : 12, color: '#999' }}>Overly Smooth Skin Texture</span>
+                  <span style={{ fontSize: isMobile ? 11 : 12, color: '#f59e0b', fontWeight: 600 }}>71%</span>
+                </div>
+                <div style={{
+                  background: '#1a1a1a',
+                  padding: isMobile ? '8px 12px' : '10px 15px',
+                  borderRadius: 6,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  border: '1px solid #666'
+                }}>
+                  <span style={{ fontSize: isMobile ? 11 : 12, color: '#999' }}>Greedy Smooth Skin Texture</span>
+                  <span style={{ fontSize: isMobile ? 11 : 12, color: '#999', fontWeight: 600 }}>71%</span>
+                </div>
+              </div>
+            </div>
+            
+            <p style={{ fontSize: isMobile ? 13 : 14, color: '#999', lineHeight: 1.6, margin: 0 }}>
+              Within seconds, the system generates an authenticity score that indicates the likelihood of the image being real or manipulated. The results are presented in a clear and user-friendly format, combining visual summary with a more detailed report for those who want deeper insights into the analysis.
+            </p>
+          </div>
+
+          {/* Step 4: View History & Download Reports */}
+          <div style={{ 
+            background: '#1a1a1a',
+            padding: isMobile ? '30px 20px' : '40px',
+            borderRadius: 12,
+            border: '2px solid #333',
+            textAlign: 'left',
+            transition: 'all 0.3s ease',
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-5px)';
+            e.currentTarget.style.borderColor = '#E94E1B';
+            e.currentTarget.style.boxShadow = '0 8px 16px rgba(233, 78, 27, 0.15)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.borderColor = '#333';
+            e.currentTarget.style.boxShadow = 'none';
+          }}>
+            <div style={{ 
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              marginBottom: 20,
+              color: '#E94E1B'
+            }}>
+              <HiClock size={28} />
+              <h3 style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, margin: 0 }}>
+                Step 4: View History & Download Reports
+              </h3>
+            </div>
+            
+            {/* History Visual */}
+            <div style={{
+              background: '#2a2a2a',
+              borderRadius: 8,
+              padding: isMobile ? '15px' : '20px',
+              marginBottom: 20,
+              minHeight: isMobile ? 120 : 150
+            }}>
+              {/* History items */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {[
+                  { label: 'Fake Label', prob: '1%', badge: 'Fake' },
+                  { label: 'Real-Art', prob: '88.7%', badge: 'Real' },
+                  { label: 'Real-Art', prob: '1.0%', badge: 'Real' }
+                ].map((item, idx) => (
+                  <div key={idx} style={{
+                    background: '#1a1a1a',
+                    padding: isMobile ? '8px 12px' : '10px 15px',
+                    borderRadius: 6,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div style={{
+                        width: isMobile ? 30 : 40,
+                        height: isMobile ? 30 : 40,
+                        background: '#333',
+                        borderRadius: 4
+                      }}></div>
+                      <span style={{ fontSize: isMobile ? 11 : 12, color: '#999' }}>{item.label}</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: isMobile ? 11 : 12, color: '#999' }}>Fake Probability: {item.prob}</span>
+                      <span style={{
+                        fontSize: isMobile ? 10 : 11,
+                        padding: '4px 8px',
+                        borderRadius: 4,
+                        background: item.badge === 'Fake' ? '#E94E1B' : '#10b981',
+                        color: '#fff',
+                        fontWeight: 600
+                      }}>{item.badge}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <p style={{ fontSize: isMobile ? 13 : 14, color: '#999', lineHeight: 1.6, margin: 0 }}>
+              For a more complete experience, you can log in to access your analysis history. This feature allows you to view all previously uploaded images along with their results and reports. You can also download the analysis reports anytime for future reference.
             </p>
           </div>
         </div>
@@ -740,71 +1018,58 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
 
       {/* Footer */}
       <footer style={{ 
-        padding: isMobile ? '30px 20px 20px 20px' : '40px 60px 20px 60px',
+        background: '#E94E1B',
+        padding: isMobile ? '40px 20px' : '50px 60px',
         borderTop: 'none',
-        margin: 0,
-        background: 'linear-gradient(to bottom, #0d0d0d 0%, #0d0d0d 15%, rgba(13, 13, 13, 0.8) 20%, rgba(13, 13, 13, 0.5) 30%, rgba(13, 13, 13, 0.2) 40%, rgba(51, 51, 51, 0) 45%, rgba(102, 102, 102, 0.25) 60%, rgba(102, 102, 102, 0.5) 75%, rgba(102, 102, 102, 0.75) 90%, rgba(102, 102, 102, 1) 100%)'
+        margin: 0
       }}>
+        {/* Top Section */}
         <div style={{ 
           display: 'flex', 
           flexDirection: isMobile ? 'column' : 'row',
           justifyContent: 'space-between',
+          alignItems: isMobile ? 'flex-start' : 'center',
           maxWidth: 1400,
           margin: '0 auto',
-          gap: isMobile ? 30 : 0
+          paddingBottom: 30,
+          borderBottom: '1px solid rgba(255,255,255,0.2)',
+          gap: isMobile ? 20 : 0
         }}>
-          <div>
-            <div style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, marginBottom: isMobile ? 10 : 20 }}>Fact.it</div>
+          <div style={{ fontSize: isMobile ? 28 : 36, fontWeight: 700, color: '#fff' }}>
+            FACT.IT
           </div>
-          <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 20 : 80 }}>
-            <div>
-              <div style={{ fontWeight: 600, marginBottom: 12, color: '#333' }}>About us</div>
-              <div style={{ color: '#666', fontSize: 14, display: 'grid', gap: 8 }}>
-                <a onClick={() => scrollToSection('about')} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E94E1B'} onMouseLeave={(e) => e.currentTarget.style.color = '#666'}>About</a>
-                <a onClick={() => scrollToSection('about')} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E94E1B'} onMouseLeave={(e) => e.currentTarget.style.color = '#666'}>Mission</a>
-                <a href="#" style={{ color: '#666', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E94E1B'} onMouseLeave={(e) => e.currentTarget.style.color = '#666'}>Contact</a>
-              </div>
-            </div>
-            <div>
-              <div style={{ fontWeight: 600, marginBottom: 12, color: '#333' }}>Service</div>
-              <div style={{ color: '#666', fontSize: 14, display: 'grid', gap: 8 }}>
-                <a onClick={onNavigateToDetection} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E94E1B'} onMouseLeave={(e) => e.currentTarget.style.color = '#666'}>Detection</a>
-                <a onClick={() => scrollToSection('services')} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E94E1B'} onMouseLeave={(e) => e.currentTarget.style.color = '#666'}>Services</a>
-                <a href="#" style={{ color: '#666', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E94E1B'} onMouseLeave={(e) => e.currentTarget.style.color = '#666'}>Enterprise</a>
-              </div>
-            </div>
-            <div>
-              <div style={{ fontWeight: 600, marginBottom: 12, color: '#333' }}>Resources</div>
-              <div style={{ color: '#666', fontSize: 14, display: 'grid', gap: 8 }}>
-                <a onClick={() => scrollToSection('how-to-use')} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E94E1B'} onMouseLeave={(e) => e.currentTarget.style.color = '#666'}>How To Use</a>
-                <a onClick={onNavigateToArticles} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E94E1B'} onMouseLeave={(e) => e.currentTarget.style.color = '#666'}>Articles & Guides</a>
-                <a onClick={() => scrollToSection('faq')} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E94E1B'} onMouseLeave={(e) => e.currentTarget.style.color = '#666'}>FAQ</a>
-              </div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20, transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E94E1B'} onMouseLeave={(e) => e.currentTarget.style.color = '#666'}>
-                <FaYoutube size={20} />
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20, transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E94E1B'} onMouseLeave={(e) => e.currentTarget.style.color = '#666'}>
-                <FaInstagram size={20} />
-              </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20, transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E94E1B'} onMouseLeave={(e) => e.currentTarget.style.color = '#666'}>
-                <FaLinkedin size={20} />
-              </a>
-            </div>
+          
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: isMobile ? 12 : 40,
+            alignItems: isMobile ? 'flex-start' : 'center'
+          }}>
+            <a onClick={() => scrollToSection('about')} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>ABOUT US</a>
+            <a onClick={onNavigateToDetection} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>SERVICE</a>
+            <a onClick={onNavigateToArticles} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>RESOURCES</a>
+            <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>TERMS</a>
+            <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>PRIVACY POLICY</a>
           </div>
         </div>
+
+        {/* Bottom Section */}
         <div style={{ 
-          textAlign: 'center', 
-          marginTop: 40, 
-          paddingTop: 20,
-          borderTop: '1px solid #2a2a2a',
-          color: '#666',
-          fontSize: 12,
-          paddingBottom: 0,
-          marginBottom: 0
+          display: 'flex', 
+          flexDirection: isMobile ? 'column' : 'row',
+          justifyContent: 'space-between',
+          alignItems: isMobile ? 'flex-start' : 'center',
+          maxWidth: 1400,
+          margin: '0 auto',
+          paddingTop: 30,
+          gap: isMobile ? 12 : 0
         }}>
-          © 2025 Fact.it All rights reserved
+          <div style={{ color: '#fff', fontSize: 14 }}>
+            © 2025 Fact.it All rights reserved
+          </div>
+          <div style={{ color: '#fff', fontSize: 14 }}>
+            support@factit.com
+          </div>
         </div>
       </footer>
 
@@ -816,30 +1081,30 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
             position: 'fixed',
             bottom: 40,
             right: 40,
+            background: '#fff',
+            color: '#1a1a1a',
+            border: '2px solid #e0e0e0',
+            borderRadius: '50%',
             width: 50,
             height: 50,
-            borderRadius: '50%',
-            background: 'linear-gradient(135deg, #E94E1B 0%, #d43d10 100%)',
-            border: 'none',
-            color: '#fff',
-            cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 4px 12px rgba(233, 78, 27, 0.4)',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
             zIndex: 1000,
-            transition: 'all 0.3s ease',
-            animation: 'fadeIn 0.3s ease-in-out'
+            transition: 'all 0.3s'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-4px)'
-            e.currentTarget.style.boxShadow = '0 6px 16px rgba(233, 78, 27, 0.6)'
+            e.currentTarget.style.transform = 'translateY(-4px)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.25)';
+            e.currentTarget.style.background = '#f5f5f5';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)'
-            e.currentTarget.style.boxShadow = '0 4px 12px rgba(233, 78, 27, 0.4)'
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            e.currentTarget.style.background = '#fff';
           }}
-          title="Back to top"
         >
           <FaArrowUp size={20} />
         </button>

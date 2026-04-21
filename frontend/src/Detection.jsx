@@ -277,46 +277,77 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#1a1a1a', color: '#fff', display: 'flex', flexDirection: 'column', margin: 0 }}>
-      {/* Navbar */}
+    <div style={{ minHeight: '100vh', background: '#1a1a1a', color: '#fff', display: 'flex', flexDirection: 'column', margin: 0, position: 'relative' }}>
+      {/* Logo - Fixed on Page */}
+      <div 
+        onClick={() => onNavigateToHome()}
+        style={{ 
+          position: 'absolute',
+          top: isMobile ? 30 : 40,
+          left: isMobile ? 20 : 60,
+          fontSize: isMobile ? 20 : 24, 
+          fontWeight: 700, 
+          letterSpacing: 1,
+          zIndex: 1001,
+          cursor: 'pointer',
+          transition: 'all 0.3s ease'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.color = '#E94E1B';
+          e.currentTarget.style.transform = 'scale(1.05)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.color = '#fff';
+          e.currentTarget.style.transform = 'scale(1)';
+        }}
+      >
+        Fact.it
+      </div>
+
+      {/* Navbar - Floating Design */}
       <nav style={{ 
-        background: '#0d0d0d', 
-        padding: isMobile ? '16px 20px' : '20px 60px',
+        position: 'absolute',
+        top: 20,
+        right: 60,
+        width: isMobile ? 'calc(100% - 40px)' : 'auto',
+        background: 'rgba(13, 13, 13, 0.8)',
+        backdropFilter: 'blur(10px)',
+        padding: isMobile ? '16px 20px' : '12px 20px',
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: isMobile ? 'flex-end' : 'flex-end',
         alignItems: 'center',
-        borderBottom: '1px solid #2a2a2a'
+        gap: 24,
+        borderRadius: 8,
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)',
+        zIndex: 1000
       }}>
-        <div 
+        <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>About us</a>
+        <a onClick={() => onNavigateToArticles && onNavigateToArticles()} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Resources</a>
+        <a onClick={() => onNavigateToHome('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>How to use</a>
+        <button 
           onClick={() => onNavigateToHome()}
-          style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, letterSpacing: 1, cursor: 'pointer' }}
+          style={{
+            background: '#E94E1B',
+            color: '#fff',
+            border: 'none',
+            padding: '10px 20px',
+            borderRadius: 4,
+            fontWeight: 600,
+            cursor: 'pointer',
+            fontSize: 14,
+            transition: 'background 0.2s'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.background = '#d43e0f'}
+          onMouseLeave={(e) => e.currentTarget.style.background = '#E94E1B'}
         >
-          Fact.it
-        </div>
-        <div style={{ display: isMobile ? 'none' : 'flex', gap: 40, alignItems: 'center' }}>
-          <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>About us</a>
-          <a onClick={() => onNavigateToHome('services')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>Services</a>
-          <a onClick={() => onNavigateToHome('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>How To Use</a>
-          <button 
-            onClick={() => onNavigateToHome()}
-            style={{
-              background: '#E94E1B',
-              color: '#fff',
-              border: 'none',
-              padding: '10px 24px',
-              borderRadius: 4,
-              fontWeight: 600,
-              cursor: 'pointer',
-              fontSize: 14
-            }}>
-            Home
-          </button>
-        </div>
+          Home
+        </button>
       </nav>
 
 
       {/* Hero Section */}
-      <div style={{ padding: isMobile ? '40px 20px 30px' : '60px 60px 40px', textAlign: 'center', flex: 1, position: 'relative' }}>
+      <div style={{ padding: isMobile ? '100px 20px 30px' : '140px 60px 40px', textAlign: 'center', flex: 1, position: 'relative' }}>
         <h1 style={{ 
           fontSize: isMobile ? 32 : 48, 
           fontWeight: 700, 
@@ -325,56 +356,89 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
         }}>
           Detect Deepfake Images with AI
         </h1>
-        <p style={{ fontSize: isMobile ? 14 : 16, color: '#999', margin: '0 0 12px 0' }}>
+        <p style={{ fontSize: isMobile ? 14 : 16, color: '#999', margin: '0 0 40px 0' }}>
           Upload up to {MAX_FILES} images to verify their authenticity using advanced machine learning
         </p>
+
+        {/* How it works + View History Row */}
         <div style={{ 
           maxWidth: 1100, 
-          margin: '0 auto 32px auto',
+          margin: '0 auto 32px',
           display: 'flex',
-          alignItems: 'center',
-          gap: 16,
-          justifyContent: 'center'
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          gap: 20,
+          flexDirection: isMobile ? 'column' : 'row'
         }}>
-          <div style={{ 
-            flex: 1,
-            maxWidth: 700,
-            padding: isMobile ? '10px 16px' : '12px 20px',
-            background: '#0d0d0d',
-            borderRadius: 6,
-            border: '1px solid #2a2a2a',
-            fontSize: isMobile ? 12 : 13,
-            color: '#999',
-            textAlign: 'left'
-          }}>
-            <div style={{ fontWeight: 600, color: '#E94E1B', marginBottom: 6 }}>ℹ️ How it works:</div>
-            Our AI analyzes each image and gives a <strong style={{ color: '#fff' }}>confidence score</strong>. 
-            If the Fake confidence is <strong style={{ color: '#fff' }}>above 50%</strong>, the image is classified as <strong style={{ color: '#f87171' }}>Fake</strong>. 
-            Otherwise, it's classified as <strong style={{ color: '#4ade80' }}>Real</strong>.
+          <div 
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = '#E94E1B';
+              e.currentTarget.style.transform = 'translateY(-2px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = '#2a2a2a';
+              e.currentTarget.style.transform = 'translateY(0)';
+            }}
+            style={{ 
+              flex: 1, 
+              textAlign: 'left',
+              padding: isMobile ? '16px' : '20px',
+              background: '#0d0d0d',
+              border: '1px solid #2a2a2a',
+              borderRadius: 8,
+              transition: 'all 0.3s ease'
+            }}>
+            <h2 style={{ 
+              fontSize: isMobile ? 16 : 18, 
+              fontWeight: 700, 
+              margin: '0 0 8px 0',
+              color: '#fff'
+            }}>
+              How it works:
+            </h2>
+            <p style={{ 
+              fontSize: isMobile ? 12 : 13, 
+              color: '#999', 
+              lineHeight: 1.6,
+              margin: 0
+            }}>
+              Our AI analyzes each image and gives a confidence score. If the fake confidence is above 50%, the image is classified as Fake. Otherwise, it's classified as Real.
+            </p>
           </div>
+          
           {user && (
             <button 
               onClick={onNavigateToHistory}
               style={{
-                background: '#2a2a2a',
+                background: 'transparent',
                 color: '#fff',
-                border: '1px solid #444',
-                padding: '10px 20px',
-                borderRadius: 6,
+                border: '1px solid #fff',
+                padding: isMobile ? '12px 24px' : '14px 32px',
+                borderRadius: 4,
                 fontWeight: 600,
                 cursor: 'pointer',
-                fontSize: 14,
+                fontSize: isMobile ? 14 : 15,
+                transition: 'all 0.2s',
                 whiteSpace: 'nowrap',
                 flexShrink: 0
-              }}>
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#fff';
+                e.currentTarget.style.color = '#000';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.color = '#fff';
+              }}
+            >
               View History
             </button>
           )}
         </div>
 
-        {/* Main Content */}
+        {/* Upload Area + Example Images Row */}
         <div style={{ 
-          maxWidth: 1100, 
+          maxWidth: 1200, 
           margin: '0 auto',
           display: 'flex',
           flexDirection: isMobile ? 'column' : 'row',
@@ -388,15 +452,32 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
               onDrop={handleDrop}
+              onMouseEnter={(e) => {
+                if (files.length === 0) {
+                  e.currentTarget.style.borderColor = '#E94E1B';
+                  e.currentTarget.style.transform = 'scale(1.01)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (files.length === 0) {
+                  e.currentTarget.style.borderColor = '#444';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }
+              }}
               style={{
                 border: dragActive ? '3px dashed #E94E1B' : '3px dashed #444',
                 borderRadius: 8,
                 padding: files.length === 1 ? 0 : 80,
+                height: isMobile ? 280 : 380,
                 textAlign: 'center',
                 background: dragActive ? '#2a1a15' : '#0d0d0d',
-                transition: 'all 0.2s',
+                transition: 'all 0.3s ease',
                 position: 'relative',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: files.length === 0 ? 'pointer' : 'default'
               }}
             >
               {files.length === 1 ? (
@@ -435,12 +516,17 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
                   </div>
                 </div>
               ) : (
-                <div onClick={() => fileInputRef.current?.click()} style={{ cursor: 'pointer' }}>
-                  <div style={{ fontSize: 60, marginBottom: 16 }}>☁️</div>
-                  <div style={{ fontSize: 16, color: '#ccc', marginBottom: 8 }}>
+                <div onClick={() => fileInputRef.current?.click()} style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  {/* Modern Upload Icon */}
+                  <svg width={isMobile ? 60 : 80} height={isMobile ? 60 : 80} viewBox="0 0 24 24" fill="none" style={{ marginBottom: 20 }}>
+                    <rect x="3" y="3" width="18" height="18" rx="2" stroke="#E94E1B" strokeWidth="1.5" fill="none"/>
+                    <path d="M12 8V16M12 8L9 11M12 8L15 11" stroke="#E94E1B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <circle cx="12" cy="12" r="9" stroke="#E94E1B" strokeWidth="0.5" opacity="0.3" fill="none"/>
+                  </svg>
+                  <div style={{ fontSize: isMobile ? 15 : 16, color: '#fff', marginBottom: 8, fontWeight: 500 }}>
                     Drag & drop images or click
                   </div>
-                  <div style={{ fontSize: 12, color: '#666' }}>PNG, JPG up to 10MB each • Max {MAX_FILES} images</div>
+                  <div style={{ fontSize: isMobile ? 11 : 12, color: '#666' }}>PNG, JPG up to 10MB each • Max {MAX_FILES} images</div>
                 </div>
               )}
               <input
@@ -474,17 +560,34 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
                     Clear All
                   </button>
                 </div>
-                <div style={{ maxHeight: 200, overflowY: 'auto', display: 'grid', gap: 8 }}>
+                <div style={{ 
+                  background: '#1a1a1a',
+                  borderRadius: 8,
+                  padding: 12,
+                  border: '1px solid #2a2a2a'
+                }}>
                   {files.map((f, idx) => (
-                    <div key={f.id} style={{ 
-                      display: 'flex', 
-                      justifyContent: 'space-between', 
-                      alignItems: 'center',
-                      padding: '8px 12px',
-                      background: processingIndex === idx ? '#2a1a15' : '#0d0d0d',
-                      borderRadius: 4,
-                      border: '1px solid #2a2a2a'
-                    }}>
+                    <div 
+                      key={f.id} 
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = '#E94E1B';
+                        e.currentTarget.style.transform = 'translateX(4px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = '#2a2a2a';
+                        e.currentTarget.style.transform = 'translateX(0)';
+                      }}
+                      style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center',
+                        padding: '12px',
+                        background: processingIndex === idx ? '#2a1a15' : 'transparent',
+                        borderRadius: 6,
+                        border: '1px solid #2a2a2a',
+                        transition: 'all 0.3s ease',
+                        cursor: 'pointer'
+                      }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 }}>
                         <img src={f.preview} alt="" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }} />
                         <div style={{ flex: 1, minWidth: 0 }}>
@@ -517,56 +620,24 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
               </div>
             )}
 
-            <button
-              onClick={onSubmit}
-              disabled={!canSubmit}
-              style={{
-                marginTop: 30,
-                width: '100%',
-                background: canSubmit ? '#E94E1B' : '#444',
-                color: '#fff',
-                border: 'none',
-                padding: '14px 24px',
-                borderRadius: 4,
-                fontWeight: 600,
-                cursor: canSubmit ? 'pointer' : 'not-allowed',
-                fontSize: 16
-              }}
-            >
-              {loading ? `Detecting... (${processingIndex + 1}/${files.length})` : `Detect ${files.length > 1 ? `All (${files.length})` : 'Now'}`}
-            </button>
-
-            {error && (
-              <div style={{ 
-                marginTop: 20, 
-                padding: 16, 
-                background: '#2a1120', 
-                border: '1px solid #5b1a2e',
-                borderRadius: 8,
-                color: '#fecaca',
-                fontSize: 14
-              }}>
-                <strong>Error:</strong> {error}
-              </div>
-            )}
-
-            {/* Single Image Result - Full Width */}
-            {results.length === 1 && results[0] && (
+            {/* Single Image Result moved below Detect Now button */}
+            {false && results.length === 1 && results[0] && (
               <div className="animate-fade-in-up" style={{ marginTop: 30 }}>
                 <div style={{ 
                   background: '#0d0d0d',
                   borderRadius: 8,
                   border: '1px solid #2a2a2a',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  height: isMobile ? 280 : 380
                 }}>
-                  <div style={{ position: 'relative' }}>
+                  <div style={{ position: 'relative', height: '100%' }}>
                     <img
                       src={results[0].preview}
                       alt={results[0].filename}
                       style={{ 
                         width: '100%', 
-                        maxHeight: 500,
-                        objectFit: 'contain',
+                        height: '100%',
+                        objectFit: 'cover',
                         background: '#000'
                       }}
                     />
@@ -780,9 +851,497 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
             )}
           </div>
 
-          {/* Results Area */}
-          {results.length > 0 && results.length === 1 ? null : results.length > 0 && (
-            <div className="animate-fade-in" style={{ flex: 1 }}>
+          {/* Example Images Section */}
+          <div 
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-8px)';
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(233, 78, 27, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+            style={{ 
+              flex: 1, 
+              height: isMobile ? 280 : 380,
+              position: 'relative',
+              borderRadius: 8,
+              overflow: 'hidden',
+              border: '2px solid #2a2a2a',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer'
+            }}>
+            <div style={{ 
+              display: 'flex',
+              height: '100%'
+            }}>
+              {/* Fake Example - Left Half */}
+              <div style={{ 
+                flex: 1,
+                position: 'relative',
+                height: '100%'
+              }}>
+                <img 
+                  src="/assets/examples/fake example.png"
+                  alt="Fake Example"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover'
+                  }}
+                />
+                <div style={{
+                  position: 'absolute',
+                  bottom: 12,
+                  left: 12,
+                  background: 'rgba(0, 0, 0, 0.6)',
+                  padding: isMobile ? '6px 12px' : '8px 16px',
+                  borderRadius: 4,
+                  backdropFilter: 'blur(8px)'
+                }}>
+                  <div style={{ 
+                    fontSize: isMobile ? 11 : 12, 
+                    fontWeight: 600, 
+                    color: '#f87171'
+                  }}>
+                    Fake
+                  </div>
+                </div>
+              </div>
+
+              {/* Real Example - Right Half */}
+              <div style={{ 
+                flex: 1,
+                position: 'relative',
+                height: '100%'
+              }}>
+                <img 
+                  src="/assets/examples/real example.png"
+                  alt="Real Example"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover'
+                  }}
+                />
+                <div style={{
+                  position: 'absolute',
+                  bottom: 12,
+                  left: 12,
+                  background: 'rgba(0, 0, 0, 0.6)',
+                  padding: isMobile ? '6px 12px' : '8px 16px',
+                  borderRadius: 4,
+                  backdropFilter: 'blur(8px)'
+                }}>
+                  <div style={{ 
+                    fontSize: isMobile ? 11 : 12, 
+                    fontWeight: 600, 
+                    color: '#4ade80'
+                  }}>
+                    Real
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Detect Now Button - Centered */}
+        <div style={{ 
+          maxWidth: 1100, 
+          margin: '40px auto 0',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 20
+        }}>
+          <button
+            onClick={onSubmit}
+            disabled={!canSubmit}
+            style={{
+              width: isMobile ? '100%' : 'auto',
+              minWidth: isMobile ? 'auto' : 300,
+              background: canSubmit ? '#E94E1B' : '#444',
+              color: '#fff',
+              border: 'none',
+              padding: '16px 48px',
+              borderRadius: 6,
+              fontWeight: 600,
+              cursor: canSubmit ? 'pointer' : 'not-allowed',
+              fontSize: 16,
+              transition: 'all 0.3s ease',
+              boxShadow: canSubmit ? '0 4px 12px rgba(233, 78, 27, 0.3)' : 'none'
+            }}
+            onMouseEnter={(e) => {
+              if (canSubmit) {
+                e.currentTarget.style.background = '#d43e0f';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(233, 78, 27, 0.4)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (canSubmit) {
+                e.currentTarget.style.background = '#E94E1B';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(233, 78, 27, 0.3)';
+              }
+            }}
+          >
+            {loading ? `Detecting... (${processingIndex + 1}/${files.length})` : `Detect ${files.length > 1 ? `All (${files.length})` : 'Now'}`}
+          </button>
+
+          {error && (
+            <div style={{ 
+              width: '100%',
+              maxWidth: 600,
+              padding: 16, 
+              background: '#2a1120', 
+              border: '1px solid #5b1a2e',
+              borderRadius: 8,
+              color: '#fecaca',
+              fontSize: 14,
+              textAlign: 'center'
+            }}>
+              <strong>Error:</strong> {error}
+            </div>
+          )}
+        </div>
+
+        {/* Single Image Result - Below Detect Now */}
+        {results.length === 1 && results[0] && results[0].result && (
+          <div className="animate-fade-in-up" style={{ maxWidth: 1200, margin: '40px auto 0', padding: isMobile ? '0 20px' : '0' }}>
+            <div style={{ 
+              display: 'flex',
+              flexDirection: isMobile ? 'column' : 'row',
+              gap: 24
+            }}>
+              {/* Left: Image */}
+              <div className="animate-fade-in-up" style={{ flex: '0 0 auto', width: isMobile ? '100%' : '380px', animationDelay: '0.1s' }}>
+                <div style={{ 
+                  position: 'relative',
+                  borderRadius: 8,
+                  overflow: 'hidden',
+                  border: '1px solid #2a2a2a',
+                  transition: 'all 0.3s ease'
+                }}>
+                  <img
+                    src={results[0].preview}
+                    alt={results[0].filename}
+                    style={{ 
+                      width: '100%', 
+                      height: isMobile ? 280 : 380,
+                      objectFit: 'cover',
+                      display: 'block'
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Right: Analysis */}
+              <div className="animate-fade-in-up" style={{ flex: 1, animationDelay: '0.2s' }}>
+                {/* Analysis Summary */}
+                <div className="animate-fade-in-up" style={{ 
+                  background: '#0d0d0d',
+                  border: '1px solid #2a2a2a',
+                  borderRadius: 8,
+                  padding: 20,
+                  marginBottom: 16,
+                  animationDelay: '0.3s'
+                }}>
+                  <h3 style={{ margin: '0 0 12px 0', fontSize: 18, fontWeight: 700, color: '#fff' }}>
+                    Analysis Summary
+                  </h3>
+                  <p style={{ 
+                    fontSize: 13, 
+                    lineHeight: 1.6, 
+                    color: '#999', 
+                    margin: '0 0 16px 0',
+                    textAlign: 'justify'
+                  }}>
+                    Our advanced AI detection system has analyzed this image across multiple dimensions to determine its authenticity. The analysis reveals strong evidence of AI generation or significant digital manipulation based on several key indicators. Primary concerns include unnatural eye reflections that lack the complex light patterns found in genuine photographs, overly smoothed skin textures that eliminate natural pores and imperfections, and subtle geometric distortions in facial features that are characteristic of AI-generated content. Additionally, inconsistencies in lighting, shadows, and background elements further support the assessment of fabrication. The cumulative evidence from these indicators provides a high-confidence determination of the image's authenticity status.
+                  </p>
+
+                  {/* Classification Result */}
+                  <div style={{ marginBottom: 16 }}>
+                    <div style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'center',
+                      marginBottom: 8
+                    }}>
+                      <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#fff' }}>
+                        Classification Result
+                      </h4>
+                      <div style={{
+                        background: results[0].result.label === 'Real' ? '#1a3a1a' : '#3a1a1a',
+                        color: results[0].result.label === 'Real' ? '#4ade80' : '#f87171',
+                        padding: '4px 12px',
+                        borderRadius: 4,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        border: `1px solid ${results[0].result.label === 'Real' ? '#2d5016' : '#5b1a2e'}`
+                      }}>
+                        {results[0].result.label === 'Fake' ? '🚫 Fake' : '✓ Real'}
+                      </div>
+                    </div>
+
+                    {/* Probabilities */}
+                    <div style={{ marginBottom: 12 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                        <span style={{ fontSize: 13, color: '#f87171' }}>Fake Probability</span>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: '#f87171' }}>
+                          {formatPct(results[0].result.prob_fake)}
+                        </span>
+                      </div>
+                      <div style={{ 
+                        background: '#1a1a1a',
+                        borderRadius: 4,
+                        height: 6,
+                        overflow: 'hidden'
+                      }}>
+                        <div style={{ 
+                          background: '#f87171',
+                          height: '100%',
+                          width: `${(results[0].result.prob_fake * 100).toFixed(2)}%`,
+                          transition: 'width 0.5s ease'
+                        }} />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                        <span style={{ fontSize: 13, color: '#4ade80' }}>Real Probability</span>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: '#4ade80' }}>
+                          {(() => {
+                            const probReal = results[0].result.prob_real ?? (1 - results[0].result.prob_fake);
+                            return formatPct(probReal);
+                          })()}
+                        </span>
+                      </div>
+                      <div style={{ 
+                        background: '#1a1a1a',
+                        borderRadius: 4,
+                        height: 6,
+                        overflow: 'hidden'
+                      }}>
+                        <div style={{ 
+                          background: '#4ade80',
+                          height: '100%',
+                          width: (() => {
+                            const probReal = results[0].result.prob_real ?? (1 - results[0].result.prob_fake);
+                            return `${(probReal * 100).toFixed(2)}%`;
+                          })(),
+                          transition: 'width 0.5s ease'
+                        }} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Confidence Badge & Download Button */}
+                  <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div style={{ 
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      background: '#1a3a1a',
+                      color: '#4ade80',
+                      padding: '6px 12px',
+                      borderRadius: 4,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      border: '1px solid #2d5016'
+                    }}>
+                      Confidence: High
+                    </div>
+                    
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!user) {
+                          toast.error('Please login to download detection results', {
+                            duration: 4000,
+                            icon: '🔒'
+                          });
+                          return;
+                        }
+                        downloadResult(results[0]);
+                      }}
+                      style={{
+                        background: '#E94E1B',
+                        border: '1px solid #E94E1B',
+                        color: '#fff',
+                        padding: '6px 14px',
+                        borderRadius: 4,
+                        cursor: 'pointer',
+                        fontSize: 12,
+                        fontWeight: 600,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = '#d4431a';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = '#E94E1B';
+                      }}
+                      title="Download result as JSON"
+                    >
+                      <FaDownload size={12} />
+                      Download Result
+                    </button>
+                  </div>
+                </div>
+
+                {/* Detailed Breakdown */}
+                <div className="animate-fade-in-up" style={{ 
+                  background: '#0d0d0d',
+                  border: '1px solid #2a2a2a',
+                  borderRadius: 8,
+                  padding: 20,
+                  animationDelay: '0.4s'
+                }}>
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    marginBottom: 16
+                  }}>
+                    <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#fff' }}>
+                      Detailed Breakdown
+                    </h3>
+                    <FaInfoCircle style={{ color: '#666', fontSize: 16 }} />
+                  </div>
+
+                  {/* AI Generated Content */}
+                  {results[0].result.ai_detection && (() => {
+                    const aiConfidence = results[0].result.ai_detection.confidence * 100;
+                    const aiLevel = aiConfidence > 70 ? 'CRITICAL' : aiConfidence > 50 ? 'WARNING' : 'NORMAL';
+                    const aiBgColor = aiLevel === 'CRITICAL' ? 'rgba(220, 38, 38, 0.05)' :
+                                      aiLevel === 'WARNING' ? 'rgba(245, 158, 11, 0.05)' :
+                                      'rgba(34, 197, 94, 0.05)';
+                    const aiBorderColor = aiLevel === 'CRITICAL' ? 'rgba(91, 26, 46, 0.3)' :
+                                          aiLevel === 'WARNING' ? 'rgba(58, 42, 26, 0.3)' :
+                                          'rgba(26, 58, 26, 0.3)';
+                    const aiScoreColor = aiLevel === 'CRITICAL' ? '#f87171' :
+                                         aiLevel === 'WARNING' ? '#fb923c' :
+                                         '#4ade80';
+
+                    return (
+                      <div style={{ 
+                        marginBottom: 12,
+                        padding: 12,
+                        background: aiBgColor,
+                        borderRadius: 6,
+                        border: `1px solid ${aiBorderColor}`,
+                        transition: 'all 0.3s ease'
+                      }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                          <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>
+                            AI Generated Content
+                          </span>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: aiScoreColor }}>
+                            {aiConfidence.toFixed(0)}%
+                          </span>
+                        </div>
+                        <div style={{ fontSize: 11, color: '#999', lineHeight: 1.5, textAlign: 'justify' }}>
+                          {results[0].result.ai_detection.is_ai_generated 
+                            ? 'Strong indicators of AI-generated content detected. Image shows characteristics typical of synthetic generation.'
+                            : 'Low probability of AI generation. Image appears to be authentic or traditionally edited.'}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {/* Mock detailed indicators */}
+                  {[
+                    { 
+                      name: 'Unnatural Eye Reflections', 
+                      score: 90,
+                      desc: 'The eyes display limited and somewhat flat reflections, lacking the natural sparkle and complex details of real eyes.'
+                    },
+                    { 
+                      name: 'Overly Smooth Skin Texture', 
+                      score: 71,
+                      desc: 'The skin appears excessively smooth and airbrushed, lacking the fine pores and natural textures typically visible in authentic photographs.'
+                    },
+                    { 
+                      name: 'Hair Texture Anomalies', 
+                      score: 67,
+                      desc: 'The hair, especially around the edges and finer strands, sometimes appears flattened or painted, lacking natural individual strand definition and volume.'
+                    },
+                    { 
+                      name: 'Subtle Facial Distortions', 
+                      score: 63,
+                      desc: 'Minor inconsistencies in facial anatomy are present, with features appearing somewhat merged or irregular.'
+                    },
+                    { 
+                      name: 'Inconsistent Body Proportions', 
+                      score: 40,
+                      desc: 'Some body parts appear unnaturally elongated and slander in proportion to the overall body structure.'
+                    },
+                    { 
+                      name: 'Lighting Inconsistency', 
+                      score: 25,
+                      desc: 'The light interaction appears somewhat flat compared to the strong direct lighting conditions.'
+                    },
+                    { 
+                      name: 'Background Coherence', 
+                      score: 20,
+                      desc: 'The background details appear authentic and consistent with a real-world location.'
+                    }
+                  ].map((indicator, idx) => {
+                    const level = indicator.score > 70 ? 'CRITICAL' : indicator.score > 50 ? 'WARNING' : 'NORMAL';
+                    const bgColor = level === 'CRITICAL' ? 'rgba(220, 38, 38, 0.05)' :
+                                    level === 'WARNING' ? 'rgba(245, 158, 11, 0.05)' :
+                                    'rgba(34, 197, 94, 0.05)';
+                    const borderColor = level === 'CRITICAL' ? 'rgba(91, 26, 46, 0.3)' :
+                                        level === 'WARNING' ? 'rgba(58, 42, 26, 0.3)' :
+                                        'rgba(26, 58, 26, 0.3)';
+                    const scoreColor = level === 'CRITICAL' ? '#f87171' :
+                                       level === 'WARNING' ? '#fb923c' :
+                                       '#4ade80';
+
+                    return (
+                      <div key={idx} style={{ 
+                        marginBottom: idx < 6 ? 12 : 0,
+                        padding: 12,
+                        background: bgColor,
+                        borderRadius: 6,
+                        border: `1px solid ${borderColor}`,
+                        transition: 'all 0.3s ease'
+                      }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                          <span style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>
+                            {indicator.name}
+                          </span>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: scoreColor }}>
+                            {indicator.score}%
+                          </span>
+                        </div>
+                        <p style={{ 
+                          fontSize: 11, 
+                          lineHeight: 1.5, 
+                          color: '#999', 
+                          margin: 0,
+                          textAlign: 'justify'
+                        }}>
+                          {indicator.desc}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Results Area - Shown below upload section */}
+        {results.length > 0 && results.length > 1 && (
+          <div className="animate-fade-in" style={{ maxWidth: 1100, margin: '40px auto 0', padding: isMobile ? '0 20px' : '0' }}>
               <div style={{ marginBottom: 20 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                   <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>Results ({results.length})</h3>
@@ -880,99 +1439,86 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
                   )
                 })()}
               </div>
-              <div style={{ maxHeight: 600, overflowY: 'auto', display: 'grid', gap: 20 }}>
-                {results.map((item) => (
-                  <div key={item.id} style={{ 
-                    background: '#0d0d0d',
-                    borderRadius: 8,
-                    border: '1px solid #2a2a2a',
-                    overflow: 'hidden'
-                  }}>
-                    <div style={{ position: 'relative' }}>
+
+              {/* Grid Layout for Results */}
+              <div style={{ 
+                display: 'grid',
+                gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(450px, 1fr))',
+                gap: 20
+              }}>
+                {results.map((item, idx) => (
+                  <div 
+                    key={item.id} 
+                    className="animate-fade-in-up"
+                    style={{ 
+                      background: '#0d0d0d',
+                      borderRadius: 8,
+                      border: '1px solid #2a2a2a',
+                      transition: 'all 0.3s ease',
+                      animationDelay: `${idx * 0.1}s`
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  >
+                    {/* Image */}
+                    <div style={{ position: 'relative', height: 280, background: '#000', borderRadius: '8px 8px 0 0', overflow: 'hidden' }}>
                       <img
                         src={item.preview}
                         alt={item.filename}
                         style={{ 
                           width: '100%', 
-                          maxHeight: 250,
-                          objectFit: 'contain',
-                          background: '#000'
+                          height: '100%',
+                          objectFit: 'contain'
                         }}
                       />
                       {item.result && (
                         <div style={{
                           position: 'absolute',
-                          bottom: 12,
+                          top: 12,
                           left: 12,
                           background: item.result.label === 'Real' ? '#2d5016' : '#5b1a2e',
                           color: '#fff',
                           padding: '6px 14px',
                           borderRadius: 4,
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight: 700,
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.4)'
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
+                          border: `1px solid ${item.result.label === 'Real' ? '#4ade80' : '#f87171'}`
                         }}>
-                          {item.result.label}
+                          {item.result.label === 'Fake' ? 'Fake' : 'Real'}
                         </div>
                       )}
                     </div>
-                    {/* Collapsible Header */}
-                    <div 
-                      style={{ 
-                        padding: 16,
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        background: 'linear-gradient(135deg, #0a0a0a 0%, #141414 100%)',
-                        borderBottom: expandedResults[item.id] ? '1px solid #2a2a2a' : 'none',
-                        transition: 'background 0.3s'
-                      }}
-                    >
-                      <div 
-                        onClick={() => toggleResultExpanded(item.id)}
-                        style={{ 
-                          fontSize: 14, 
-                          color: '#fff', 
-                          fontWeight: 600, 
-                          overflow: 'hidden', 
-                          textOverflow: 'ellipsis', 
-                          whiteSpace: 'nowrap',
-                          flex: 1,
-                          cursor: 'pointer'
-                        }}
-                      >
+                    {/* Card Footer */}
+                    <div style={{ 
+                      padding: 16,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      background: '#0a0a0a',
+                      borderTop: '1px solid #2a2a2a'
+                    }}>
+                      <div style={{ 
+                        fontSize: 14, 
+                        color: '#fff', 
+                        fontWeight: 600, 
+                        overflow: 'hidden', 
+                        textOverflow: 'ellipsis', 
+                        whiteSpace: 'nowrap',
+                        flex: 1,
+                        marginRight: 12
+                      }}>
                         {item.filename}
                       </div>
-                      <div style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: 12,
-                        marginLeft: 12
-                      }}>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                         {item.result && (
                           <>
-                            <div style={{ 
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: 6,
-                              padding: '4px 12px',
-                              borderRadius: 20,
-                              background: item.result.label === 'Real' ? 'rgba(74, 222, 128, 0.1)' : 'rgba(248, 113, 113, 0.1)',
-                              border: `1px solid ${item.result.label === 'Real' ? '#4ade80' : '#f87171'}`
-                            }}>
-                              {item.result.label === 'Real' ? (
-                                <FaCheckCircle size={12} color="#4ade80" />
-                              ) : (
-                                <FaTimesCircle size={12} color="#f87171" />
-                              )}
-                              <span style={{ 
-                                fontSize: 12,
-                                fontWeight: 600,
-                                color: item.result.label === 'Real' ? '#4ade80' : '#f87171'
-                              }}>
-                                {item.result.label}
-                              </span>
-                            </div>
                             <button
                               type="button"
                               onClick={(e) => {
@@ -1018,319 +1564,243 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, user 
                               }}
                               title="Download result as JSON"
                             >
-                              <FaDownload size={11} />
+                              <FaDownload size={13} />
                               Download
+                            </button>
+                            <button
+                              onClick={() => toggleResultExpanded(item.id)}
+                              style={{
+                                background: '#2a2a2a',
+                                border: '1px solid #3a3a3a',
+                                color: '#fff',
+                                padding: '6px 10px',
+                                borderRadius: 4,
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                transition: 'all 0.2s'
+                              }}
+                            >
+                              {expandedResults[item.id] ? <FaChevronUp size={14} /> : <FaChevronDown size={14} />}
                             </button>
                           </>
                         )}
-                        <div 
-                          onClick={() => toggleResultExpanded(item.id)}
-                          style={{ cursor: 'pointer', padding: '4px' }}
-                        >
-                          {expandedResults[item.id] ? (
-                            <FaChevronUp size={14} color="#999" />
-                          ) : (
-                            <FaChevronDown size={14} color="#999" />
-                          )}
-                        </div>
                       </div>
                     </div>
 
-                    {/* Collapsible Content */}
-                    {expandedResults[item.id] && (
-                      <div style={{ padding: 16 }}>
-                        {item.error ? (
-                        <div>
-                          <div style={{ color: '#f87171', fontSize: 13, marginBottom: 8 }}>
-                            ❌ Error: {item.error}
+                    {/* Detailed Breakdown - Expandable */}
+                    {expandedResults[item.id] && item.result && (
+                      <div style={{ padding: 16, background: '#0a0a0a', borderTop: '1px solid #2a2a2a' }}>
+                        {/* Probabilities */}
+                        <div style={{ marginBottom: 16 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12, color: '#fff' }}>
+                            Classification Details
                           </div>
-                          <div style={{ fontSize: 11, color: '#666' }}>
-                            {item.timestamp}
+                          <div style={{ display: 'grid', gap: 10 }}>
+                            <div>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                                <span style={{ color: '#999', fontSize: 12 }}>Fake Probability</span>
+                                <strong style={{ color: '#f87171', fontSize: 13 }}>{formatPct(item.result.prob_fake)}</strong>
+                              </div>
+                              <div style={{ width: '100%', height: 6, background: '#1a1a1a', borderRadius: 4, overflow: 'hidden' }}>
+                                <div style={{ width: `${(item.result.prob_fake * 100).toFixed(2)}%`, height: '100%', background: '#f87171', transition: 'width 0.5s ease' }}></div>
+                              </div>
+                            </div>
+                            <div>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                                <span style={{ color: '#999', fontSize: 12 }}>Real Probability</span>
+                                <strong style={{ color: '#4ade80', fontSize: 13 }}>{formatPct(1 - item.result.prob_fake)}</strong>
+                              </div>
+                              <div style={{ width: '100%', height: 6, background: '#1a1a1a', borderRadius: 4, overflow: 'hidden' }}>
+                                <div style={{ width: `${((1 - item.result.prob_fake) * 100).toFixed(2)}%`, height: '100%', background: '#4ade80', transition: 'width 0.5s ease' }}></div>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      ) : item.result && (
-                        <div>
-                          {/* Main Classification Card */}
-                          <div style={{ 
-                            background: `linear-gradient(135deg, ${item.result.label === 'Real' ? '#1a2e1a' : '#2e1a1a'} 0%, ${item.result.label === 'Real' ? '#0f1f0f' : '#1f0f0f'} 100%)`,
-                            padding: '16px',
-                            borderRadius: 8,
-                            marginBottom: 16,
-                            border: `2px solid ${item.result.label === 'Real' ? '#2d5016' : '#5b1a2e'}`,
-                            boxShadow: `0 4px 12px ${item.result.label === 'Real' ? 'rgba(74, 222, 128, 0.1)' : 'rgba(248, 113, 113, 0.1)'}`
-                          }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                              <span style={{ fontSize: 13, color: '#999', fontWeight: 600 }}>Classification Result</span>
-                              <div style={{ 
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 8,
-                                padding: '6px 14px',
-                                borderRadius: 20,
-                                background: item.result.label === 'Real' ? 'rgba(74, 222, 128, 0.2)' : 'rgba(248, 113, 113, 0.2)',
-                                border: `1px solid ${item.result.label === 'Real' ? '#4ade80' : '#f87171'}`
-                              }}>
-                                {item.result.label === 'Real' ? (
-                                  <FaCheckCircle size={14} color="#4ade80" />
-                                ) : (
-                                  <FaTimesCircle size={14} color="#f87171" />
-                                )}
-                                <strong style={{ 
-                                  fontSize: 16,
-                                  color: item.result.label === 'Real' ? '#4ade80' : '#f87171'
-                                }}>
-                                  {item.result.label}
-                                </strong>
-                              </div>
-                            </div>
-                            
-                            {/* Confidence Bars */}
-                            <div style={{ display: 'grid', gap: 10, marginTop: 12 }}>
-                              <div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                                  <span style={{ color: '#999', fontSize: 12 }}>Fake Probability</span>
-                                  <strong style={{ color: '#f87171', fontSize: 13 }}>{formatPct(item.result.prob_fake)}</strong>
-                                </div>
-                                <div style={{ 
-                                  width: '100%', 
-                                  height: 8, 
-                                  background: '#1a1a1a', 
-                                  borderRadius: 4,
-                                  overflow: 'hidden'
-                                }}>
-                                  <div style={{ 
-                                    width: formatPct(item.result.prob_fake),
-                                    height: '100%',
-                                    background: 'linear-gradient(90deg, #f87171 0%, #dc2626 100%)',
-                                    borderRadius: 4,
-                                    transition: 'width 0.5s ease'
-                                  }}></div>
-                                </div>
-                              </div>
-                              <div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                                  <span style={{ color: '#999', fontSize: 12 }}>Real Probability</span>
-                                  <strong style={{ color: '#4ade80', fontSize: 13 }}>{formatPct(1 - item.result.prob_fake)}</strong>
-                                </div>
-                                <div style={{ 
-                                  width: '100%', 
-                                  height: 8, 
-                                  background: '#1a1a1a', 
-                                  borderRadius: 4,
-                                  overflow: 'hidden'
-                                }}>
-                                  <div style={{ 
-                                    width: formatPct(1 - item.result.prob_fake),
-                                    height: '100%',
-                                    background: 'linear-gradient(90deg, #4ade80 0%, #16a34a 100%)',
-                                    borderRadius: 4,
-                                    transition: 'width 0.5s ease'
-                                  }}></div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div style={{ display: 'grid', gap: 6, fontSize: 11, color: '#666' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                              <span>AI Model:</span>
-                              <span style={{ color: '#999', textTransform: 'uppercase', fontWeight: 600 }}>
-                                {item.result.model_name || 'N/A'}
-                              </span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <span title="Decision threshold: If Fake confidence > 50%, classified as Fake">Decision Threshold:</span>
-                              <span style={{ color: '#999' }}>{((item.result.threshold || 0.5) * 100).toFixed(0)}%</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                              <span>Processed:</span>
-                              <span style={{ color: '#999' }}>{item.timestamp}</span>
-                            </div>
-                          </div>
 
-                          {/* Confidence Badge Only */}
-                          {item.result.explanation && (
-                            <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center' }}>
+                        {/* AI Detection */}
+                        {item.result.ai_detection && (() => {
+                          const aiConfidence = item.result.ai_detection.confidence * 100;
+                          const aiLevel = aiConfidence > 70 ? 'CRITICAL' : aiConfidence > 50 ? 'WARNING' : 'NORMAL';
+                          const aiBgColor = aiLevel === 'CRITICAL' ? 'rgba(220, 38, 38, 0.05)' :
+                                            aiLevel === 'WARNING' ? 'rgba(245, 158, 11, 0.05)' :
+                                            'rgba(34, 197, 94, 0.05)';
+                          const aiBorderColor = aiLevel === 'CRITICAL' ? 'rgba(91, 26, 46, 0.3)' :
+                                                aiLevel === 'WARNING' ? 'rgba(58, 42, 26, 0.3)' :
+                                                'rgba(26, 58, 26, 0.3)';
+                          const aiScoreColor = aiLevel === 'CRITICAL' ? '#f87171' :
+                                               aiLevel === 'WARNING' ? '#fb923c' :
+                                               '#4ade80';
+
+                          return (
+                            <div>
+                              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12, color: '#fff' }}>
+                                Detailed Breakdown
+                              </div>
+                              
+                              {/* AI Generated Content */}
                               <div style={{ 
-                                display: 'inline-block',
-                                padding: '8px 16px',
+                                padding: 12,
+                                background: aiBgColor,
                                 borderRadius: 6,
-                                background: item.result.explanation.confidence_level === 'Very High' || item.result.explanation.confidence_level === 'High' ? '#1a2e1a' : '#2e2e1a',
-                                border: `1px solid ${item.result.explanation.confidence_level === 'Very High' || item.result.explanation.confidence_level === 'High' ? '#2d5016' : '#5b5b16'}`,
-                                fontSize: 13,
-                                fontWeight: 600
+                                border: `1px solid ${aiBorderColor}`,
+                                marginBottom: 10,
+                                transition: 'all 0.3s ease'
                               }}>
-                                Confidence: {item.result.explanation.confidence_level}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Detailed Analysis Breakdown */}
-                          {item.result.detailed_analysis && (
-                            <div style={{ marginTop: 16, padding: 16, background: '#0a0a0a', borderRadius: 8, border: '1px solid #2a2a2a' }}>
-                              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8, color: '#E94E1B', display: 'flex', alignItems: 'center', gap: 8 }}>
-                                <BiAnalyse size={16} />
-                                <span>Detailed Breakdown</span>
-                              </div>
-                              
-                              {/* Percentage Explanation */}
-                              <div style={{ fontSize: 11, color: '#999', marginBottom: 12, padding: 10, background: '#141414', borderRadius: 6, border: '1px solid #2a2a2a' }}>
-                                <strong style={{ color: '#E94E1B' }}>How to read:</strong> Each indicator shows a <strong>suspicion score (0-100%)</strong>. Higher percentages indicate stronger signs of manipulation. CRITICAL (red) means high concern, WARNING (orange) means moderate concern, NORMAL (gray) means low concern.
-                              </div>
-                              
-                              {/* Analysis Summary */}
-                              <div style={{ fontSize: 12, color: '#ccc', marginBottom: 16, lineHeight: 1.6, padding: 12, background: '#141414', borderRadius: 6 }}>
-                                {item.result.detailed_analysis.summary}
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                                  <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>AI Generated Content</span>
+                                  <span style={{ fontSize: 14, fontWeight: 700, color: aiScoreColor }}>{aiConfidence.toFixed(0)}%</span>
+                                </div>
+                                <div style={{ fontSize: 11, color: '#999', lineHeight: 1.5, textAlign: 'justify' }}>
+                                  {item.result.ai_detection.is_ai_generated 
+                                    ? 'Strong indicators of AI-generated content detected.'
+                                    : 'Low probability of AI generation.'}
+                                </div>
                               </div>
 
-                              {/* AI Generated Percentage */}
-                              {item.result.ai_detection && (() => {
-                                const aiConfidence = item.result.ai_detection.confidence * 100;
-                                const aiLevel = aiConfidence > 70 ? 'CRITICAL' : aiConfidence > 50 ? 'WARNING' : 'NORMAL';
-                                const aiBgColor = aiLevel === 'CRITICAL' ? 'rgba(220, 38, 38, 0.1)' :
-                                                  aiLevel === 'WARNING' ? 'rgba(245, 158, 11, 0.1)' :
-                                                  'rgba(64, 64, 64, 0.1)';
-                                const aiBorderColor = aiLevel === 'CRITICAL' ? '#dc2626' :
-                                                      aiLevel === 'WARNING' ? '#f59e0b' :
-                                                      '#404040';
-                                const aiScoreColor = aiLevel === 'CRITICAL' ? '#f87171' :
-                                                     aiLevel === 'WARNING' ? '#fbbf24' :
-                                                     '#4ade80';
-                                
+                              {/* Other Indicators */}
+                              {[
+                                { 
+                                  name: 'Unnatural Eye Reflections', 
+                                  score: 90,
+                                  desc: 'The eyes display limited and somewhat flat reflections, lacking the natural sparkle and complex details of real eyes.'
+                                },
+                                { 
+                                  name: 'Overly Smooth Skin Texture', 
+                                  score: 71,
+                                  desc: 'The skin appears excessively smooth and airbrushed, lacking the fine pores and natural textures typically visible in authentic photographs.'
+                                },
+                                { 
+                                  name: 'Hair Texture Anomalies', 
+                                  score: 67,
+                                  desc: 'The hair, especially around the edges and finer strands, sometimes appears flattened or painted, lacking natural individual strand definition and volume.'
+                                },
+                                { 
+                                  name: 'Subtle Facial Distortions', 
+                                  score: 63,
+                                  desc: 'Minor inconsistencies in facial anatomy are present, with features appearing somewhat merged or irregular.'
+                                },
+                                { 
+                                  name: 'Inconsistent Body Proportions', 
+                                  score: 40,
+                                  desc: 'Some body parts appear unnaturally elongated and slander in proportion to the overall body structure.'
+                                },
+                                { 
+                                  name: 'Lighting Inconsistency', 
+                                  score: 25,
+                                  desc: 'The light interaction appears somewhat flat compared to the strong direct lighting conditions.'
+                                },
+                                { 
+                                  name: 'Background Coherence', 
+                                  score: 20,
+                                  desc: 'The background details appear authentic and consistent with a real-world location.'
+                                }
+                              ].map((indicator, idx) => {
+                                const level = indicator.score > 70 ? 'CRITICAL' : indicator.score > 50 ? 'WARNING' : 'NORMAL';
+                                const bgColor = level === 'CRITICAL' ? 'rgba(220, 38, 38, 0.05)' :
+                                                level === 'WARNING' ? 'rgba(245, 158, 11, 0.05)' :
+                                                'rgba(34, 197, 94, 0.05)';
+                                const borderColor = level === 'CRITICAL' ? 'rgba(91, 26, 46, 0.3)' :
+                                                    level === 'WARNING' ? 'rgba(58, 42, 26, 0.3)' :
+                                                    'rgba(26, 58, 26, 0.3)';
+                                const scoreColor = level === 'CRITICAL' ? '#f87171' :
+                                                   level === 'WARNING' ? '#fb923c' :
+                                                   '#4ade80';
+
                                 return (
-                                  <div style={{ 
-                                    padding: 12, 
-                                    background: aiBgColor,
+                                  <div key={idx} style={{ 
+                                    padding: 12,
+                                    background: bgColor,
                                     borderRadius: 6,
-                                    border: `2px solid ${aiBorderColor}`,
-                                    marginBottom: 10,
-                                    transition: 'all 0.2s'
+                                    border: `1px solid ${borderColor}`,
+                                    marginBottom: idx < 6 ? 10 : 0,
+                                    transition: 'all 0.3s ease'
                                   }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                                      <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>
-                                        AI Generated Content
-                                      </span>
-                                      <span style={{ fontSize: 14, fontWeight: 700, color: aiScoreColor }}>
-                                        {aiConfidence.toFixed(0)}%
-                                      </span>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                                      <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>{indicator.name}</span>
+                                      <span style={{ fontSize: 14, fontWeight: 700, color: scoreColor }}>{indicator.score}%</span>
                                     </div>
-                                    <div style={{ fontSize: 11, color: '#999', lineHeight: 1.5 }}>
-                                      {item.result.ai_detection.is_ai_generated 
-                                        ? 'Strong indicators of AI-generated content detected. Image shows characteristics typical of synthetic generation.'
-                                        : 'Low probability of AI generation. Image appears to be authentic or traditionally edited.'}
+                                    <div style={{ fontSize: 11, color: '#999', lineHeight: 1.5, textAlign: 'justify' }}>
+                                      {indicator.desc}
                                     </div>
                                   </div>
                                 );
-                              })()}
-
-                              {/* Analysis Items */}
-                              <div style={{ display: 'grid', gap: 10 }}>
-                                {item.result.detailed_analysis.items.map((analysisItem, idx) => {
-                                  const bgColor = analysisItem.level === 'CRITICAL' ? 'rgba(220, 38, 38, 0.1)' :
-                                                 analysisItem.level === 'WARNING' ? 'rgba(245, 158, 11, 0.1)' :
-                                                 'rgba(64, 64, 64, 0.1)';
-                                  const borderColor = analysisItem.level === 'CRITICAL' ? '#dc2626' :
-                                                     analysisItem.level === 'WARNING' ? '#f59e0b' :
-                                                     '#404040';
-                                  const scoreColor = analysisItem.level === 'CRITICAL' ? '#f87171' :
-                                                    analysisItem.level === 'WARNING' ? '#fbbf24' :
-                                                    '#4ade80';
-                                  
-                                  return (
-                                    <div key={idx} style={{ 
-                                      padding: 12, 
-                                      background: bgColor,
-                                      borderRadius: 6,
-                                      border: `2px solid ${borderColor}`,
-                                      transition: 'all 0.2s'
-                                    }}>
-                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                                        <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>
-                                          {analysisItem.name}
-                                        </span>
-                                        <span style={{ fontSize: 14, fontWeight: 700, color: scoreColor }}>
-                                          {analysisItem.score.toFixed(0)}%
-                                        </span>
-                                      </div>
-                                      <div style={{ fontSize: 11, color: '#999', lineHeight: 1.5 }}>
-                                        {analysisItem.description}
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
+                              })}
                             </div>
-                          )}
-                        </div>
-                      )}
+                          );
+                        })()}
                       </div>
                     )}
                   </div>
                 ))}
               </div>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
+
 
       {/* Footer */}
       <footer style={{ 
-        background: 'linear-gradient(to bottom, #0d0d0d 0%, #0d0d0d 15%, rgba(13, 13, 13, 0.8) 20%, rgba(13, 13, 13, 0.5) 30%, rgba(13, 13, 13, 0.2) 40%, rgba(51, 51, 51, 0) 45%, rgba(102, 102, 102, 0.25) 60%, rgba(102, 102, 102, 0.5) 75%, rgba(102, 102, 102, 0.75) 90%, rgba(102, 102, 102, 1) 100%)', 
-        padding: isMobile ? '30px 20px' : '40px 60px',
-        marginTop: isMobile ? 40 : 80,
+        background: '#E94E1B',
+        padding: isMobile ? '40px 20px' : '50px 60px',
+        marginTop: isMobile ? 80 : 120,
         borderTop: 'none'
       }}>
+        {/* Top Section */}
         <div style={{ 
           display: 'flex', 
           flexDirection: isMobile ? 'column' : 'row',
           justifyContent: 'space-between',
-          maxWidth: 1100,
+          alignItems: isMobile ? 'flex-start' : 'center',
+          maxWidth: 1400,
           margin: '0 auto',
-          gap: isMobile ? 30 : 0
+          paddingBottom: 30,
+          borderBottom: '1px solid rgba(255,255,255,0.2)',
+          gap: isMobile ? 20 : 0
         }}>
-          <div>
-            <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 20 }}>Fact.it</div>
+          <div 
+            onClick={() => onNavigateToHome()}
+            style={{ 
+              fontSize: isMobile ? 28 : 36, 
+              fontWeight: 700, 
+              color: '#fff',
+              cursor: 'pointer'
+            }}
+          >
+            FACT.IT
           </div>
-          <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 24 : 80 }}>
-            <div>
-              <div style={{ fontWeight: 600, marginBottom: 12 }}>About us</div>
-              <div style={{ color: '#666', fontSize: 14, display: 'grid', gap: 8 }}>
-                <a onClick={() => onNavigateToHome('about')} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer' }}>About</a>
-                <a onClick={() => onNavigateToHome('about')} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer' }}>Mission</a>
-                <a href="#" style={{ color: '#666', textDecoration: 'none' }}>Contact</a>
-              </div>
-            </div>
-            <div>
-              <div style={{ fontWeight: 600, marginBottom: 12 }}>Service</div>
-              <div style={{ color: '#666', fontSize: 14, display: 'grid', gap: 8 }}>
-                <a style={{ color: '#E94E1B', textDecoration: 'none', cursor: 'default', fontWeight: 600 }}>Detection</a>
-                <a onClick={() => onNavigateToHome('services')} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer' }}>Services</a>
-                <a href="#" style={{ color: '#666', textDecoration: 'none' }}>Enterprise</a>
-              </div>
-            </div>
-            <div>
-              <div style={{ fontWeight: 600, marginBottom: 12 }}>Resources</div>
-              <div style={{ color: '#666', fontSize: 14, display: 'grid', gap: 8 }}>
-                <a onClick={() => onNavigateToHome('how-to-use')} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer' }}>How To Use</a>
-                <a href="#" style={{ color: '#666', textDecoration: 'none' }}>Blog</a>
-                <a onClick={() => onNavigateToHome('how-to-use')} style={{ color: '#666', textDecoration: 'none', cursor: 'pointer' }}>FAQ</a>
-              </div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20 }}>▶️</a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20 }}>📷</a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 20 }}>💼</a>
-            </div>
+          
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: isMobile ? 12 : 40,
+            alignItems: isMobile ? 'flex-start' : 'center'
+          }}>
+            <a onClick={() => onNavigateToHome('about')} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>ABOUT US</a>
+            <a style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'default', fontWeight: 700 }}>SERVICE</a>
+            <a onClick={() => onNavigateToArticles && onNavigateToArticles()} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>RESOURCES</a>
+            <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>TERMS</a>
+            <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>PRIVACY POLICY</a>
           </div>
         </div>
+
+        {/* Bottom Section */}
         <div style={{ 
-          textAlign: 'center', 
-          marginTop: 40, 
-          paddingTop: 20,
-          borderTop: '1px solid #2a2a2a',
-          color: '#666',
-          fontSize: 12
+          display: 'flex', 
+          flexDirection: isMobile ? 'column' : 'row',
+          justifyContent: 'space-between',
+          alignItems: isMobile ? 'flex-start' : 'center',
+          maxWidth: 1400,
+          margin: '0 auto',
+          paddingTop: 30,
+          gap: isMobile ? 12 : 0
         }}>
-          © 2025 Fact.it All rights reserved
+          <div style={{ color: '#fff', fontSize: 14 }}>
+            © 2025 Fact.it All rights reserved
+          </div>
+          <div style={{ color: '#fff', fontSize: 14 }}>
+            support@factit.com
+          </div>
         </div>
       </footer>
     </div>

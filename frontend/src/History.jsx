@@ -330,46 +330,77 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#1a1a1a', color: '#fff', margin: 0 }}>
-      {/* Navbar */}
+    <div style={{ minHeight: '100vh', background: '#1a1a1a', color: '#fff', margin: 0, position: 'relative' }}>
+      {/* Logo - Fixed on Page */}
+      <div 
+        onClick={onNavigateToHome}
+        style={{ 
+          position: 'absolute',
+          top: isMobile ? 30 : 40,
+          left: isMobile ? 20 : 60,
+          fontSize: isMobile ? 20 : 24, 
+          fontWeight: 700, 
+          letterSpacing: 1,
+          zIndex: 1001,
+          cursor: 'pointer',
+          transition: 'all 0.3s ease'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.color = '#E94E1B';
+          e.currentTarget.style.transform = 'scale(1.05)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.color = '#fff';
+          e.currentTarget.style.transform = 'scale(1)';
+        }}
+      >
+        Fact.it
+      </div>
+
+      {/* Navbar - Floating Design */}
       <nav style={{ 
-        background: '#0d0d0d', 
-        padding: isMobile ? '16px 20px' : '20px 60px',
+        position: 'absolute',
+        top: 20,
+        right: 60,
+        width: isMobile ? 'calc(100% - 40px)' : 'auto',
+        background: 'rgba(13, 13, 13, 0.8)',
+        backdropFilter: 'blur(10px)',
+        padding: isMobile ? '16px 20px' : '12px 20px',
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: isMobile ? 'flex-end' : 'flex-end',
         alignItems: 'center',
-        borderBottom: '1px solid #2a2a2a'
+        gap: 24,
+        borderRadius: 8,
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)',
+        zIndex: 1000
       }}>
-        <div onClick={onNavigateToHome} style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, letterSpacing: 1, cursor: 'pointer' }}>
-          Fact.it
-        </div>
-        {isMobile ? (
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <button onClick={onNavigateToDetection} style={{ background: '#E94E1B', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 13 }}>
-              Get Started
-            </button>
-            <button onClick={onNavigateToHome} style={{ background: 'transparent', color: '#fff', border: '1px solid #2a2a2a', padding: '10px 16px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 13 }}>
-              Home
-            </button>
-          </div>
-        ) : (
-          <div style={{ display: 'flex', gap: 40, alignItems: 'center' }}>
-            <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>About us</a>
-            <a onClick={() => onNavigateToHome('services')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>Services</a>
-            <a onClick={() => onNavigateToHome('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>How To Use</a>
-            <a onClick={() => onNavigateToHome('resources')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer' }}>Resources</a>
-            <button onClick={onNavigateToDetection} style={{ background: '#E94E1B', color: '#fff', border: 'none', padding: '10px 24px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>
-              Get Started
-            </button>
-            <button onClick={onNavigateToHome} style={{ background: 'transparent', color: '#fff', border: '1px solid #2a2a2a', padding: '10px 20px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>
-              Home
-            </button>
-          </div>
-        )}
+        <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>About us</a>
+        <a onClick={() => onNavigateToDetection && onNavigateToDetection()} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Services</a>
+        <a onClick={() => onNavigateToHome('resources')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Resources</a>
+        <a onClick={() => onNavigateToHome('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>How to use</a>
+        <button 
+          onClick={onNavigateToHome}
+          style={{
+            background: '#E94E1B',
+            color: '#fff',
+            border: 'none',
+            padding: '10px 20px',
+            borderRadius: 4,
+            fontWeight: 600,
+            cursor: 'pointer',
+            fontSize: 14,
+            transition: 'background 0.2s'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.background = '#d43e0f'}
+          onMouseLeave={(e) => e.currentTarget.style.background = '#E94E1B'}
+        >
+          Home
+        </button>
       </nav>
 
       {/* Content */}
-      <div style={{ padding: isMobile ? '30px 20px' : '60px', maxWidth: 1400, margin: '0 auto' }}>
+      <div style={{ padding: isMobile ? '100px 20px 30px' : '140px 60px 60px', maxWidth: 1400, margin: '0 auto' }}>
         <div style={{ marginBottom: isMobile ? 30 : 40 }}>
           <h1 style={{ fontSize: isMobile ? 32 : 48, fontWeight: 700, margin: '0 0 12px 0' }}>Detection History</h1>
           <p style={{ fontSize: isMobile ? 14 : 16, color: '#999' }}>View and manage your deepfake detection history</p>
@@ -861,6 +892,71 @@ export default function History({ onNavigateToHome, onNavigateToDetection, user 
           </div>
         )}
       </div>
+
+      {/* Footer */}
+      <footer style={{ 
+        background: '#E94E1B',
+        padding: isMobile ? '40px 20px' : '50px 60px',
+        marginTop: isMobile ? 80 : 120,
+        borderTop: 'none'
+      }}>
+        {/* Top Section */}
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: isMobile ? 'column' : 'row',
+          justifyContent: 'space-between',
+          alignItems: isMobile ? 'flex-start' : 'center',
+          maxWidth: 1400,
+          margin: '0 auto',
+          paddingBottom: 30,
+          borderBottom: '1px solid rgba(255,255,255,0.2)',
+          gap: isMobile ? 20 : 0
+        }}>
+          <div 
+            onClick={onNavigateToHome}
+            style={{ 
+              fontSize: isMobile ? 28 : 36, 
+              fontWeight: 700, 
+              color: '#fff',
+              cursor: 'pointer'
+            }}
+          >
+            FACT.IT
+          </div>
+          
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: isMobile ? 12 : 40,
+            alignItems: isMobile ? 'flex-start' : 'center'
+          }}>
+            <a onClick={() => onNavigateToHome('about')} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>ABOUT US</a>
+            <a onClick={() => onNavigateToDetection && onNavigateToDetection()} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>SERVICE</a>
+            <a onClick={() => onNavigateToHome('resources')} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>RESOURCES</a>
+            <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>TERMS</a>
+            <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>PRIVACY POLICY</a>
+          </div>
+        </div>
+
+        {/* Bottom Section */}
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: isMobile ? 'column' : 'row',
+          justifyContent: 'space-between',
+          alignItems: isMobile ? 'flex-start' : 'center',
+          maxWidth: 1400,
+          margin: '0 auto',
+          paddingTop: 30,
+          gap: isMobile ? 12 : 0
+        }}>
+          <div style={{ color: '#fff', fontSize: 14 }}>
+            © 2025 Fact.it All rights reserved
+          </div>
+          <div style={{ color: '#fff', fontSize: 14 }}>
+            support@factit.com
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
