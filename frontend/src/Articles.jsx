@@ -3,7 +3,7 @@ import { FaArrowRight, FaClock, FaUser } from 'react-icons/fa'
 import { HiSearch } from 'react-icons/hi'
 import { articles, categories, getArticlesByCategory } from './articlesData'
 
-export default function Articles({ onNavigateToArticleDetail, onNavigateToHome }) {
+export default function Articles({ onNavigateToArticleDetail, onNavigateToHome, onNavigateToDetection }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
@@ -74,7 +74,7 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome }
         zIndex: 1000
       }}>
         <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>About us</a>
-        <a onClick={() => onNavigateToDetection && onNavigateToDetection()} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Services</a>
+        <a onClick={onNavigateToDetection} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Services</a>
         <a style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'default', fontWeight: 600 }}>Resources</a>
         <a onClick={() => onNavigateToHome('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>How to use</a>
         <button 
@@ -314,9 +314,10 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome }
               gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(350px, 1fr))',
               gap: 30
             }}>
-              {filteredArticles.slice(1).map(article => (
+              {filteredArticles.slice(1).map((article, idx) => (
                 <div
                   key={article.id}
+                  className="animate-fade-in-up"
                   onClick={() => onNavigateToArticleDetail(article.id)}
                   style={{
                     background: '#0d0d0d',
@@ -324,7 +325,8 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome }
                     overflow: 'hidden',
                     cursor: 'pointer',
                     border: '1px solid #2a2a2a',
-                    transition: 'transform 0.3s, border-color 0.3s'
+                    transition: 'transform 0.3s, border-color 0.3s',
+                    animationDelay: `${idx * 0.1}s`
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-4px)'
@@ -445,7 +447,7 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome }
             alignItems: isMobile ? 'flex-start' : 'center'
           }}>
             <a onClick={() => onNavigateToHome('about')} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>ABOUT US</a>
-            <a onClick={() => onNavigateToDetection && onNavigateToDetection()} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>SERVICE</a>
+            <a onClick={onNavigateToDetection} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>SERVICE</a>
             <a style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'default', fontWeight: 700 }}>RESOURCES</a>
             <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>TERMS</a>
             <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>PRIVACY POLICY</a>

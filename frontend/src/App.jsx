@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Toaster } from 'react-hot-toast'
+import './animations.css'
 import Home from './Home.jsx'
 import Detection from './Detection.jsx'
 import Login from './Login.jsx'
@@ -107,6 +108,7 @@ export default function App() {
       <Detection 
         onNavigateToHome={navigateToHome}
         onNavigateToHistory={() => setCurrentPage('history')}
+        onNavigateToArticles={() => setCurrentPage('articles')}
         user={user}
       />
     )
@@ -130,6 +132,7 @@ export default function App() {
           setCurrentPage('article-detail')
         }}
         onNavigateToHome={navigateToHome}
+        onNavigateToDetection={() => setCurrentPage('detection')}
       />
     )
   }
