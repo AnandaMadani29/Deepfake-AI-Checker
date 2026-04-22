@@ -251,9 +251,10 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
               gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(320px, 1fr))',
               gap: 30
             }}>
-              {relatedArticles.map(relatedArticle => (
+              {relatedArticles.map((relatedArticle, idx) => (
                 <div
                   key={relatedArticle.id}
+                  className="animate-fade-in-up"
                   onClick={() => onNavigateToArticleDetail(relatedArticle.id)}
                   style={{
                     background: '#1a1a1a',
@@ -261,7 +262,8 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
                     overflow: 'hidden',
                     cursor: 'pointer',
                     border: '1px solid #2a2a2a',
-                    transition: 'transform 0.3s, border-color 0.3s'
+                    transition: 'transform 0.3s, border-color 0.3s',
+                    animationDelay: `${idx * 0.1}s`
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-4px)'

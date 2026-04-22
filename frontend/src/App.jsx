@@ -119,6 +119,7 @@ export default function App() {
       <History 
         onNavigateToHome={navigateToHome}
         onNavigateToDetection={() => setCurrentPage('detection')}
+        onNavigateToArticles={() => setCurrentPage('articles')}
         user={user}
       />
     )
