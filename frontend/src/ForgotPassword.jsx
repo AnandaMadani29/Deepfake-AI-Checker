@@ -101,47 +101,49 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
       display: 'flex', 
       alignItems: 'center',
       justifyContent: 'center',
-      background: '#FF5733',
+      background: isMobile ? '#000' : '#FF5733',
       position: 'relative',
       overflow: 'hidden',
       padding: '20px'
     }}>
-      {/* SVG Wavy Shape with 3 Waves */}
-      <svg
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          zIndex: 1
-        }}
-        viewBox="0 0 1440 900"
-        preserveAspectRatio="none"
-      >
-        <path
-          d="M 250,0 
-             Q 150,150 250,300 
-             Q 350,450 250,600 
-             Q 150,750 250,900 
-             L 1190,900 
-             Q 1290,750 1190,600 
-             Q 1090,450 1190,300 
-             Q 1290,150 1190,0 
-             Z"
-          fill="#1a1a1a"
-        />
-      </svg>
+      {/* SVG Wavy Shape with 3 Waves - Desktop Only */}
+      {!isMobile && (
+        <svg
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 1
+          }}
+          viewBox="0 0 1440 900"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M 250,0 
+               Q 150,150 250,300 
+               Q 350,450 250,600 
+               Q 150,750 250,900 
+               L 1190,900 
+               Q 1290,750 1190,600 
+               Q 1090,450 1190,300 
+               Q 1290,150 1190,0 
+               Z"
+            fill="#1a1a1a"
+          />
+        </svg>
+      )}
       
       {/* Logo */}
       <div style={{
         position: 'absolute',
-        top: 40,
-        left: 40,
+        top: isMobile ? 20 : 40,
+        left: isMobile ? 20 : 40,
         zIndex: 3
       }}>
         <h1 style={{ 
-          fontSize: 32, 
+          fontSize: isMobile ? 24 : 32, 
           fontWeight: 400, 
           color: '#fff',
           margin: 0,
@@ -152,30 +154,61 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
         </h1>
       </div>
 
+      {/* Back Button - Mobile Only (Icon) */}
+      {isMobile && (
+        <button
+          type="button"
+          onClick={onNavigateToHome}
+          style={{
+            position: 'absolute',
+            top: 20,
+            right: 20,
+            zIndex: 3,
+            background: 'rgba(255,255,255,0.1)',
+            border: '1px solid rgba(255,255,255,0.3)',
+            color: '#fff',
+            padding: '12px',
+            borderRadius: 8,
+            cursor: onNavigateToHome ? 'pointer' : 'not-allowed',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.2s ease'
+          }}
+          disabled={!onNavigateToHome}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </button>
+      )}
+
       {/* Form Content */}
       <div style={{
         maxWidth: 420,
         width: '100%',
         position: 'relative',
         zIndex: 2,
-        padding: isMobile ? '20px' : '0'
+        padding: isMobile ? '20px' : '0',
+        marginTop: isMobile ? '60px' : '0'
       }}>
         {step === 'request' && (
           <>
             <h2 style={{ 
-              fontSize: isMobile ? 36 : 48, 
+              fontSize: isMobile ? 48 : 48, 
               fontWeight: 700, 
               margin: '0 0 12px 0', 
               color: '#fff', 
-              textAlign: 'center' 
+              textAlign: isMobile ? 'left' : 'center' 
             }}>
               Forgot Password
             </h2>
             <p style={{ 
-              fontSize: 15, 
-              color: '#999', 
+              fontSize: isMobile ? 16 : 15, 
+              color: '#ccc', 
               margin: '0 0 40px 0', 
-              textAlign: 'center' 
+              textAlign: isMobile ? 'left' : 'center',
+              lineHeight: 1.5 
             }}>
               Enter your email to reset your password
             </p>
@@ -218,12 +251,12 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                 disabled={loading}
                 style={{
                   width: '100%',
-                  padding: '16px',
+                  padding: '18px',
                   background: loading ? '#999' : '#FF5733',
                   color: '#fff',
                   border: 'none',
                   borderRadius: 4,
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: 700,
                   cursor: loading ? 'not-allowed' : 'pointer',
                   marginBottom: 20
@@ -232,7 +265,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                 {loading ? 'Sending...' : 'Send Reset Link'}
               </button>
 
-              <div style={{ textAlign: 'center', fontSize: 14, color: '#999' }}>
+              <div style={{ textAlign: 'center', fontSize: 15, color: '#ccc' }}>
                 Remember Password?{' '}
                 <a
                   onClick={onNavigateToLogin}
@@ -253,19 +286,20 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
         {step === 'check-email' && (
           <>
             <h2 style={{ 
-              fontSize: isMobile ? 36 : 48, 
+              fontSize: isMobile ? 48 : 48, 
               fontWeight: 700, 
               margin: '0 0 12px 0', 
               color: '#fff', 
-              textAlign: 'center' 
+              textAlign: isMobile ? 'left' : 'center' 
             }}>
               Check Your Email
             </h2>
             <p style={{ 
-              fontSize: 15, 
-              color: '#999', 
+              fontSize: isMobile ? 16 : 15, 
+              color: '#ccc', 
               margin: '0 0 40px 0', 
-              textAlign: 'center' 
+              textAlign: isMobile ? 'left' : 'center',
+              lineHeight: 1.5 
             }}>
               We've sent a password reset link to:<br/>
               <strong style={{ color: '#fff' }}>{email}</strong>
@@ -275,7 +309,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
               onClick={() => window.open('https://mail.google.com', '_blank')}
               style={{
                 width: '100%',
-                padding: '16px',
+                padding: '18px',
                 background: '#FF5733',
                 color: '#fff',
                 border: 'none',
@@ -311,7 +345,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
               I have the reset token
             </button>
 
-            <div style={{ textAlign: 'center', fontSize: 14, color: '#999' }}>
+            <div style={{ textAlign: 'center', fontSize: 15, color: '#ccc' }}>
               Didn't receive email?{' '}
               <a
                 onClick={() => setStep('request')}
@@ -331,19 +365,20 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
         {step === 'reset' && (
           <>
             <h2 style={{ 
-              fontSize: isMobile ? 36 : 48, 
+              fontSize: isMobile ? 48 : 48, 
               fontWeight: 700, 
               margin: '0 0 12px 0', 
               color: '#fff', 
-              textAlign: 'center' 
+              textAlign: isMobile ? 'left' : 'center' 
             }}>
               Set New Password
             </h2>
             <p style={{ 
-              fontSize: 15, 
-              color: '#999', 
+              fontSize: isMobile ? 16 : 15, 
+              color: '#ccc', 
               margin: '0 0 40px 0', 
-              textAlign: 'center' 
+              textAlign: isMobile ? 'left' : 'center',
+              lineHeight: 1.5 
             }}>
               Get started with an account on Fact.it
             </p>
@@ -493,12 +528,12 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                 disabled={loading}
                 style={{
                   width: '100%',
-                  padding: '16px',
+                  padding: isMobile ? '18px' : '16px',
                   background: loading ? '#999' : '#FF5733',
                   color: '#fff',
                   border: 'none',
                   borderRadius: 4,
-                  fontSize: 16,
+                  fontSize: isMobile ? 18 : 16,
                   fontWeight: 700,
                   cursor: loading ? 'not-allowed' : 'pointer',
                   marginBottom: 20

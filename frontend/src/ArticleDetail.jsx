@@ -131,25 +131,69 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
               {menuOpen ? <FaTimes /> : <FaBars />}
             </button>
             {menuOpen && (
-              <div style={{
-                position: 'absolute',
-                top: 'calc(100% + 10px)',
-                right: 0,
-                minWidth: 200,
-                background: 'rgba(13, 13, 13, 0.95)',
-                backdropFilter: 'blur(10px)',
-                borderRadius: 12,
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                padding: '20px',
-                zIndex: 999,
-                boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)'
-              }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                  <a onClick={() => { onNavigateToHome(); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 16, cursor: 'pointer', padding: '12px 0', borderBottom: '1px solid #2a2a2a' }}>Home</a>
-                  <a onClick={() => { onNavigateToHome('about'); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 16, cursor: 'pointer', padding: '12px 0', borderBottom: '1px solid #2a2a2a' }}>About</a>
-                  <a onClick={() => { onNavigateToArticles(); setMenuOpen(false); }} style={{ color: '#E94E1B', textDecoration: 'none', fontSize: 16, cursor: 'pointer', padding: '12px 0', borderBottom: '1px solid #2a2a2a', fontWeight: 600 }}>Resources</a>
+              <>
+                <div 
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0, 0, 0, 0.5)',
+                    zIndex: 9998,
+                    animation: 'fadeIn 0.3s ease-in-out'
+                  }}
+                />
+                <div style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                  width: '280px',
+                  maxWidth: '80vw',
+                  background: '#FF5733',
+                  zIndex: 9999,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: '20px',
+                  boxShadow: '4px 0 24px rgba(0, 0, 0, 0.3)',
+                  animation: 'slideInLeft 0.3s ease-in-out'
+                }}>
+                  <button
+                    onClick={() => setMenuOpen(false)}
+                    style={{
+                      position: 'absolute',
+                      top: 20,
+                      right: 20,
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#fff',
+                      fontSize: 28,
+                      cursor: 'pointer',
+                      padding: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <FaTimes />
+                  </button>
+                  <div style={{ 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    gap: 32,
+                    marginTop: 80
+                  }}>
+                    <a onClick={() => { onNavigateToHome('about'); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 20, fontWeight: 600, cursor: 'pointer' }}>About Us</a>
+                    <a onClick={() => { onNavigateToDetection(); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 20, fontWeight: 600, cursor: 'pointer' }}>Service</a>
+                    <a style={{ color: '#fff', textDecoration: 'none', fontSize: 20, fontWeight: 600, cursor: 'default' }}>Resources</a>
+                  </div>
+                  <div style={{ marginTop: 'auto', paddingBottom: 40 }}>
+                    <button onClick={() => { onNavigateToLogin(); setMenuOpen(false); }} style={{ background: '#1a1a1a', color: '#fff', border: 'none', padding: '18px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 18, width: '100%' }}>Log in</button>
+                  </div>
                 </div>
-              </div>
+              </>
             )}
           </div>
         ) : (

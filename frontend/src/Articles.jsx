@@ -97,42 +97,69 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome, 
               {menuOpen ? <FaTimes /> : <FaBars />}
             </button>
             {menuOpen && (
-              <div style={{
-                position: 'absolute',
-                top: 'calc(100% + 10px)',
-                right: 0,
-                minWidth: 200,
-                background: 'rgba(13, 13, 13, 0.95)',
-                backdropFilter: 'blur(10px)',
-                borderRadius: 12,
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                padding: '20px',
-                zIndex: 999,
-                boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)'
-              }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                  <a onClick={() => { onNavigateToHome('about'); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 16, cursor: 'pointer', padding: '12px 0', borderBottom: '1px solid #2a2a2a' }}>About us</a>
-                  <a onClick={() => { onNavigateToDetection(); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 16, cursor: 'pointer', padding: '12px 0', borderBottom: '1px solid #2a2a2a' }}>Services</a>
-                  <a style={{ color: '#E94E1B', textDecoration: 'none', fontSize: 16, cursor: 'default', padding: '12px 0', borderBottom: '1px solid #2a2a2a', fontWeight: 600 }}>Resources</a>
-                  <a onClick={() => { onNavigateToHome('how-to-use'); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 16, cursor: 'pointer', padding: '12px 0', borderBottom: '1px solid #2a2a2a' }}>How to use</a>
-                  <button 
-                    onClick={() => { onNavigateToHome(); setMenuOpen(false); }}
+              <>
+                <div 
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0, 0, 0, 0.5)',
+                    zIndex: 9998,
+                    animation: 'fadeIn 0.3s ease-in-out'
+                  }}
+                />
+                <div style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                  width: '280px',
+                  maxWidth: '80vw',
+                  background: '#FF5733',
+                  zIndex: 9999,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: '20px',
+                  boxShadow: '4px 0 24px rgba(0, 0, 0, 0.3)',
+                  animation: 'slideInLeft 0.3s ease-in-out'
+                }}>
+                  <button
+                    onClick={() => setMenuOpen(false)}
                     style={{
-                      background: '#E94E1B',
-                      color: '#fff',
+                      position: 'absolute',
+                      top: 20,
+                      right: 20,
+                      background: 'transparent',
                       border: 'none',
-                      padding: '12px 20px',
-                      borderRadius: 4,
-                      fontWeight: 600,
+                      color: '#fff',
+                      fontSize: 28,
                       cursor: 'pointer',
-                      fontSize: 16,
-                      marginTop: 8
+                      padding: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
                     }}
                   >
-                    Home
+                    <FaTimes />
                   </button>
+                  <div style={{ 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    gap: 32,
+                    marginTop: 80
+                  }}>
+                    <a onClick={() => { onNavigateToHome('about'); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 20, fontWeight: 600, cursor: 'pointer' }}>About Us</a>
+                    <a onClick={() => { onNavigateToDetection(); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 20, fontWeight: 600, cursor: 'pointer' }}>Service</a>
+                    <a style={{ color: '#fff', textDecoration: 'none', fontSize: 20, fontWeight: 600, cursor: 'default' }}>Resources</a>
+                  </div>
+                  <div style={{ marginTop: 'auto', paddingBottom: 40 }}>
+                    <button onClick={() => { onNavigateToLogin(); setMenuOpen(false); }} style={{ background: '#1a1a1a', color: '#fff', border: 'none', padding: '18px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 18, width: '100%' }}>Log in</button>
+                  </div>
                 </div>
-              </div>
+              </>
             )}
           </>
         ) : (
@@ -141,7 +168,6 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome, 
             <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>About us</a>
             <a onClick={onNavigateToDetection} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Services</a>
             <a style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'default', fontWeight: 600 }}>Resources</a>
-            <a onClick={() => onNavigateToHome('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>How to use</a>
             <button 
               onClick={onNavigateToHome}
               style={{
@@ -254,15 +280,27 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome, 
             onMouseLeave={(e) => e.currentTarget.style.borderColor = '#2a2a2a'}
           >
             <div style={{ 
-              background: 'linear-gradient(180deg, #2a2a2a 0%, #333 100%)',
+              background: '#2a2a2a',
               minHeight: isMobile ? 200 : 350,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#333',
-              fontSize: 14
+              overflow: 'hidden',
+              position: 'relative'
             }}>
-              Featured Image
+              <img 
+                src={featuredArticle.image} 
+                alt={featuredArticle.title}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0
+                }}
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 14px;">Image not available</div>';
+                }}
+              />
             </div>
             <div style={{ padding: isMobile ? 20 : 40 }}>
               <div style={{ 
@@ -407,13 +445,22 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome, 
                   <div style={{ 
                     background: '#2a2a2a',
                     height: 200,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#666',
-                    fontSize: 12
+                    overflow: 'hidden',
+                    position: 'relative'
                   }}>
-                    Article Image
+                    <img 
+                      src={article.image} 
+                      alt={article.title}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                      }}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 12px;">Image not available</div>';
+                      }}
+                    />
                   </div>
                   <div style={{ padding: 24 }}>
                     <div style={{ 
@@ -483,35 +530,32 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome, 
         borderTop: 'none',
         margin: 0
       }}>
-        {/* Top Section */}
         <div style={{ 
-          display: 'flex', 
-          flexDirection: isMobile ? 'column' : 'row',
-          justifyContent: 'space-between',
-          alignItems: isMobile ? 'flex-start' : 'center',
           maxWidth: 1400,
-          margin: '0 auto',
-          paddingBottom: 30,
-          borderBottom: '1px solid rgba(255,255,255,0.2)',
-          gap: isMobile ? 20 : 0
+          margin: '0 auto'
         }}>
+          {/* Logo */}
           <div 
             onClick={onNavigateToHome}
             style={{ 
               fontSize: isMobile ? 28 : 36, 
               fontWeight: 700, 
               color: '#fff',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              marginBottom: isMobile ? 24 : 30
             }}
           >
             FACT.IT
           </div>
           
+          {/* Links Section */}
           <div style={{ 
-            display: 'flex', 
+            display: isMobile ? 'flex' : 'flex',
             flexDirection: isMobile ? 'column' : 'row',
-            gap: isMobile ? 12 : 40,
-            alignItems: isMobile ? 'flex-start' : 'center'
+            gap: isMobile ? 16 : 40,
+            paddingBottom: isMobile ? 24 : 30,
+            borderBottom: '1px solid rgba(255,255,255,0.2)',
+            marginBottom: isMobile ? 24 : 30
           }}>
             <a onClick={() => onNavigateToHome('about')} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>ABOUT US</a>
             <a onClick={onNavigateToDetection} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>SERVICE</a>
@@ -519,24 +563,21 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome, 
             <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>TERMS</a>
             <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>PRIVACY POLICY</a>
           </div>
-        </div>
 
-        {/* Bottom Section */}
-        <div style={{ 
-          display: 'flex', 
-          flexDirection: isMobile ? 'column' : 'row',
-          justifyContent: 'space-between',
-          alignItems: isMobile ? 'flex-start' : 'center',
-          maxWidth: 1400,
-          margin: '0 auto',
-          paddingTop: 30,
-          gap: isMobile ? 12 : 0
-        }}>
-          <div style={{ color: '#fff', fontSize: 14 }}>
-            © 2025 Fact.it All rights reserved
-          </div>
-          <div style={{ color: '#fff', fontSize: 14 }}>
-            support@factit.com
+          {/* Bottom Section */}
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: isMobile ? 'column' : 'row',
+            justifyContent: 'space-between',
+            alignItems: isMobile ? 'flex-start' : 'center',
+            gap: isMobile ? 8 : 0
+          }}>
+            <div style={{ color: '#fff', fontSize: 14 }}>
+              © 2025 Fact.it All rights reserved
+            </div>
+            <div style={{ color: '#fff', fontSize: 14 }}>
+              support@factit.com
+            </div>
           </div>
         </div>
       </footer>
