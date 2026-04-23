@@ -15,6 +15,13 @@ try:
 except ImportError:
     init_history_table = None
 
+# Import email service
+try:
+    from backend.email_service import send_reset_email, send_welcome_email
+except ImportError:
+    send_reset_email = None
+    send_welcome_email = None
+
 
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
 ALGORITHM = "HS256"
@@ -206,15 +213,13 @@ def get_or_create_google_user(email: str, full_name: str) -> dict:
 
 
 def create_reset_token(email: str) -> str:
-    """Create password reset token"""
+    """Create password reset token and send email"""
     user = get_user_by_email(email)
     
     if not user:
         # Don't reveal if email exists or not (security)
-        raise HTTPException(
-            status_code=status.HTTP_200_OK,
-            detail="If email exists, reset link has been sent"
-        )
+        # Still return success message
+        return None
     
     # Create reset token
     token_data = {
@@ -237,6 +242,14 @@ def create_reset_token(email: str) -> str:
     
     conn.commit()
     conn.close()
+    
+    # Send reset email
+    if send_reset_email:
+        send_reset_email(
+            to_email=email,
+            reset_token=token,
+            user_name=user.get("full_name", "User")
+        )
     
     return token
 

@@ -279,14 +279,12 @@ async def login(credentials: UserLogin) -> TokenResponse:
 
 @app.post("/auth/forgot-password")
 async def forgot_password(data: ForgotPassword) -> dict:
-    """Request password reset token"""
-    token = create_reset_token(data.email)
+    """Request password reset token and send email"""
+    create_reset_token(data.email)
     
-    # In production, send this token via email
-    # For now, return it in response (development only)
+    # Always return success message (don't reveal if email exists)
     return {
-        "message": "If email exists, reset link has been sent",
-        "reset_token": token  # Remove this in production
+        "message": "If your email is registered, you will receive a password reset link shortly. Please check your inbox and spam folder."
     }
 
 
