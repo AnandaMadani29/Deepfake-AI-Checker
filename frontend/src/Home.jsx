@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { FaShieldAlt, FaRobot, FaCheckCircle, FaHistory, FaArrowUp, FaChevronDown, FaChevronUp, FaYoutube, FaInstagram, FaLinkedin } from 'react-icons/fa'
+import { FaShieldAlt, FaRobot, FaCheckCircle, FaHistory, FaArrowUp, FaChevronDown, FaChevronUp, FaYoutube, FaInstagram, FaLinkedin, FaBars, FaTimes } from 'react-icons/fa'
 import { HiLightningBolt, HiShieldCheck, HiUpload, HiPhotograph, HiDocumentText, HiClock } from 'react-icons/hi'
 import { BiAnalyse } from 'react-icons/bi'
 import { MdSecurity, MdVerified } from 'react-icons/md'
@@ -120,19 +120,19 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
       {/* Navbar - Floating Design (without logo) */}
       <nav style={{ 
         position: 'absolute',
-        top: 20,
-        right: 60,
-        width: isMobile ? 'calc(100% - 40px)' : 'auto',
-        background: 'rgba(13, 13, 13, 0.8)',
-        backdropFilter: 'blur(10px)',
-        padding: isMobile ? '16px 20px' : '12px 20px',
+        top: isMobile ? 30 : 20,
+        right: isMobile ? 20 : 60,
+        width: 'auto',
+        background: isMobile ? 'transparent' : 'rgba(13, 13, 13, 0.8)',
+        backdropFilter: isMobile ? 'none' : 'blur(10px)',
+        padding: isMobile ? '0' : '12px 20px',
         display: 'flex',
-        justifyContent: isMobile ? 'flex-end' : 'flex-end',
+        justifyContent: 'flex-end',
         alignItems: 'center',
         gap: 12,
-        borderRadius: 8,
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)',
+        borderRadius: isMobile ? 0 : 8,
+        border: isMobile ? 'none' : '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: isMobile ? 'none' : '0 4px 24px rgba(0, 0, 0, 0.4)',
         zIndex: 1000
       }}>
         
@@ -142,22 +142,28 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               style={{
-                background: 'transparent',
-                border: 'none',
+                background: 'rgba(13, 13, 13, 0.8)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
                 color: '#fff',
                 fontSize: 24,
                 cursor: 'pointer',
-                padding: 8
+                padding: 12,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 8,
+                boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)'
               }}
             >
-              {menuOpen ? '✕' : '☰'}
+              {menuOpen ? <FaTimes /> : <FaBars />}
             </button>
             {menuOpen && (
               <div style={{
                 position: 'absolute',
                 top: 'calc(100% + 10px)',
-                left: 0,
                 right: 0,
+                minWidth: 200,
                 background: 'rgba(13, 13, 13, 0.95)',
                 backdropFilter: 'blur(10px)',
                 borderRadius: 12,
@@ -293,7 +299,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
         minHeight: isMobile ? 'auto' : '100vh',
         position: 'relative'
       }}>
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, width: '100%' }}>
           <h1 style={{ 
             fontSize: isMobile ? 40 : 72, 
             fontWeight: 700, 
@@ -310,26 +316,49 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
           <p style={{ 
             fontSize: isMobile ? 15 : 17, 
             color: '#999', 
-            margin: isMobile ? '24px 0 32px 0' : '32px 0 48px 0',
+            margin: isMobile ? '24px 0 0 0' : '32px 0 48px 0',
             lineHeight: 1.7,
             maxWidth: 520
           }}>
             Verify image authenticity using advanced machine learning. Protect yourself from manipulated media with our state-of-the-art detection system.
           </p>
-          <div style={{ display: 'flex', gap: 16, flexDirection: isMobile ? 'column' : 'row' }}>
+          
+          {/* Hero Image - Mobile Only (between text and buttons) */}
+          {isMobile && (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '32px 0' }}>
+              <div style={{ 
+                width: 280, 
+                height: 280, 
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                {/* Corner brackets - Top Left */}
+                <div style={{ position: 'absolute', top: -10, left: -10, width: 40, height: 40, borderTop: '2px solid rgba(255,255,255,0.3)', borderLeft: '2px solid rgba(255,255,255,0.3)' }}></div>
+                <div style={{ position: 'absolute', top: -10, right: -10, width: 40, height: 40, borderTop: '2px solid rgba(255,255,255,0.3)', borderRight: '2px solid rgba(255,255,255,0.3)' }}></div>
+                <div style={{ position: 'absolute', bottom: -10, left: -10, width: 40, height: 40, borderBottom: '2px solid rgba(255,255,255,0.3)', borderLeft: '2px solid rgba(255,255,255,0.3)' }}></div>
+                <div style={{ position: 'absolute', bottom: -10, right: -10, width: 40, height: 40, borderBottom: '2px solid rgba(255,255,255,0.3)', borderRight: '2px solid rgba(255,255,255,0.3)' }}></div>
+                <img src="/hero-illustration.png" alt="AI Face Detection Mesh" style={{ width: '100%', height: '100%', objectFit: 'contain', opacity: 0.9 }} />
+              </div>
+            </div>
+          )}
+          
+          <div style={{ display: 'flex', gap: isMobile ? 12 : 16, flexDirection: 'row', flexWrap: 'wrap', marginTop: isMobile ? 0 : 0 }}>
             <button 
               onClick={onNavigateToDetection}
               style={{
                 background: '#E94E1B',
                 color: '#fff',
                 border: 'none',
-                padding: isMobile ? '16px 32px' : '18px 40px',
+                padding: isMobile ? '14px 24px' : '18px 40px',
                 borderRadius: 6,
                 fontWeight: 600,
                 cursor: 'pointer',
-                fontSize: isMobile ? 15 : 16,
+                fontSize: isMobile ? 14 : 16,
                 transition: 'all 0.2s',
-                boxShadow: '0 4px 12px rgba(233, 78, 27, 0.3)'
+                boxShadow: '0 4px 12px rgba(233, 78, 27, 0.3)',
+                flex: isMobile ? '1' : '0'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = '#d43e0f';
@@ -349,12 +378,13 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
                 background: 'transparent',
                 color: '#fff',
                 border: '2px solid #333',
-                padding: isMobile ? '16px 32px' : '18px 40px',
+                padding: isMobile ? '14px 24px' : '18px 40px',
                 borderRadius: 6,
                 fontWeight: 600,
                 cursor: 'pointer',
-                fontSize: isMobile ? 15 : 16,
-                transition: 'all 0.2s'
+                fontSize: isMobile ? 14 : 16,
+                transition: 'all 0.2s',
+                flex: isMobile ? '1' : '0'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = '#E94E1B';
@@ -369,7 +399,8 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
           </div>
         </div>
         
-        {/* Hero Image - 3D Face Mesh */}
+        {/* Hero Image - Desktop Only */}
+        {!isMobile && (
         <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <div style={{ 
             width: isMobile ? 300 : 500, 
@@ -436,6 +467,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
             />
           </div>
         </div>
+        )}
       </section>
 
       {/* About Us Section */}

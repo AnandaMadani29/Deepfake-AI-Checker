@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useRef } from 'react'
 import toast from 'react-hot-toast'
-import { FaUpload, FaCheckCircle, FaTimesCircle, FaRobot, FaExclamationTriangle, FaInfoCircle, FaChevronDown, FaChevronUp, FaDownload } from 'react-icons/fa'
+import { FaUpload, FaCheckCircle, FaTimesCircle, FaRobot, FaExclamationTriangle, FaInfoCircle, FaChevronDown, FaChevronUp, FaDownload, FaBars, FaTimes } from 'react-icons/fa'
 import { HiPhotograph, HiLightningBolt } from 'react-icons/hi'
 import { MdDelete, MdWarning, MdInfo } from 'react-icons/md'
 import { BiAnalyse } from 'react-icons/bi'
@@ -22,6 +22,7 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
   const [processingIndex, setProcessingIndex] = useState(-1)
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
   const [expandedResults, setExpandedResults] = useState({})
+  const [menuOpen, setMenuOpen] = useState(false)
   const fileInputRef = useRef(null)
 
   React.useEffect(() => {
@@ -307,42 +308,110 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
       {/* Navbar - Floating Design */}
       <nav style={{ 
         position: 'absolute',
-        top: 20,
-        right: 60,
-        width: isMobile ? 'calc(100% - 40px)' : 'auto',
-        background: 'rgba(13, 13, 13, 0.8)',
-        backdropFilter: 'blur(10px)',
-        padding: isMobile ? '16px 20px' : '12px 20px',
+        top: isMobile ? 30 : 20,
+        right: isMobile ? 20 : 60,
+        width: 'auto',
+        background: isMobile ? 'transparent' : 'rgba(13, 13, 13, 0.8)',
+        backdropFilter: isMobile ? 'none' : 'blur(10px)',
+        padding: isMobile ? '0' : '12px 20px',
         display: 'flex',
-        justifyContent: isMobile ? 'flex-end' : 'flex-end',
+        justifyContent: 'flex-end',
         alignItems: 'center',
-        gap: 24,
-        borderRadius: 8,
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)',
+        gap: isMobile ? 12 : 24,
+        borderRadius: isMobile ? 0 : 8,
+        border: isMobile ? 'none' : '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: isMobile ? 'none' : '0 4px 24px rgba(0, 0, 0, 0.4)',
         zIndex: 1000
       }}>
-        <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>About us</a>
-        <a onClick={onNavigateToArticles} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Resources</a>
-        <a onClick={() => onNavigateToHome('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>How to use</a>
-        <button 
-          onClick={() => onNavigateToHome()}
-          style={{
-            background: '#E94E1B',
-            color: '#fff',
-            border: 'none',
-            padding: '10px 20px',
-            borderRadius: 4,
-            fontWeight: 600,
-            cursor: 'pointer',
-            fontSize: 14,
-            transition: 'background 0.2s'
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.background = '#d43e0f'}
-          onMouseLeave={(e) => e.currentTarget.style.background = '#E94E1B'}
-        >
-          Home
-        </button>
+        {isMobile ? (
+          // Mobile Menu
+          <>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              style={{
+                background: 'rgba(13, 13, 13, 0.8)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                color: '#fff',
+                fontSize: 24,
+                cursor: 'pointer',
+                padding: 12,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 8,
+                boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)'
+              }}
+            >
+              {menuOpen ? <FaTimes /> : <FaBars />}
+            </button>
+            {menuOpen && (
+              <div style={{
+                position: 'absolute',
+                top: 'calc(100% + 10px)',
+                right: 0,
+                minWidth: 200,
+                background: 'rgba(13, 13, 13, 0.95)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: 12,
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                padding: '20px',
+                zIndex: 999,
+                boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)'
+              }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <a onClick={() => { onNavigateToHome('about'); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 16, cursor: 'pointer', padding: '12px 0', borderBottom: '1px solid #2a2a2a' }}>About us</a>
+                  <a onClick={() => { onNavigateToArticles(); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 16, cursor: 'pointer', padding: '12px 0', borderBottom: '1px solid #2a2a2a' }}>Resources</a>
+                  <a onClick={() => { onNavigateToHome('how-to-use'); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 16, cursor: 'pointer', padding: '12px 0', borderBottom: '1px solid #2a2a2a' }}>How to use</a>
+                  {user && (
+                    <a onClick={() => { onNavigateToHistory(); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 16, cursor: 'pointer', padding: '12px 0', borderBottom: '1px solid #2a2a2a' }}>History</a>
+                  )}
+                  <button 
+                    onClick={() => { onNavigateToHome(); setMenuOpen(false); }}
+                    style={{
+                      background: '#E94E1B',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '12px 20px',
+                      borderRadius: 4,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      fontSize: 16,
+                      marginTop: 8
+                    }}
+                  >
+                    Home
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          // Desktop Menu
+          <>
+            <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>About us</a>
+            <a onClick={onNavigateToArticles} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Resources</a>
+            <a onClick={() => onNavigateToHome('how-to-use')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>How to use</a>
+            <button 
+              onClick={() => onNavigateToHome()}
+              style={{
+                background: '#E94E1B',
+                color: '#fff',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: 4,
+                fontWeight: 600,
+                cursor: 'pointer',
+                fontSize: 14,
+                transition: 'background 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#d43e0f'}
+              onMouseLeave={(e) => e.currentTarget.style.background = '#E94E1B'}
+            >
+              Home
+            </button>
+          </>
+        )}
       </nav>
 
 
@@ -420,7 +489,8 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
                 fontSize: isMobile ? 14 : 15,
                 transition: 'all 0.2s',
                 whiteSpace: 'nowrap',
-                flexShrink: 0
+                flexShrink: 0,
+                width: isMobile ? '100%' : 'auto'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = '#fff';
@@ -446,7 +516,7 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
           alignItems: 'flex-start'
         }}>
           {/* Upload Area */}
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, width: '100%', order: isMobile ? 2 : 1 }}>
             <div
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
@@ -862,14 +932,16 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
               e.currentTarget.style.boxShadow = 'none';
             }}
             style={{ 
-              flex: 1, 
+              flex: 1,
+              width: '100%',
               height: isMobile ? 280 : 380,
               position: 'relative',
               borderRadius: 8,
               overflow: 'hidden',
               border: '2px solid #2a2a2a',
               transition: 'all 0.3s ease',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              order: isMobile ? 1 : 2
             }}>
             <div style={{ 
               display: 'flex',
