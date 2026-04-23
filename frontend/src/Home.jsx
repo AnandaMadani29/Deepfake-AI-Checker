@@ -662,7 +662,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
           gap: isMobile ? 30 : 40
         }}>
           {/* Step 1: Upload Your Image */}
-          <div style={{ 
+          <div className="animate-fade-in-up" style={{ 
             background: '#1a1a1a',
             padding: isMobile ? '30px 20px' : '40px',
             borderRadius: 12,
@@ -731,14 +731,15 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
           </div>
 
           {/* Step 2: Detect Image */}
-          <div style={{ 
+          <div className="animate-fade-in-up" style={{ 
             background: '#1a1a1a',
             padding: isMobile ? '30px 20px' : '40px',
             borderRadius: 12,
             border: '2px solid #333',
             textAlign: 'left',
             transition: 'all 0.3s ease',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            animationDelay: '0.1s'
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'translateY(-5px)';
@@ -1042,7 +1043,9 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
                 a: "Yes! You can use the basic detection feature without an account. Creating a free account allows you to save detection history and download detailed PDF reports."
               }
             ].map((faq, idx) => (
-              <FAQItem key={idx} question={faq.q} answer={faq.a} />
+              <div key={idx} className="animate-fade-in-up" style={{ animationDelay: `${idx * 0.1}s` }}>
+                <FAQItem question={faq.q} answer={faq.a} />
+              </div>
             ))}
           </div>
         </div>

@@ -1,10 +1,11 @@
 import React from 'react'
-import { FaClock, FaUser, FaArrowRight, FaShareAlt } from 'react-icons/fa'
+import { FaClock, FaUser, FaBars, FaTimes, FaArrowRight, FaShareAlt } from 'react-icons/fa'
 import { HiArrowLeft } from 'react-icons/hi'
 import { getArticleById, getRelatedArticles } from './articlesData'
 
 export default function ArticleDetail({ articleId, onNavigateToArticles, onNavigateToArticleDetail, onNavigateToHome }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768)
+  const [menuOpen, setMenuOpen] = React.useState(false)
 
   React.useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768)
@@ -106,11 +107,59 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
         >
           Fact.it
         </div>
-        <nav style={{ display: 'flex', gap: isMobile ? 20 : 40, fontSize: 14 }}>
-          <a onClick={onNavigateToHome} style={{ color: '#999', cursor: 'pointer', textDecoration: 'none' }}>Home</a>
-          <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', cursor: 'pointer', textDecoration: 'none' }}>About</a>
-          <a onClick={onNavigateToArticles} style={{ color: '#E94E1B', cursor: 'pointer', textDecoration: 'none' }}>Resources</a>
-        </nav>
+        
+        {isMobile ? (
+          // Mobile Burger Menu
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              style={{
+                background: 'rgba(13, 13, 13, 0.8)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                color: '#fff',
+                fontSize: 24,
+                cursor: 'pointer',
+                padding: 12,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 8,
+                boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)'
+              }}
+            >
+              {menuOpen ? <FaTimes /> : <FaBars />}
+            </button>
+            {menuOpen && (
+              <div style={{
+                position: 'absolute',
+                top: 'calc(100% + 10px)',
+                right: 0,
+                minWidth: 200,
+                background: 'rgba(13, 13, 13, 0.95)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: 12,
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                padding: '20px',
+                zIndex: 999,
+                boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)'
+              }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <a onClick={() => { onNavigateToHome(); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 16, cursor: 'pointer', padding: '12px 0', borderBottom: '1px solid #2a2a2a' }}>Home</a>
+                  <a onClick={() => { onNavigateToHome('about'); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 16, cursor: 'pointer', padding: '12px 0', borderBottom: '1px solid #2a2a2a' }}>About</a>
+                  <a onClick={() => { onNavigateToArticles(); setMenuOpen(false); }} style={{ color: '#E94E1B', textDecoration: 'none', fontSize: 16, cursor: 'pointer', padding: '12px 0', borderBottom: '1px solid #2a2a2a', fontWeight: 600 }}>Resources</a>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          // Desktop Nav
+          <nav style={{ display: 'flex', gap: 40, fontSize: 14 }}>
+            <a onClick={onNavigateToHome} style={{ color: '#999', cursor: 'pointer', textDecoration: 'none' }}>Home</a>
+            <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', cursor: 'pointer', textDecoration: 'none' }}>About</a>
+            <a onClick={onNavigateToArticles} style={{ color: '#E94E1B', cursor: 'pointer', textDecoration: 'none' }}>Resources</a>
+          </nav>
+        )}
       </header>
 
       {/* Back Button */}
