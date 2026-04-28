@@ -4,6 +4,7 @@ import { FaUpload, FaCheckCircle, FaTimesCircle, FaRobot, FaExclamationTriangle,
 import { HiPhotograph, HiLightningBolt } from 'react-icons/hi'
 import { MdDelete, MdWarning, MdInfo } from 'react-icons/md'
 import { BiAnalyse } from 'react-icons/bi'
+import Logo from './components/Logo'
 
 const DEFAULT_API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 const MAX_FILES = 10
@@ -280,29 +281,13 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
   return (
     <div style={{ minHeight: '100vh', background: '#1a1a1a', color: '#fff', display: 'flex', flexDirection: 'column', margin: 0, position: 'relative' }}>
       {/* Logo - Fixed on Page */}
-      <div 
-        onClick={() => onNavigateToHome()}
-        style={{ 
-          position: 'absolute',
-          top: isMobile ? 30 : 40,
-          left: isMobile ? 20 : 60,
-          fontSize: isMobile ? 20 : 24, 
-          fontWeight: 700, 
-          letterSpacing: 1,
-          zIndex: 1001,
-          cursor: 'pointer',
-          transition: 'all 0.3s ease'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.color = '#E94E1B';
-          e.currentTarget.style.transform = 'scale(1.05)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.color = '#fff';
-          e.currentTarget.style.transform = 'scale(1)';
-        }}
-      >
-        Fact.it
+      <div style={{
+        position: 'absolute',
+        top: isMobile ? 30 : 40,
+        left: isMobile ? 20 : 60,
+        zIndex: 1001
+      }}>
+        <Logo onClick={onNavigateToHome} isMobile={isMobile} variant="header" />
       </div>
 
       {/* Navbar - Floating Design */}
@@ -1896,20 +1881,7 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
             marginBottom: isMobile ? 24 : 30
           }}>
             {/* Logo - Larger */}
-            <div 
-              onClick={() => onNavigateToHome()}
-              style={{ 
-                fontSize: isMobile ? 36 : 56, 
-                fontWeight: 700, 
-                color: '#fff',
-                fontFamily: 'Georgia, serif',
-                letterSpacing: 2,
-                lineHeight: 1,
-                cursor: 'pointer'
-              }}
-            >
-              FACT.IT
-            </div>
+            <Logo onClick={() => onNavigateToHome()} isMobile={isMobile} variant="footer" />
             
             {/* Links Section - Aligned with logo center */}
             <div style={{ 
@@ -1938,7 +1910,7 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
               © 2025 Fact.it All rights reserved
             </div>
             <div style={{ color: '#fff', fontSize: 13 }}>
-              support@factit.com
+              factit.support@gmail.com
             </div>
           </div>
         </div>

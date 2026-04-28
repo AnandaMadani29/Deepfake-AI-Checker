@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
+import Logo from './components/Logo'
 
 const DEFAULT_API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
@@ -142,16 +143,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
         left: isMobile ? 20 : 40,
         zIndex: 3
       }}>
-        <h1 style={{ 
-          fontSize: isMobile ? 24 : 32, 
-          fontWeight: 400, 
-          color: '#fff',
-          margin: 0,
-          fontFamily: 'Georgia, serif',
-          letterSpacing: 1
-        }}>
-          Fact.it
-        </h1>
+        <Logo onClick={undefined} isMobile={isMobile} variant="header" />
       </div>
 
       {/* Back Button - Mobile Only (Icon) */}

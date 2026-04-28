@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
-import { FaShieldAlt, FaRobot, FaCheckCircle, FaHistory, FaArrowUp, FaChevronDown, FaChevronUp, FaYoutube, FaInstagram, FaLinkedin, FaBars, FaTimes } from 'react-icons/fa'
+import { FaShieldAlt, FaRobot, FaCheckCircle, FaHistory, FaArrowUp, FaPlus, FaMinus, FaYoutube, FaInstagram, FaLinkedin, FaBars, FaTimes } from 'react-icons/fa'
 import { HiLightningBolt, HiShieldCheck, HiUpload, HiPhotograph, HiDocumentText, HiClock } from 'react-icons/hi'
 import { BiAnalyse } from 'react-icons/bi'
 import { MdSecurity, MdVerified } from 'react-icons/md'
+import Logo from './components/Logo'
 
 // FAQ Item Component
 function FAQItem({ question, answer }) {
@@ -35,7 +36,7 @@ function FAQItem({ question, answer }) {
         }}>
           {question}
         </h3>
-        {isOpen ? <FaChevronUp size={16} color="#E94E1B" /> : <FaChevronDown size={16} color="#999" />}
+        {isOpen ? <FaMinus size={16} color="#E94E1B" /> : <FaPlus size={16} color="#999" />}
       </div>
       {isOpen && (
         <div style={{ 
@@ -99,22 +100,9 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
         position: 'absolute',
         top: isMobile ? 30 : 40,
         left: isMobile ? 20 : 60,
-        fontSize: isMobile ? 20 : 24, 
-        fontWeight: 700, 
-        letterSpacing: 1,
-        zIndex: 1001,
-        cursor: 'pointer',
-        transition: 'all 0.3s ease'
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.color = '#E94E1B';
-        e.currentTarget.style.transform = 'scale(1.05)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.color = '#fff';
-        e.currentTarget.style.transform = 'scale(1)';
+        zIndex: 1001
       }}>
-        Fact.it
+        <Logo onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} isMobile={isMobile} variant="header" />
       </div>
 
       {/* Navbar - Floating Design (without logo) */}
@@ -388,7 +376,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
             </div>
           )}
           
-          <div style={{ display: 'flex', gap: isMobile ? 12 : 16, flexDirection: 'row', flexWrap: 'wrap', marginTop: isMobile ? 0 : 0 }}>
+          <div style={{ display: 'flex', gap: isMobile ? 12 : 16, flexDirection: 'row', marginTop: isMobile ? 0 : 0 }}>
             <button 
               onClick={onNavigateToDetection}
               style={{
@@ -402,7 +390,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
                 fontSize: isMobile ? 14 : 16,
                 transition: 'all 0.2s',
                 boxShadow: '0 4px 12px rgba(233, 78, 27, 0.3)',
-                flex: isMobile ? '1' : '0'
+                whiteSpace: 'nowrap'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = '#d43e0f';
@@ -428,7 +416,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
                 cursor: 'pointer',
                 fontSize: isMobile ? 14 : 16,
                 transition: 'all 0.2s',
-                flex: isMobile ? '1' : '0'
+                whiteSpace: 'nowrap'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = '#E94E1B';
@@ -706,7 +694,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
           gap: isMobile ? 30 : 40
         }}>
           {/* Step 1: Upload Your Image */}
-          <div className="animate-fade-in-up" style={{ 
+          <div style={{ 
             background: '#1a1a1a',
             padding: isMobile ? '30px 20px' : '40px',
             borderRadius: 12,
@@ -775,7 +763,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
           </div>
 
           {/* Step 2: Detect Image */}
-          <div className="animate-fade-in-up" style={{ 
+          <div style={{ 
             background: '#1a1a1a',
             padding: isMobile ? '30px 20px' : '40px',
             borderRadius: 12,
@@ -1118,16 +1106,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
             marginBottom: isMobile ? 24 : 30
           }}>
             {/* Logo - Larger */}
-            <div style={{ 
-              fontSize: isMobile ? 36 : 56, 
-              fontWeight: 700, 
-              color: '#fff',
-              fontFamily: 'Georgia, serif',
-              letterSpacing: 2,
-              lineHeight: 1
-            }}>
-              FACT.IT
-            </div>
+            <Logo onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} isMobile={isMobile} variant="footer" />
             
             {/* Links Section - Aligned with logo center */}
             <div style={{ 
@@ -1156,7 +1135,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
               © 2025 Fact.it All rights reserved
             </div>
             <div style={{ color: '#fff', fontSize: 13 }}>
-              support@factit.com
+              factit.support@gmail.com
             </div>
           </div>
         </div>

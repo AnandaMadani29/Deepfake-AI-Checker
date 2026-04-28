@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FaArrowRight, FaClock, FaUser, FaBars, FaTimes } from 'react-icons/fa'
 import { HiSearch } from 'react-icons/hi'
+import Logo from './components/Logo'
 import { articles, categories, getArticlesByCategory } from './articlesData'
 
 export default function Articles({ onNavigateToArticleDetail, onNavigateToHome, onNavigateToDetection }) {
@@ -31,29 +32,13 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome, 
       position: 'relative'
     }}>
       {/* Logo - Fixed on Page */}
-      <div 
-        onClick={onNavigateToHome}
-        style={{ 
-          position: 'absolute',
-          top: isMobile ? 30 : 40,
-          left: isMobile ? 20 : 60,
-          fontSize: isMobile ? 20 : 24, 
-          fontWeight: 700, 
-          letterSpacing: 1,
-          zIndex: 1001,
-          cursor: 'pointer',
-          transition: 'all 0.3s ease'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.color = '#E94E1B';
-          e.currentTarget.style.transform = 'scale(1.05)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.color = '#fff';
-          e.currentTarget.style.transform = 'scale(1)';
-        }}
-      >
-        Fact.it
+      <div style={{
+        position: 'absolute',
+        top: isMobile ? 30 : 40,
+        left: isMobile ? 20 : 60,
+        zIndex: 1001
+      }}>
+        <Logo onClick={onNavigateToHome} isMobile={isMobile} variant="header" />
       </div>
 
       {/* Navbar - Floating Design */}
@@ -546,20 +531,7 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome, 
             marginBottom: isMobile ? 24 : 30
           }}>
             {/* Logo - Larger */}
-            <div 
-              onClick={onNavigateToHome}
-              style={{ 
-                fontSize: isMobile ? 36 : 56, 
-                fontWeight: 700, 
-                color: '#fff',
-                fontFamily: 'Georgia, serif',
-                letterSpacing: 2,
-                lineHeight: 1,
-                cursor: 'pointer'
-              }}
-            >
-              FACT.IT
-            </div>
+            <Logo onClick={onNavigateToHome} isMobile={isMobile} variant="footer" />
             
             {/* Links Section - Aligned with logo center */}
             <div style={{ 
@@ -588,7 +560,7 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome, 
               © 2025 Fact.it All rights reserved
             </div>
             <div style={{ color: '#fff', fontSize: 13 }}>
-              support@factit.com
+              factit.support@gmail.com
             </div>
           </div>
         </div>

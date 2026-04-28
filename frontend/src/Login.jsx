@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import Logo from './components/Logo'
 
 const DEFAULT_API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
@@ -185,19 +186,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
         left: isMobile ? 20 : 40,
         zIndex: 3
       }}>
-        <h1
-          onClick={isMobile ? undefined : onNavigateToHome}
-          style={{ 
-          fontSize: isMobile ? 24 : 32, 
-          fontWeight: 400, 
-          color: '#fff',
-          margin: 0,
-          fontFamily: 'Georgia, serif',
-          letterSpacing: 1,
-          cursor: (isMobile || !onNavigateToHome) ? 'default' : 'pointer'
-        }}>
-          Fact.it
-        </h1>
+        <Logo onClick={isMobile ? undefined : onNavigateToHome} isMobile={isMobile} variant="header" />
       </div>
 
       {/* Back Button - Mobile Only (Icon) */}
@@ -229,47 +218,6 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
         </button>
       )}
 
-      {/* Back to Home Button - Top Right - Desktop Only */}
-      {!isMobile && (
-        <button
-          type="button"
-          onClick={onNavigateToHome}
-          style={{
-            position: 'absolute',
-            top: 40,
-            right: 40,
-            zIndex: 3,
-            background: 'rgba(255,255,255,0.1)',
-            border: '1px solid rgba(255,255,255,0.3)',
-            color: '#fff',
-            padding: '10px 20px',
-            borderRadius: 8,
-            cursor: onNavigateToHome ? 'pointer' : 'not-allowed',
-            fontSize: 14,
-            fontWeight: 500,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            transition: 'all 0.2s ease'
-          }}
-          disabled={!onNavigateToHome}
-          onMouseEnter={(e) => {
-            if (onNavigateToHome) {
-              e.currentTarget.style.background = 'rgba(255,255,255,0.15)'
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
-            }
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(255,255,255,0.1)'
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'
-          }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-          </svg>
-          Back to Home
-        </button>
-      )}
 
       {/* Form Content */}
       <div className="animate-fade-in-up" style={{

@@ -1,5 +1,6 @@
-import React from 'react'
-import { FaClock, FaUser, FaBars, FaTimes, FaArrowRight, FaShareAlt } from 'react-icons/fa'
+import React, { useState, useEffect } from 'react'
+import { FaClock, FaUser, FaArrowLeft, FaBars, FaTimes } from 'react-icons/fa'
+import Logo from './components/Logo'
 import { HiArrowLeft } from 'react-icons/hi'
 import { getArticleById, getRelatedArticles } from './articlesData'
 
@@ -97,16 +98,7 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        <div 
-          onClick={onNavigateToHome}
-          style={{ 
-            fontSize: 24, 
-            fontWeight: 700,
-            cursor: 'pointer'
-          }}
-        >
-          Fact.it
-        </div>
+        <Logo onClick={onNavigateToHome} isMobile={isMobile} variant="header" />
         
         {isMobile ? (
           // Mobile Burger Menu

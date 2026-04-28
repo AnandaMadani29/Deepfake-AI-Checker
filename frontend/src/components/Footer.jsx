@@ -68,7 +68,7 @@ export default function Footer({ onNavigateToHome, onNavigateToDetection, onNavi
           © 2025 Fact.it All rights reserved
         </div>
         <div style={{ color: '#fff', fontSize: 14 }}>
-          support@factit.com
+          factit.support@gmail.com
         </div>
       </div>
     </footer>
