@@ -198,10 +198,28 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
           </div>
         ) : (
           // Desktop Nav
-          <nav style={{ display: 'flex', gap: 40, fontSize: 14 }}>
-            <a onClick={onNavigateToHome} style={{ color: '#999', cursor: 'pointer', textDecoration: 'none' }}>Home</a>
-            <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', cursor: 'pointer', textDecoration: 'none' }}>About</a>
-            <a onClick={onNavigateToArticles} style={{ color: '#E94E1B', cursor: 'pointer', textDecoration: 'none' }}>Resources</a>
+          <nav style={{ display: 'flex', gap: 24, fontSize: 14, alignItems: 'center' }}>
+            <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', cursor: 'pointer', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>About us</a>
+            <a onClick={onNavigateToDetection} style={{ color: '#999', cursor: 'pointer', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Services</a>
+            <a style={{ color: '#fff', cursor: 'default', textDecoration: 'none', fontWeight: 600 }}>Resources</a>
+            <button 
+              onClick={onNavigateToHome}
+              style={{
+                background: '#E94E1B',
+                color: '#fff',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: 4,
+                fontWeight: 600,
+                cursor: 'pointer',
+                fontSize: 14,
+                transition: 'background 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#d43e0f'}
+              onMouseLeave={(e) => e.currentTarget.style.background = '#E94E1B'}
+            >
+              Home
+            </button>
           </nav>
         )}
       </header>

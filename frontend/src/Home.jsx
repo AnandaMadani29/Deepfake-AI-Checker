@@ -129,7 +129,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
         display: 'flex',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        gap: 12,
+        gap: 24,
         borderRadius: isMobile ? 0 : 8,
         border: isMobile ? 'none' : '1px solid rgba(255, 255, 255, 0.1)',
         boxShadow: isMobile ? 'none' : '0 4px 24px rgba(0, 0, 0, 0.4)',
@@ -421,7 +421,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
               style={{
                 background: 'transparent',
                 color: '#fff',
-                border: '2px solid #333',
+                border: '2px solid #666',
                 padding: isMobile ? '14px 24px' : '18px 40px',
                 borderRadius: 6,
                 fontWeight: 600,
@@ -435,7 +435,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
                 e.currentTarget.style.color = '#E94E1B';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = '#333';
+                e.currentTarget.style.borderColor = '#666';
                 e.currentTarget.style.color = '#fff';
               }}>
               Learn More
