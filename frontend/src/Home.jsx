@@ -1106,30 +1106,42 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
           maxWidth: 1400,
           margin: '0 auto'
         }}>
-          {/* Logo */}
-          <div style={{ 
-            fontSize: isMobile ? 28 : 36, 
-            fontWeight: 700, 
-            color: '#fff',
-            marginBottom: isMobile ? 24 : 30
-          }}>
-            FACT.IT
-          </div>
-          
-          {/* Links Section */}
-          <div style={{ 
-            display: isMobile ? 'flex' : 'flex',
+          {/* Main Footer Content */}
+          <div style={{
+            display: 'flex',
             flexDirection: isMobile ? 'column' : 'row',
-            gap: isMobile ? 16 : 40,
+            alignItems: isMobile ? 'flex-start' : 'center',
+            justifyContent: isMobile ? 'flex-start' : 'space-between',
+            gap: isMobile ? 24 : 0,
             paddingBottom: isMobile ? 24 : 30,
             borderBottom: '1px solid rgba(255,255,255,0.2)',
             marginBottom: isMobile ? 24 : 30
           }}>
-            <a onClick={() => scrollToSection('about')} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>ABOUT US</a>
-            <a onClick={onNavigateToDetection} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>SERVICE</a>
-            <a onClick={onNavigateToArticles} style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>RESOURCES</a>
-            <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>TERMS</a>
-            <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>PRIVACY POLICY</a>
+            {/* Logo - Larger */}
+            <div style={{ 
+              fontSize: isMobile ? 36 : 56, 
+              fontWeight: 700, 
+              color: '#fff',
+              fontFamily: 'Georgia, serif',
+              letterSpacing: 2,
+              lineHeight: 1
+            }}>
+              FACT.IT
+            </div>
+            
+            {/* Links Section - Aligned with logo center */}
+            <div style={{ 
+              display: 'flex',
+              flexDirection: isMobile ? 'column' : 'row',
+              gap: isMobile ? 12 : 48,
+              alignItems: isMobile ? 'flex-start' : 'center'
+            }}>
+              <a onClick={() => scrollToSection('about')} style={{ color: '#fff', textDecoration: 'none', fontSize: 13, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s', textTransform: 'uppercase' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>About Us</a>
+              <a onClick={onNavigateToDetection} style={{ color: '#fff', textDecoration: 'none', fontSize: 13, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s', textTransform: 'uppercase' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>Service</a>
+              <a onClick={onNavigateToArticles} style={{ color: '#fff', textDecoration: 'none', fontSize: 13, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s', textTransform: 'uppercase' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>Resources</a>
+              <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 13, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s', textTransform: 'uppercase' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>Terms</a>
+              <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 13, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s', textTransform: 'uppercase' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>Privacy Policy</a>
+            </div>
           </div>
 
           {/* Bottom Section */}
@@ -1140,10 +1152,10 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
             alignItems: isMobile ? 'flex-start' : 'center',
             gap: isMobile ? 8 : 0
           }}>
-            <div style={{ color: '#fff', fontSize: 14 }}>
+            <div style={{ color: '#fff', fontSize: 13 }}>
               © 2025 Fact.it All rights reserved
             </div>
-            <div style={{ color: '#fff', fontSize: 14 }}>
+            <div style={{ color: '#fff', fontSize: 13 }}>
               support@factit.com
             </div>
           </div>
