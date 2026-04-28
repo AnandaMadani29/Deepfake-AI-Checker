@@ -114,7 +114,7 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome, 
                 <div style={{
                   position: 'fixed',
                   top: 0,
-                  left: 0,
+                  right: 0,
                   bottom: 0,
                   width: '280px',
                   maxWidth: '80vw',
@@ -123,15 +123,15 @@ export default function Articles({ onNavigateToArticleDetail, onNavigateToHome, 
                   display: 'flex',
                   flexDirection: 'column',
                   padding: '20px',
-                  boxShadow: '4px 0 24px rgba(0, 0, 0, 0.3)',
-                  animation: 'slideInLeft 0.3s ease-in-out'
+                  boxShadow: '-4px 0 24px rgba(0, 0, 0, 0.3)',
+                  animation: 'slideInRight 0.3s ease-in-out'
                 }}>
                   <button
                     onClick={() => setMenuOpen(false)}
                     style={{
                       position: 'absolute',
-                      top: 20,
-                      right: 20,
+                      top: 30,
+                      right: 30,
                       background: 'transparent',
                       border: 'none',
                       color: '#fff',
