@@ -376,21 +376,22 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
             </div>
           )}
           
-          <div style={{ display: 'flex', gap: isMobile ? 12 : 16, flexDirection: 'row', marginTop: isMobile ? 0 : 0 }}>
+          <div style={{ display: 'flex', gap: isMobile ? 12 : 16, flexDirection: 'row', marginTop: isMobile ? 0 : 0, width: '100%' }}>
             <button 
               onClick={onNavigateToDetection}
               style={{
                 background: '#E94E1B',
                 color: '#fff',
                 border: 'none',
-                padding: isMobile ? '14px 24px' : '18px 40px',
+                padding: isMobile ? '14px 20px' : '18px 40px',
                 borderRadius: 6,
                 fontWeight: 600,
                 cursor: 'pointer',
                 fontSize: isMobile ? 14 : 16,
                 transition: 'all 0.2s',
                 boxShadow: '0 4px 12px rgba(233, 78, 27, 0.3)',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
+                flex: isMobile ? 1 : '0 1 auto'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = '#d43e0f';
@@ -410,13 +411,14 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
                 background: 'transparent',
                 color: '#fff',
                 border: '2px solid #666',
-                padding: isMobile ? '14px 24px' : '18px 40px',
+                padding: isMobile ? '14px 20px' : '18px 40px',
                 borderRadius: 6,
                 fontWeight: 600,
                 cursor: 'pointer',
                 fontSize: isMobile ? 14 : 16,
                 transition: 'all 0.2s',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
+                flex: isMobile ? 1 : '0 1 auto'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = '#E94E1B';
