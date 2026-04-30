@@ -535,12 +535,13 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
 
         {/* Upload Area + Example Images Row */}
         <div style={{ 
-          maxWidth: 1200, 
+          maxWidth: isMobile ? '100%' : 1400, 
           margin: '0 auto',
           display: 'flex',
           flexDirection: isMobile ? 'column' : 'row',
           gap: isMobile ? 30 : 40,
-          alignItems: 'flex-start'
+          alignItems: 'flex-start',
+          padding: isMobile ? 0 : '0 20px'
         }}>
           {/* Upload Area */}
           <div style={{ flex: 1, width: '100%', order: isMobile ? 2 : 1 }}>
@@ -636,86 +637,6 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
               />
             </div>
 
-            {files.length > 0 && results.length === 0 && (
-              <div style={{ marginTop: 20, textAlign: 'left' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                  <div style={{ color: '#999', fontSize: 14 }}>
-                    <strong style={{ color: '#fff' }}>{files.length}</strong> image{files.length > 1 ? 's' : ''} selected
-                  </div>
-                  <button
-                    onClick={clearAll}
-                    style={{
-                      background: 'transparent',
-                      color: '#f87171',
-                      border: '1px solid #5b1a2e',
-                      padding: '6px 12px',
-                      borderRadius: 4,
-                      fontSize: 12,
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Clear All
-                  </button>
-                </div>
-                <div style={{ 
-                  background: '#1a1a1a',
-                  borderRadius: 8,
-                  padding: 12,
-                  border: '1px solid #2a2a2a'
-                }}>
-                  {files.map((f, idx) => (
-                    <div 
-                      key={f.id} 
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = '#E94E1B';
-                        e.currentTarget.style.transform = 'translateX(4px)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = '#2a2a2a';
-                        e.currentTarget.style.transform = 'translateX(0)';
-                      }}
-                      style={{ 
-                        display: 'flex', 
-                        justifyContent: 'space-between', 
-                        alignItems: 'center',
-                        padding: '12px',
-                        background: processingIndex === idx ? '#2a1a15' : 'transparent',
-                        borderRadius: 6,
-                        border: '1px solid #2a2a2a',
-                        transition: 'all 0.3s ease',
-                        cursor: 'pointer'
-                      }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 }}>
-                        <img src={f.preview} alt="" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }} />
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ color: '#fff', fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {f.file.name}
-                          </div>
-                          <div style={{ color: '#666', fontSize: 11 }}>
-                            {(f.file.size / 1024).toFixed(1)} KB
-                            {processingIndex === idx && <span style={{ color: '#E94E1B', marginLeft: 8 }}>Processing...</span>}
-                          </div>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => removeFile(f.id)}
-                        disabled={loading}
-                        style={{
-                          background: 'transparent',
-                          color: '#999',
-                          border: 'none',
-                          cursor: loading ? 'not-allowed' : 'pointer',
-                          fontSize: 18,
-                          padding: 4
-                        }}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Single Image Result moved below Detect Now button */}
             {false && results.length === 1 && results[0] && (
@@ -1044,6 +965,126 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
             </div>
           </div>
         </div>
+
+        {/* Selected Images - Full Width */}
+        {files.length > 0 && results.length === 0 && (
+          <div style={{ 
+            width: '100%',
+            marginTop: 40,
+            padding: isMobile ? '0 20px' : '0 40px'
+          }}>
+            <div style={{ 
+              maxWidth: 1600,
+              margin: '0 auto'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <div style={{ color: '#999', fontSize: 14 }}>
+                  <strong style={{ color: '#fff' }}>{files.length}</strong> image{files.length > 1 ? 's' : ''} selected
+                </div>
+                <button
+                  onClick={clearAll}
+                  style={{
+                    background: 'transparent',
+                    color: '#f87171',
+                    border: '1px solid #5b1a2e',
+                    padding: '8px 16px',
+                    borderRadius: 4,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#2a1120';
+                    e.currentTarget.style.borderColor = '#f87171';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.borderColor = '#5b1a2e';
+                  }}
+                >
+                  Clear All
+                </button>
+              </div>
+              <div style={{ 
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 12
+              }}>
+                {files.map((f, idx) => (
+                  <div 
+                    key={f.id} 
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#E94E1B';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = '#2a2a2a';
+                    }}
+                    style={{ 
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '12px 16px',
+                      background: processingIndex === idx ? '#2a1a15' : '#0d0d0d',
+                      borderRadius: 6,
+                      border: '1px solid #2a2a2a',
+                      transition: 'all 0.2s ease'
+                    }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 16, flex: 1, minWidth: 0 }}>
+                      <img 
+                        src={f.preview} 
+                        alt="" 
+                        style={{ 
+                          width: 60, 
+                          height: 60, 
+                          objectFit: 'cover', 
+                          borderRadius: 4,
+                          flexShrink: 0
+                        }} 
+                      />
+                      <div style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
+                        <div style={{ color: '#fff', fontSize: 14, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 4 }}>
+                          {f.file.name}
+                        </div>
+                        <div style={{ color: '#666', fontSize: 12 }}>
+                          {(f.file.size / 1024).toFixed(1)} KB
+                          {processingIndex === idx && <span style={{ color: '#E94E1B', marginLeft: 8 }}>● Processing...</span>}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => removeFile(f.id)}
+                      disabled={loading}
+                      style={{
+                        background: 'transparent',
+                        color: '#999',
+                        border: 'none',
+                        cursor: loading ? 'not-allowed' : 'pointer',
+                        fontSize: 24,
+                        padding: '4px 8px',
+                        marginLeft: 16,
+                        transition: 'all 0.2s',
+                        flexShrink: 0
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!loading) {
+                          e.currentTarget.style.color = '#f87171';
+                          e.currentTarget.style.transform = 'scale(1.2)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = '#999';
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Detect Now Button - Centered */}
         <div style={{ 
