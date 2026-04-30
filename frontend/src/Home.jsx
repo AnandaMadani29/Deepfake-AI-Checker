@@ -217,7 +217,7 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
                     {user ? (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                         <div style={{ color: '#fff', fontSize: 16, marginBottom: 8 }}>
-                          Hi, <span style={{ fontWeight: 600 }}>{user.full_name || user.email}</span>
+                          <span style={{ fontWeight: 600 }}>Hi,</span> <span style={{ fontWeight: 600 }}>{user.full_name || user.email}</span>
                         </div>
                         <button onClick={() => { onNavigateToHistory(); setMenuOpen(false); }} style={{ background: '#1a1a1a', color: '#fff', border: 'none', padding: '16px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 16, width: '100%' }}>History</button>
                         <button onClick={() => { onLogout(); setMenuOpen(false); }} style={{ background: 'transparent', color: '#fff', border: '1px solid #fff', padding: '16px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 16, width: '100%' }}>Logout</button>
@@ -266,8 +266,8 @@ export default function Home({ onNavigateToDetection, onNavigateToLogin, onNavig
               >
                 History
               </button>
-              <span style={{ color: '#999', fontSize: 14 }}>
-                Hi, <span style={{ color: '#fff', fontWeight: 600 }}>{user.full_name || user.email}</span>
+              <span style={{ color: '#fff', fontSize: 14 }}>
+                <span style={{ fontWeight: 600 }}>Hi,</span> <span style={{ fontWeight: 600 }}>{user.full_name || user.email}</span>
               </span>
               <button
                 onClick={onLogout}

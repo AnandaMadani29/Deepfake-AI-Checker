@@ -3,6 +3,13 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from typing import Optional
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from backend/.env file
+backend_dir = Path(__file__).parent
+dotenv_path = backend_dir / '.env'
+load_dotenv(dotenv_path)
 
 
 def send_reset_email(to_email: str, reset_token: str, user_name: str = "User") -> bool:
@@ -125,7 +132,7 @@ def send_reset_email(to_email: str, reset_token: str, user_name: str = "User") -
             <div class="content">
                 <h2 style="color: #333; margin-top: 0;">Reset Your Password</h2>
                 
-                <p>Hi {user_name},</p>
+                <p><strong>Hi,</strong> {user_name}</p>
                 
                 <p>We received a request to reset your password for your Fact.it account. Click the button below to create a new password:</p>
                 
@@ -273,7 +280,7 @@ def send_welcome_email(to_email: str, user_name: str) -> bool:
             <div class="content">
                 <h2 style="color: #333; margin-top: 0;">Welcome to Fact.it!</h2>
                 
-                <p>Hi {user_name},</p>
+                <p><strong>Hi,</strong> {user_name}</p>
                 
                 <p>Thank you for joining Fact.it - your trusted deepfake detection system.</p>
                 

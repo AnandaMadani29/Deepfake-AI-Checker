@@ -6,6 +6,7 @@ import Detection from './Detection.jsx'
 import Login from './Login.jsx'
 import Register from './Register.jsx'
 import ForgotPassword from './ForgotPassword.jsx'
+import ResetPassword from './ResetPassword.jsx'
 import History from './History.jsx'
 import Articles from './Articles.jsx'
 import ArticleDetail from './ArticleDetail.jsx'
@@ -29,6 +30,14 @@ export default function App() {
         localStorage.removeItem('access_token')
         localStorage.removeItem('user')
       }
+    }
+    
+    // Check URL for reset-password route
+    const path = window.location.pathname
+    const params = new URLSearchParams(window.location.search)
+    
+    if (path === '/reset-password' || params.has('token')) {
+      setCurrentPage('reset-password')
     }
     
     setIsAuthChecked(true)
@@ -72,34 +81,84 @@ export default function App() {
     )
   }
 
+  // Toaster component for all pages
+  const toasterComponent = (
+    <Toaster
+      position="top-right"
+      toastOptions={{
+        duration: 3000,
+        style: {
+          background: '#0d0d0d',
+          color: '#fff',
+          border: '1px solid #2a2a2a',
+          borderRadius: '8px',
+          padding: '12px 16px',
+        },
+        success: {
+          iconTheme: {
+            primary: '#4ade80',
+            secondary: '#0d0d0d',
+          },
+        },
+        error: {
+          iconTheme: {
+            primary: '#f87171',
+            secondary: '#0d0d0d',
+          },
+        },
+      }}
+    />
+  )
+
   // Route handling
   if (currentPage === 'login') {
     return (
-      <Login 
-        onNavigateToHome={() => setCurrentPage('home')}
-        onNavigateToRegister={() => setCurrentPage('register')}
-        onNavigateToForgotPassword={() => setCurrentPage('forgot-password')}
-        onLoginSuccess={handleLoginSuccess}
-      />
+      <>
+        {toasterComponent}
+        <Login 
+          onNavigateToHome={() => setCurrentPage('home')}
+          onNavigateToRegister={() => setCurrentPage('register')}
+          onNavigateToForgotPassword={() => setCurrentPage('forgot-password')}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      </>
     )
   }
 
   if (currentPage === 'register') {
     return (
-      <Register 
-        onNavigateToHome={() => setCurrentPage('home')}
-        onNavigateToLogin={() => setCurrentPage('login')}
-        onRegisterSuccess={handleRegisterSuccess}
-      />
+      <>
+        {toasterComponent}
+        <Register 
+          onNavigateToHome={() => setCurrentPage('home')}
+          onNavigateToLogin={() => setCurrentPage('login')}
+          onRegisterSuccess={handleRegisterSuccess}
+        />
+      </>
     )
   }
 
   if (currentPage === 'forgot-password') {
     return (
-      <ForgotPassword 
-        onNavigateToHome={() => setCurrentPage('home')}
-        onNavigateToLogin={() => setCurrentPage('login')}
-      />
+      <>
+        {toasterComponent}
+        <ForgotPassword 
+          onNavigateToHome={() => setCurrentPage('home')}
+          onNavigateToLogin={() => setCurrentPage('login')}
+        />
+      </>
+    )
+  }
+
+  if (currentPage === 'reset-password') {
+    return (
+      <>
+        {toasterComponent}
+        <ResetPassword 
+          onNavigateToHome={() => setCurrentPage('home')}
+          onNavigateToLogin={() => setCurrentPage('login')}
+        />
+      </>
     )
   }
 

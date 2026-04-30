@@ -127,7 +127,7 @@ def decode_token(token: str) -> dict:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token has expired"
         )
-    except jwt.JWTError:
+    except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials"
@@ -244,12 +244,15 @@ def create_reset_token(email: str) -> str:
     conn.close()
     
     # Send reset email
-    if send_reset_email:
-        send_reset_email(
-            to_email=email,
-            reset_token=token,
-            user_name=user.get("full_name", "User")
-        )
+    try:
+        if send_reset_email is not None:
+            send_reset_email(
+                to_email=email,
+                reset_token=token,
+                user_name=user.get("full_name", "User")
+            )
+    except Exception as e:
+        print(f"Failed to send reset email: {e}")
     
     return token
 
