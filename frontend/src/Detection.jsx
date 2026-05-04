@@ -280,43 +280,201 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
 
   return (
     <div style={{ minHeight: '100vh', background: '#1a1a1a', color: '#fff', display: 'flex', flexDirection: 'column', margin: 0, position: 'relative' }}>
-      {/* Logo - Fixed on Page */}
-      <div style={{
-        position: 'absolute',
-        top: isMobile ? 30 : 40,
-        left: isMobile ? 20 : 60,
-        zIndex: 1001
-      }}>
-        <Logo onClick={onNavigateToHome} isMobile={isMobile} variant="header" />
-      </div>
-
-      {/* Navbar - Floating Design */}
-      <nav style={{ 
-        position: 'absolute',
-        top: isMobile ? 30 : 20,
-        right: isMobile ? 20 : 60,
-        width: 'auto',
-        background: isMobile ? 'transparent' : 'rgba(13, 13, 13, 0.8)',
-        backdropFilter: isMobile ? 'none' : 'blur(10px)',
-        padding: isMobile ? '0' : '12px 20px',
-        display: 'flex',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        gap: isMobile ? 12 : 24,
-        borderRadius: isMobile ? 0 : 8,
-        border: isMobile ? 'none' : '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: isMobile ? 'none' : '0 4px 24px rgba(0, 0, 0, 0.4)',
-        zIndex: 1000
-      }}>
-        {isMobile ? (
-          // Mobile Menu
-          <>
+      {/* ── MOBILE SIDEBAR: overlay + drawer di ROOT level ── */}
+      {isMobile && menuOpen && (
+        <>
+          <div
+            onClick={() => setMenuOpen(false)}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0,0,0,0.5)',
+              zIndex: 99998,
+              animation: 'fadeIn 0.3s ease-in-out'
+            }}
+          />
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              width: '280px',
+              maxWidth: '80vw',
+              background: '#FF5733',
+              zIndex: 99999,
+              display: 'flex',
+              flexDirection: 'column',
+              padding: '20px',
+              boxShadow: '-4px 0 24px rgba(0,0,0,0.3)',
+              animation: 'slideInRight 0.3s ease-in-out'
+            }}
+          >
             <button
-              onClick={() => setMenuOpen(!menuOpen)}
+              onClick={() => setMenuOpen(false)}
               style={{
-                background: 'rgba(13, 13, 13, 0.8)',
+                position: 'absolute',
+                top: 30,
+                right: 30,
+                background: 'transparent',
+                border: 'none',
+                color: '#fff',
+                fontSize: 28,
+                cursor: 'pointer',
+                padding: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <FaTimes />
+            </button>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 32,
+                marginTop: 80
+              }}
+            >
+              <a
+                onClick={() => {
+                  onNavigateToHome('about');
+                  setMenuOpen(false);
+                }}
+                style={{
+                  color: '#fff',
+                  textDecoration: 'none',
+                  fontSize: 20,
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                About Us
+              </a>
+              <a
+                onClick={() => {
+                  onNavigateToHome();
+                  setMenuOpen(false);
+                }}
+                style={{
+                  color: '#fff',
+                  textDecoration: 'none',
+                  fontSize: 20,
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                Service
+              </a>
+              <a
+                onClick={() => {
+                  onNavigateToArticles();
+                  setMenuOpen(false);
+                }}
+                style={{
+                  color: '#fff',
+                  textDecoration: 'none',
+                  fontSize: 20,
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                Resources
+              </a>
+            </div>
+            <div style={{ marginTop: 'auto', paddingBottom: 40 }}>
+              {user ? (
+                <div
+                  style={{ display: 'flex', flexDirection: 'column', gap: 12 }}
+                >
+                  <div style={{ color: '#fff', fontSize: 16, marginBottom: 8 }}>
+                    <span style={{ fontWeight: 600 }}>Hi,</span>{' '}
+                    <span style={{ fontWeight: 600 }}>
+                      {user.full_name || user.email}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      onNavigateToHistory();
+                      setMenuOpen(false);
+                    }}
+                    style={{
+                      background: '#1a1a1a',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '16px',
+                      borderRadius: 4,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      fontSize: 16,
+                      width: '100%'
+                    }}
+                  >
+                    History
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    onNavigateToHome();
+                    setMenuOpen(false);
+                  }}
+                  style={{
+                    background: '#1a1a1a',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '18px',
+                    borderRadius: 4,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    fontSize: 18,
+                    width: '100%'
+                  }}
+                >
+                  Home
+                </button>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* ── LOGO: hanya position absolute di desktop ── */}
+      {!isMobile && (
+        <div style={{ position: 'absolute', top: 40, left: 60, zIndex: 1001 }}>
+          <Logo onClick={onNavigateToHome} isMobile={isMobile} variant="header" />
+        </div>
+      )}
+
+      {/* ── NAVBAR ── */}
+      <nav
+        style={{
+          position: 'absolute',
+          top: isMobile ? 30 : 20,
+          right: isMobile ? 0 : 60,
+          left: isMobile ? 0 : 'auto',
+          padding: isMobile ? '0 20px' : 0,
+          display: 'flex',
+          justifyContent: isMobile ? 'space-between' : 'flex-end',
+          alignItems: 'center',
+          zIndex: 1000
+        }}
+      >
+        {isMobile ? (
+          <>
+            {/* Logo kiri — zIndex ikut nav (1000), di bawah overlay */}
+            <Logo onClick={onNavigateToHome} isMobile={isMobile} variant="header" />
+            {/* Hamburger kanan */}
+            <button
+              onClick={() => setMenuOpen(true)}
+              style={{
+                background: 'rgba(13,13,13,0.8)',
                 backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255,255,255,0.1)',
                 color: '#fff',
                 fontSize: 24,
                 cursor: 'pointer',
@@ -325,101 +483,69 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderRadius: 8,
-                boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)'
+                boxShadow: '0 4px 24px rgba(0,0,0,0.4)'
               }}
             >
-              {menuOpen ? <FaTimes /> : <FaBars />}
+              <FaBars />
             </button>
-            {menuOpen && (
-              <>
-                {/* Overlay */}
-                <div 
-                  onClick={() => setMenuOpen(false)}
-                  style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'rgba(0, 0, 0, 0.5)',
-                    zIndex: 9998,
-                    animation: 'fadeIn 0.3s ease-in-out'
-                  }}
-                />
-                
-                {/* Side Drawer */}
-                <div style={{
-                  position: 'fixed',
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  width: '280px',
-                  maxWidth: '80vw',
-                  background: '#FF5733',
-                  zIndex: 9999,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  padding: '20px',
-                  boxShadow: '-4px 0 24px rgba(0, 0, 0, 0.3)',
-                  animation: 'slideInRight 0.3s ease-in-out'
-                }}>
-                  {/* Close Button */}
-                  <button
-                    onClick={() => setMenuOpen(false)}
-                    style={{
-                      position: 'absolute',
-                      top: 30,
-                      right: 30,
-                      background: 'transparent',
-                      border: 'none',
-                      color: '#fff',
-                      fontSize: 28,
-                      cursor: 'pointer',
-                      padding: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <FaTimes />
-                  </button>
-
-                  {/* Menu Items */}
-                  <div style={{ 
-                    display: 'flex', 
-                    flexDirection: 'column', 
-                    gap: 32,
-                    marginTop: 80
-                  }}>
-                    <a onClick={() => { onNavigateToHome('about'); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 20, fontWeight: 600, cursor: 'pointer' }}>About Us</a>
-                    <a onClick={() => { onNavigateToHome(); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 20, fontWeight: 600, cursor: 'pointer' }}>Service</a>
-                    <a onClick={() => { onNavigateToArticles(); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 20, fontWeight: 600, cursor: 'pointer' }}>Resources</a>
-                  </div>
-
-                  {/* Login/History Button at Bottom */}
-                  <div style={{ marginTop: 'auto', paddingBottom: 40 }}>
-                    {user ? (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                        <div style={{ color: '#fff', fontSize: 16, marginBottom: 8 }}>
-                          <span style={{ fontWeight: 600 }}>Hi,</span> <span style={{ fontWeight: 600 }}>{user.full_name || user.email}</span>
-                        </div>
-                        <button onClick={() => { onNavigateToHistory(); setMenuOpen(false); }} style={{ background: '#1a1a1a', color: '#fff', border: 'none', padding: '16px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 16, width: '100%' }}>History</button>
-                        <button onClick={() => { onLogout(); setMenuOpen(false); }} style={{ background: 'transparent', color: '#fff', border: '1px solid #fff', padding: '16px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 16, width: '100%' }}>Logout</button>
-                      </div>
-                    ) : (
-                      <button onClick={() => { onNavigateToLogin(); setMenuOpen(false); }} style={{ background: '#1a1a1a', color: '#fff', border: 'none', padding: '18px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 18, width: '100%' }}>Log in</button>
-                    )}
-                  </div>
-                </div>
-              </>
-            )}
           </>
         ) : (
-          // Desktop Menu
-          <>
-            <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>About us</a>
-            <a onClick={onNavigateToArticles} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Resources</a>
-            <button 
+          <div
+            style={{
+              display: 'flex',
+              gap: 24,
+              alignItems: 'center',
+              background: 'rgba(13,13,13,0.8)',
+              backdropFilter: 'blur(10px)',
+              padding: '12px 20px',
+              borderRadius: 8,
+              border: '1px solid rgba(255,255,255,0.1)',
+              boxShadow: '0 4px 24px rgba(0,0,0,0.4)'
+            }}
+          >
+            <a
+              onClick={() => onNavigateToHome('about')}
+              style={{
+                color: '#999',
+                textDecoration: 'none',
+                fontSize: 14,
+                cursor: 'pointer',
+                transition: 'color 0.2s'
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = '#999')}
+            >
+              About us
+            </a>
+            <a
+              onClick={() => onNavigateToHome()}
+              style={{
+                color: '#999',
+                textDecoration: 'none',
+                fontSize: 14,
+                cursor: 'pointer',
+                transition: 'color 0.2s'
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = '#999')}
+            >
+              Services
+            </a>
+            <a
+              onClick={onNavigateToArticles}
+              style={{
+                color: '#999',
+                textDecoration: 'none',
+                fontSize: 14,
+                cursor: 'pointer',
+                transition: 'color 0.2s'
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = '#999')}
+            >
+              Resources
+            </a>
+            <button
               onClick={() => onNavigateToHome()}
               style={{
                 background: '#E94E1B',
@@ -432,12 +558,16 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
                 fontSize: 14,
                 transition: 'background 0.2s'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#d43e0f'}
-              onMouseLeave={(e) => e.currentTarget.style.background = '#E94E1B'}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = '#d43e0f')
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = '#E94E1B')
+              }
             >
               Home
             </button>
-          </>
+          </div>
         )}
       </nav>
 
