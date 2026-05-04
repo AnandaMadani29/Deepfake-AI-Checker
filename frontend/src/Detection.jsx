@@ -592,7 +592,7 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
           margin: '0 auto 32px',
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'flex-start',
+          alignItems: 'center',
           gap: 20,
           flexDirection: isMobile ? 'column' : 'row'
         }}>
