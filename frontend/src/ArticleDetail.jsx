@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FaClock, FaUser, FaArrowLeft, FaBars, FaTimes } from 'react-icons/fa'
+import { FaClock, FaUser, FaArrowLeft, FaBars, FaTimes, FaShareAlt, FaArrowRight } from 'react-icons/fa'
 import Logo from './components/Logo'
 import { HiArrowLeft } from 'react-icons/hi'
 import { getArticleById, getRelatedArticles } from './articlesData'
@@ -86,29 +86,171 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
   return (
     <div style={{ 
       minHeight: '100vh',
-      background: '#000',
+      background: '#1a1a1a',
       color: '#fff',
-      margin: 0
+      position: 'relative'
     }}>
-      {/* Header */}
-      <header style={{ 
-        padding: isMobile ? '20px' : '20px 60px',
-        borderBottom: '1px solid #2a2a2a',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        <Logo onClick={onNavigateToHome} isMobile={isMobile} variant="header" />
-        
-        {isMobile ? (
-          // Mobile Burger Menu
-          <div style={{ position: 'relative' }}>
+      {/* ── MOBILE SIDEBAR: overlay + drawer di ROOT level ── */}
+      {isMobile && menuOpen && (
+        <>
+          <div
+            onClick={() => setMenuOpen(false)}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0,0,0,0.5)',
+              zIndex: 99998,
+              animation: 'fadeIn 0.3s ease-in-out'
+            }}
+          />
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              width: '280px',
+              maxWidth: '80vw',
+              background: '#FF5733',
+              zIndex: 99999,
+              display: 'flex',
+              flexDirection: 'column',
+              padding: '20px',
+              boxShadow: '-4px 0 24px rgba(0,0,0,0.3)',
+              animation: 'slideInRight 0.3s ease-in-out'
+            }}
+          >
             <button
-              onClick={() => setMenuOpen(!menuOpen)}
+              onClick={() => setMenuOpen(false)}
               style={{
-                background: 'rgba(13, 13, 13, 0.8)',
+                position: 'absolute',
+                top: 30,
+                right: 30,
+                background: 'transparent',
+                border: 'none',
+                color: '#fff',
+                fontSize: 28,
+                cursor: 'pointer',
+                padding: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <FaTimes />
+            </button>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 32,
+                marginTop: 80
+              }}
+            >
+              <a
+                onClick={() => {
+                  onNavigateToHome('about');
+                  setMenuOpen(false);
+                }}
+                style={{
+                  color: '#fff',
+                  textDecoration: 'none',
+                  fontSize: 20,
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                About Us
+              </a>
+              <a
+                onClick={() => {
+                  onNavigateToHome();
+                  setMenuOpen(false);
+                }}
+                style={{
+                  color: '#fff',
+                  textDecoration: 'none',
+                  fontSize: 20,
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                Service
+              </a>
+              <a
+                onClick={() => {
+                  onNavigateToArticles();
+                  setMenuOpen(false);
+                }}
+                style={{
+                  color: '#fff',
+                  textDecoration: 'none',
+                  fontSize: 20,
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                Resources
+              </a>
+            </div>
+            <div style={{ marginTop: 'auto', paddingBottom: 40 }}>
+              <button
+                onClick={() => {
+                  onNavigateToHome();
+                  setMenuOpen(false);
+                }}
+                style={{
+                  background: '#1a1a1a',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '18px',
+                  borderRadius: 4,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: 18,
+                  width: '100%'
+                }}
+              >
+                Home
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* ── LOGO: hanya position absolute di desktop ── */}
+      {!isMobile && (
+        <div style={{ position: 'absolute', top: 40, left: 60, zIndex: 1001 }}>
+          <Logo onClick={onNavigateToHome} isMobile={isMobile} variant="header" />
+        </div>
+      )}
+
+      {/* ── NAVBAR ── */}
+      <nav
+        style={{
+          position: 'absolute',
+          top: isMobile ? 30 : 20,
+          right: isMobile ? 0 : 60,
+          left: isMobile ? 0 : 'auto',
+          padding: isMobile ? '0 20px' : 0,
+          display: 'flex',
+          justifyContent: isMobile ? 'space-between' : 'flex-end',
+          alignItems: 'center',
+          zIndex: 1000
+        }}
+      >
+        {isMobile ? (
+          <>
+            <Logo onClick={onNavigateToHome} isMobile={isMobile} variant="header" />
+            <button
+              onClick={() => setMenuOpen(true)}
+              style={{
+                background: 'rgba(13,13,13,0.8)',
                 backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255,255,255,0.1)',
                 color: '#fff',
                 fontSize: 24,
                 cursor: 'pointer',
@@ -117,84 +259,67 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderRadius: 8,
-                boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)'
+                boxShadow: '0 4px 24px rgba(0,0,0,0.4)'
               }}
             >
-              {menuOpen ? <FaTimes /> : <FaBars />}
+              <FaBars />
             </button>
-            {menuOpen && (
-              <>
-                <div 
-                  onClick={() => setMenuOpen(false)}
-                  style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'rgba(0, 0, 0, 0.5)',
-                    zIndex: 9998,
-                    animation: 'fadeIn 0.3s ease-in-out'
-                  }}
-                />
-                <div style={{
-                  position: 'fixed',
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  width: '280px',
-                  maxWidth: '80vw',
-                  background: '#FF5733',
-                  zIndex: 9999,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  padding: '20px',
-                  boxShadow: '-4px 0 24px rgba(0, 0, 0, 0.3)',
-                  animation: 'slideInRight 0.3s ease-in-out'
-                }}>
-                  <button
-                    onClick={() => setMenuOpen(false)}
-                    style={{
-                      position: 'absolute',
-                      top: 30,
-                      right: 30,
-                      background: 'transparent',
-                      border: 'none',
-                      color: '#fff',
-                      fontSize: 28,
-                      cursor: 'pointer',
-                      padding: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <FaTimes />
-                  </button>
-                  <div style={{ 
-                    display: 'flex', 
-                    flexDirection: 'column', 
-                    gap: 32,
-                    marginTop: 80
-                  }}>
-                    <a onClick={() => { onNavigateToHome('about'); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 20, fontWeight: 600, cursor: 'pointer' }}>About Us</a>
-                    <a onClick={() => { onNavigateToDetection(); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 20, fontWeight: 600, cursor: 'pointer' }}>Service</a>
-                    <a style={{ color: '#fff', textDecoration: 'none', fontSize: 20, fontWeight: 600, cursor: 'default' }}>Resources</a>
-                  </div>
-                  <div style={{ marginTop: 'auto', paddingBottom: 40 }}>
-                    <button onClick={() => { onNavigateToLogin(); setMenuOpen(false); }} style={{ background: '#1a1a1a', color: '#fff', border: 'none', padding: '18px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 18, width: '100%' }}>Log in</button>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
+          </>
         ) : (
-          // Desktop Nav
-          <nav style={{ display: 'flex', gap: 24, fontSize: 14, alignItems: 'center' }}>
-            <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', cursor: 'pointer', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>About us</a>
-            <a onClick={onNavigateToDetection} style={{ color: '#999', cursor: 'pointer', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Services</a>
-            <a style={{ color: '#fff', cursor: 'default', textDecoration: 'none', fontWeight: 600 }}>Resources</a>
-            <button 
+          <div
+            style={{
+              display: 'flex',
+              gap: 24,
+              alignItems: 'center',
+              background: 'rgba(13,13,13,0.8)',
+              backdropFilter: 'blur(10px)',
+              padding: '12px 20px',
+              borderRadius: 8,
+              border: '1px solid rgba(255,255,255,0.1)',
+              boxShadow: '0 4px 24px rgba(0,0,0,0.4)'
+            }}
+          >
+            <a
+              onClick={() => onNavigateToHome('about')}
+              style={{
+                color: '#999',
+                textDecoration: 'none',
+                fontSize: 14,
+                cursor: 'pointer',
+                transition: 'color 0.2s'
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = '#999')}
+            >
+              About us
+            </a>
+            <a
+              onClick={() => onNavigateToHome()}
+              style={{
+                color: '#999',
+                textDecoration: 'none',
+                fontSize: 14,
+                cursor: 'pointer',
+                transition: 'color 0.2s'
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = '#999')}
+            >
+              Services
+            </a>
+            <a
+              onClick={onNavigateToArticles}
+              style={{
+                color: '#fff',
+                textDecoration: 'none',
+                fontSize: 14,
+                cursor: 'pointer',
+                fontWeight: 600
+              }}
+            >
+              Resources
+            </a>
+            <button
               onClick={onNavigateToHome}
               style={{
                 background: '#E94E1B',
@@ -207,18 +332,22 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
                 fontSize: 14,
                 transition: 'background 0.2s'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#d43e0f'}
-              onMouseLeave={(e) => e.currentTarget.style.background = '#E94E1B'}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = '#d43e0f')
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = '#E94E1B')
+              }
             >
               Home
             </button>
-          </nav>
+          </div>
         )}
-      </header>
+      </nav>
 
       {/* Back Button */}
       <div style={{ 
-        padding: isMobile ? '20px' : '30px 60px',
+        padding: isMobile ? '100px 20px 20px' : '120px 60px 30px',
         maxWidth: 900,
         margin: '0 auto'
       }}>
@@ -424,48 +553,132 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
       )}
 
       {/* Footer */}
-      <footer style={{ 
-        background: 'linear-gradient(to bottom, #0d0d0d 0%, #0d0d0d 15%, rgba(13, 13, 13, 0.8) 20%, rgba(13, 13, 13, 0.5) 30%, rgba(13, 13, 13, 0.2) 40%, rgba(51, 51, 51, 0) 45%, rgba(102, 102, 102, 0.25) 60%, rgba(102, 102, 102, 0.5) 75%, rgba(102, 102, 102, 0.75) 90%, rgba(102, 102, 102, 1) 100%)', 
-        padding: isMobile ? '40px 20px' : '60px 60px',
-        borderTop: 'none'
-      }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{ 
-            display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
-            gap: 40
-          }}>
-            <div>
-              <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 16 }}>Fact.it</div>
-              <p style={{ fontSize: 14, color: '#666', lineHeight: 1.6 }}>
-                AI-powered deepfake detection to protect digital media authenticity.
-              </p>
-            </div>
-            <div>
-              <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16, color: '#222' }}>Resources</h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14, color: '#666' }}>
-                <a onClick={onNavigateToArticles} style={{ cursor: 'pointer' }}>Guidance</a>
-                <a onClick={onNavigateToArticles} style={{ cursor: 'pointer' }}>Blog</a>
-                <a onClick={onNavigateToArticles} style={{ cursor: 'pointer' }}>News</a>
-              </div>
-            </div>
-            <div>
-              <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16, color: '#222' }}>Company</h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14, color: '#666' }}>
-                <a onClick={onNavigateToHome} style={{ cursor: 'pointer' }}>About Us</a>
-                <a onClick={onNavigateToHome} style={{ cursor: 'pointer' }}>Contact</a>
-              </div>
+      <footer
+        style={{
+          background: '#E94E1B',
+          padding: isMobile ? '40px 20px' : '50px 60px'
+        }}
+      >
+        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: isMobile ? 'column' : 'row',
+              alignItems: isMobile ? 'flex-start' : 'center',
+              justifyContent: isMobile ? 'flex-start' : 'space-between',
+              gap: isMobile ? 24 : 0,
+              paddingBottom: isMobile ? 24 : 30,
+              borderBottom: '1px solid rgba(255,255,255,0.2)',
+              marginBottom: isMobile ? 24 : 30
+            }}
+          >
+            <Logo
+              onClick={onNavigateToHome}
+              isMobile={isMobile}
+              variant="footer"
+            />
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: isMobile ? 'column' : 'row',
+                gap: isMobile ? 12 : 48,
+                alignItems: isMobile ? 'flex-start' : 'center'
+              }}
+            >
+              <a
+                onClick={() => onNavigateToHome('about')}
+                style={{
+                  color: '#fff',
+                  textDecoration: 'none',
+                  fontSize: 13,
+                  cursor: 'pointer',
+                  fontWeight: 500,
+                  transition: 'opacity 0.2s',
+                  textTransform: 'uppercase'
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.7')}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+              >
+                About Us
+              </a>
+              <a
+                onClick={() => onNavigateToHome()}
+                style={{
+                  color: '#fff',
+                  textDecoration: 'none',
+                  fontSize: 13,
+                  cursor: 'pointer',
+                  fontWeight: 500,
+                  transition: 'opacity 0.2s',
+                  textTransform: 'uppercase'
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.7')}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+              >
+                Service
+              </a>
+              <a
+                onClick={onNavigateToArticles}
+                style={{
+                  color: '#fff',
+                  textDecoration: 'none',
+                  fontSize: 13,
+                  cursor: 'pointer',
+                  fontWeight: 700,
+                  textTransform: 'uppercase'
+                }}
+              >
+                Resources
+              </a>
+              <a
+                href="#"
+                style={{
+                  color: '#fff',
+                  textDecoration: 'none',
+                  fontSize: 13,
+                  cursor: 'pointer',
+                  fontWeight: 500,
+                  transition: 'opacity 0.2s',
+                  textTransform: 'uppercase'
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.7')}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+              >
+                Terms
+              </a>
+              <a
+                href="#"
+                style={{
+                  color: '#fff',
+                  textDecoration: 'none',
+                  fontSize: 13,
+                  cursor: 'pointer',
+                  fontWeight: 500,
+                  transition: 'opacity 0.2s',
+                  textTransform: 'uppercase'
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.7')}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+              >
+                Privacy Policy
+              </a>
             </div>
           </div>
-          <div style={{ 
-            marginTop: 40,
-            paddingTop: 30,
-            borderTop: '1px solid #2a2a2a',
-            textAlign: 'center',
-            fontSize: 12,
-            color: '#666'
-          }}>
-            © 2026 Fact.it. All rights reserved.
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: isMobile ? 'column' : 'row',
+              justifyContent: 'space-between',
+              alignItems: isMobile ? 'flex-start' : 'center',
+              gap: isMobile ? 8 : 0
+            }}
+          >
+            <div style={{ color: '#fff', fontSize: 13 }}>
+              © 2025 Fact.it All rights reserved
+            </div>
+            <div style={{ color: '#fff', fontSize: 13 }}>
+              factit.support@gmail.com
+            </div>
           </div>
         </div>
       </footer>

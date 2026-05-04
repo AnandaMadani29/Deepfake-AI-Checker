@@ -11,7 +11,7 @@ export const articles = [
     date: "Mar 10, 2026",
     readTime: "5 min read",
     author: "Fact.it Team",
-    image: "/articles/deepfake-guide.jpg",
+    image: "/hero-illustration.png",
     content: `
 # How to Detect Deepfake Images: A Complete Guide
 
@@ -81,7 +81,7 @@ While deepfake detection requires vigilance, combining human observation with AI
     date: "Mar 8, 2026",
     readTime: "4 min read",
     author: "Fact.it Team",
-    image: "/articles/ai-content.jpg",
+    image: "/hero-illustration.png",
     content: `
 # The Rise of AI-Generated Content: What You Need to Know
 
@@ -123,7 +123,7 @@ Learn to identify AI-generated content and use verification tools to protect you
     date: "Mar 5, 2026",
     readTime: "6 min read",
     author: "Fact.it Team",
-    image: "/articles/deep-learning.jpg",
+    image: "/hero-illustration.png",
     content: `
 # Understanding Deep Learning Models in Deepfake Detection
 
@@ -159,7 +159,7 @@ While AI detection is highly accurate, it's not perfect. Understanding limitatio
     date: "Mar 3, 2026",
     readTime: "5 min read",
     author: "Fact.it Team",
-    image: "/articles/digital-identity.jpg",
+    image: "/hero-illustration.png",
     content: `
 # Protecting Your Digital Identity from Deepfakes
 
@@ -203,7 +203,7 @@ Stay informed about new technologies and protection methods as they emerge.
     date: "Feb 28, 2026",
     readTime: "4 min read",
     author: "Fact.it Team",
-    image: "/articles/regulations.jpg",
+    image: "/hero-illustration.png",
     content: `
 # New Regulations on AI-Generated Content Worldwide
 
@@ -244,7 +244,7 @@ Understanding these regulations helps you know your rights and responsibilities.
     date: "Feb 25, 2026",
     readTime: "5 min read",
     author: "Fact.it Team",
-    image: "/articles/ethics.jpg",
+    image: "/hero-illustration.png",
     content: `
 # The Ethics of AI-Generated Images
 
@@ -285,7 +285,7 @@ Building a responsible AI ecosystem requires collaboration between technologists
     date: "Feb 20, 2026",
     readTime: "4 min read",
     author: "Fact.it Team",
-    image: "/articles/verification.jpg",
+    image: "/hero-illustration.png",
     content: `
 # Best Practices for Content Verification
 
@@ -334,7 +334,7 @@ Make verification a routine part of your digital consumption.
     date: "Feb 15, 2026",
     readTime: "5 min read",
     author: "Fact.it Team",
-    image: "/articles/future-tech.jpg",
+    image: "/hero-illustration.png",
     content: `
 # The Future of Deepfake Detection Technology
 

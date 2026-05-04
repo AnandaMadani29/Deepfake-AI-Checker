@@ -18,15 +18,44 @@ import timm
 
 # Registry semua model yang didukung
 MODEL_REGISTRY = {
+    # Base models
     "efficientnet_b0": {"timm_name": "efficientnet_b0", "params": "~4.3M"},
     "resnet50":        {"timm_name": "resnet50",         "params": "~23M"},
     "densenet121":     {"timm_name": "densenet121",      "params": "~7M"},
-    "resnet_revised":  {"timm_name": "resnet50",         "params": "~23M"},  # Custom trained ResNet50
-    "2000datasetresnet": {"timm_name": "resnet50",       "params": "~23M"},  # Custom trained ResNet50 (2000 dataset)
-    "resnet1704":      {"timm_name": "resnet50",         "params": "~23M"},  # Custom trained ResNet50 (1704 date) with multi-branch head
-    "resnet_curated_dataset": {"timm_name": "resnet50",  "params": "~23M"},  # Custom trained ResNet50 (1200 curated dataset)
-    "new_script_resnet": {"timm_name": "resnet50",       "params": "~23M"},  # Custom trained ResNet50 (new script)
-    "resnet50_fold4":  {"timm_name": "resnet50",         "params": "~23M"},  # Custom trained ResNet50 (fold 4)
+    
+    # ResNet50 variants
+    "resnet_revised":  {"timm_name": "resnet50",         "params": "~23M"},
+    "2000datasetresnet": {"timm_name": "resnet50",       "params": "~23M"},
+    "resnet1704":      {"timm_name": "resnet50",         "params": "~23M"},
+    "resnet_curated_dataset": {"timm_name": "resnet50",  "params": "~23M"},
+    "new_script_resnet": {"timm_name": "resnet50",       "params": "~23M"},
+    
+    # ResNet50 K-Fold models
+    "resnet50_fold1":  {"timm_name": "resnet50",         "params": "~23M"},
+    "resnet50_fold2":  {"timm_name": "resnet50",         "params": "~23M"},
+    "resnet50_fold3":  {"timm_name": "resnet50",         "params": "~23M"},
+    "resnet50_fold4":  {"timm_name": "resnet50",         "params": "~23M"},
+    "resnet50_fold5":  {"timm_name": "resnet50",         "params": "~23M"},
+    
+    # EfficientNet-B0 variants
+    "efficientnet_revised": {"timm_name": "efficientnet_b0", "params": "~4.3M"},
+    
+    # EfficientNet-B0 K-Fold models
+    "efficientnet_b0_fold1": {"timm_name": "efficientnet_b0", "params": "~4.3M"},
+    "efficientnet_b0_fold2": {"timm_name": "efficientnet_b0", "params": "~4.3M"},
+    "efficientnet_b0_fold3": {"timm_name": "efficientnet_b0", "params": "~4.3M"},
+    "efficientnet_b0_fold4": {"timm_name": "efficientnet_b0", "params": "~4.3M"},
+    "efficientnet_b0_fold5": {"timm_name": "efficientnet_b0", "params": "~4.3M"},
+    
+    # DenseNet121 variants
+    "densenet_revised": {"timm_name": "densenet121",     "params": "~7M"},
+    
+    # DenseNet121 K-Fold models
+    "densenet121_fold1": {"timm_name": "densenet121",    "params": "~7M"},
+    "densenet121_fold2": {"timm_name": "densenet121",    "params": "~7M"},
+    "densenet121_fold3": {"timm_name": "densenet121",    "params": "~7M"},
+    "densenet121_fold4": {"timm_name": "densenet121",    "params": "~7M"},
+    "densenet121_fold5": {"timm_name": "densenet121",    "params": "~7M"},
 }
 
 
