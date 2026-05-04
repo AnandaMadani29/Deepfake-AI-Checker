@@ -26,6 +26,7 @@ MODEL_REGISTRY = {
     "resnet1704":      {"timm_name": "resnet50",         "params": "~23M"},  # Custom trained ResNet50 (1704 date) with multi-branch head
     "resnet_curated_dataset": {"timm_name": "resnet50",  "params": "~23M"},  # Custom trained ResNet50 (1200 curated dataset)
     "new_script_resnet": {"timm_name": "resnet50",       "params": "~23M"},  # Custom trained ResNet50 (new script)
+    "resnet50_fold4":  {"timm_name": "resnet50",         "params": "~23M"},  # Custom trained ResNet50 (fold 4)
 }
 
 

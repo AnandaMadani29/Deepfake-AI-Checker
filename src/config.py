@@ -16,7 +16,7 @@ import numpy as np
 
 # ════════════════════════════════════════════════════════════
 #  ▶ GANTI MODEL DI SINI
-MODEL_NAME = "resnet_curated_dataset"   # pilihan: efficientnet_b0 | resnet50 | densenet121 | resnet_revised | 2000datasetresnet | resnet1704 | resnet_curated_dataset | new_script_resnet
+MODEL_NAME = "resnet50_fold4"   # pilihan: efficientnet_b0 | resnet50 | densenet121 | resnet_revised | 2000datasetresnet | resnet1704 | resnet_curated_dataset | new_script_resnet | resnet50_fold4
 # ════════════════════════════════════════════════════════════
 
 SEED = 42
