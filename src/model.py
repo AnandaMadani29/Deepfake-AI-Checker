@@ -23,6 +23,11 @@ MODEL_REGISTRY = {
     "resnet50":        {"timm_name": "resnet50",         "params": "~23M"},
     "densenet121":     {"timm_name": "densenet121",      "params": "~7M"},
     
+    # Best models (original trained)
+    "best_resnet50":        {"timm_name": "resnet50",         "params": "~23M"},
+    "best_efficientnet_b0": {"timm_name": "efficientnet_b0", "params": "~4.3M"},
+    "best_densenet121":     {"timm_name": "densenet121",      "params": "~7M"},
+    
     # ResNet50 variants
     "resnet_revised":  {"timm_name": "resnet50",         "params": "~23M"},
     "2000datasetresnet": {"timm_name": "resnet50",       "params": "~23M"},
