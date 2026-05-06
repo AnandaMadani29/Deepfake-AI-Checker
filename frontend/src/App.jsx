@@ -10,6 +10,7 @@ import ResetPassword from './ResetPassword.jsx'
 import History from './History.jsx'
 import Articles from './Articles.jsx'
 import ArticleDetail from './ArticleDetail.jsx'
+import Terms from './Terms.jsx'
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home')
@@ -208,6 +209,15 @@ export default function App() {
         }}
         onNavigateToHome={navigateToHome}
       />
+    )
+  }
+
+  if (currentPage === 'terms') {
+    return (
+      <>
+        {toasterComponent}
+        <Terms />
+      </>
     )
   }
 
