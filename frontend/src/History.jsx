@@ -210,6 +210,48 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
     }
   }
 
+  const handleDownloadLast50 = async () => {
+    const loadingToast = toast.loading('Generating PDF report for last 50 detections...')
+
+    try {
+      const token = localStorage.getItem('access_token')
+      
+      if (!token) {
+        throw new Error('No authentication token found')
+      }
+      
+      const response = await fetch(`${DEFAULT_API_BASE}/history/download-last-50`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.detail || 'Failed to generate PDF')
+      }
+
+      // Get the PDF blob
+      const blob = await response.blob()
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `detection_report_last50_${new Date().toISOString().split('T')[0]}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+
+      toast.success('PDF report for last 50 detections downloaded!', { id: loadingToast })
+    } catch (err) {
+      console.error('PDF download error:', err)
+      toast.error(err.message || 'Failed to download PDF report', { id: loadingToast })
+    }
+  }
+
   const handleDeleteAll = async () => {
     // If items are selected, delete only selected items
     if (selectedItems.length > 0) {
@@ -264,7 +306,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
       setLoading(true)
       try {
         const token = localStorage.getItem('access_token')
-        const response = await fetch(`${DEFAULT_API_BASE}/history/delete-all`, {
+        const response = await fetch(`${DEFAULT_API_BASE}/history`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -697,6 +739,25 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                 {selectedItems.length > 0 
                   ? `Download (${selectedItems.length})` 
                   : 'Download All'}
+              </button>
+              <button 
+                onClick={handleDownloadLast50}
+                style={{ 
+                  background: '#f59e0b', 
+                  color: '#fff', 
+                  border: 'none', 
+                  padding: '12px 24px', 
+                  borderRadius: 4, 
+                  cursor: 'pointer', 
+                  fontSize: 14, 
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8
+                }}
+              >
+                <HiDownload size={16} />
+                Download Last 50
               </button>
               <button 
                 onClick={handleDeleteAll}

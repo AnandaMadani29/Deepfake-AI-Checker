@@ -99,6 +99,14 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
       return
     }
     
+    // Get fresh data from current results state
+    const freshItem = results.find(r => r.id === item.id) || item
+    
+    console.log('[Download PDF] Original item:', item)
+    console.log('[Download PDF] Fresh item:', freshItem)
+    console.log('[Download PDF] Fresh detailed analysis:', freshItem.result?.detailed_analysis)
+    console.log('[Download PDF] Fresh first item score:', freshItem.result?.detailed_analysis?.items?.[0])
+    
     const loadingToast = toast.loading('Generating PDF report...')
 
     try {
@@ -112,7 +120,7 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
       let imageData = null
       try {
         // Convert image to base64 for PDF
-        const response = await fetch(item.preview)
+        const response = await fetch(freshItem.preview)
         const blob = await response.blob()
         imageData = await new Promise((resolve, reject) => {
           const reader = new FileReader()
@@ -129,13 +137,24 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
       }
 
       const detectionData = {
-        image_name: item.filename,
-        result_label: item.result.label,
-        prob_fake: item.result.prob_fake,
-        model_name: item.result.model_name,
+        image_name: freshItem.filename,
+        result_label: freshItem.result.label,
+        prob_fake: freshItem.result.prob_fake,
+        model_name: freshItem.result.model_name,
         created_at: new Date().toISOString(),
-        image_data: imageData // Include base64 image for PDF
+        image_data: imageData, // Include base64 image for PDF
+        detailed_analysis: freshItem.result.detailed_analysis, // Include real analysis data
+        ai_detection: freshItem.result.ai_detection // Include AI detection data
       }
+
+      console.log('[PDF Export] Detection data:', {
+        has_detailed_analysis: !!detectionData.detailed_analysis,
+        has_ai_detection: !!detectionData.ai_detection,
+        detailed_analysis_items: detectionData.detailed_analysis?.items?.length,
+        ai_detection_confidence: detectionData.ai_detection?.confidence,
+        first_item_score: detectionData.detailed_analysis?.items?.[0]?.score,
+        fresh_vs_original: freshItem === item
+      })
 
       const response = await fetch(`${DEFAULT_API_BASE}/detection/export-pdf`, {
         method: 'POST',
@@ -158,7 +177,7 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
       const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      const filename = item.filename.replace(/\.[^/.]+$/, '') // Remove extension
+      const filename = freshItem.filename.replace(/\.[^/.]+$/, '') // Remove extension
       link.download = `${filename}_detection_report.pdf`
       document.body.appendChild(link)
       link.click()
@@ -1525,44 +1544,8 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
                     );
                   })()}
 
-                  {/* Mock detailed indicators */}
-                  {[
-                    { 
-                      name: 'Unnatural Eye Reflections', 
-                      score: 90,
-                      desc: 'The eyes display limited and somewhat flat reflections, lacking the natural sparkle and complex details of real eyes.'
-                    },
-                    { 
-                      name: 'Overly Smooth Skin Texture', 
-                      score: 71,
-                      desc: 'The skin appears excessively smooth and airbrushed, lacking the fine pores and natural textures typically visible in authentic photographs.'
-                    },
-                    { 
-                      name: 'Hair Texture Anomalies', 
-                      score: 67,
-                      desc: 'The hair, especially around the edges and finer strands, sometimes appears flattened or painted, lacking natural individual strand definition and volume.'
-                    },
-                    { 
-                      name: 'Subtle Facial Distortions', 
-                      score: 63,
-                      desc: 'Minor inconsistencies in facial anatomy are present, with features appearing somewhat merged or irregular.'
-                    },
-                    { 
-                      name: 'Inconsistent Body Proportions', 
-                      score: 40,
-                      desc: 'Some body parts appear unnaturally elongated and slander in proportion to the overall body structure.'
-                    },
-                    { 
-                      name: 'Lighting Inconsistency', 
-                      score: 25,
-                      desc: 'The light interaction appears somewhat flat compared to the strong direct lighting conditions.'
-                    },
-                    { 
-                      name: 'Background Coherence', 
-                      score: 20,
-                      desc: 'The background details appear authentic and consistent with a real-world location.'
-                    }
-                  ].map((indicator, idx) => {
+                  {/* Real detailed indicators from backend */}
+                  {(results[0].result.detailed_analysis?.items || []).map((indicator, idx) => {
                     const level = indicator.score > 70 ? 'CRITICAL' : indicator.score > 50 ? 'WARNING' : 'NORMAL';
                     const bgColor = level === 'CRITICAL' ? 'rgba(220, 38, 38, 0.05)' :
                                     level === 'WARNING' ? 'rgba(245, 158, 11, 0.05)' :
@@ -1598,7 +1581,7 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
                           margin: 0,
                           textAlign: 'justify'
                         }}>
-                          {indicator.desc}
+                          {indicator.description}
                         </p>
                       </div>
                     );
@@ -1948,44 +1931,8 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
                                 </div>
                               </div>
 
-                              {/* Other Indicators */}
-                              {[
-                                { 
-                                  name: 'Unnatural Eye Reflections', 
-                                  score: 90,
-                                  desc: 'The eyes display limited and somewhat flat reflections, lacking the natural sparkle and complex details of real eyes.'
-                                },
-                                { 
-                                  name: 'Overly Smooth Skin Texture', 
-                                  score: 71,
-                                  desc: 'The skin appears excessively smooth and airbrushed, lacking the fine pores and natural textures typically visible in authentic photographs.'
-                                },
-                                { 
-                                  name: 'Hair Texture Anomalies', 
-                                  score: 67,
-                                  desc: 'The hair, especially around the edges and finer strands, sometimes appears flattened or painted, lacking natural individual strand definition and volume.'
-                                },
-                                { 
-                                  name: 'Subtle Facial Distortions', 
-                                  score: 63,
-                                  desc: 'Minor inconsistencies in facial anatomy are present, with features appearing somewhat merged or irregular.'
-                                },
-                                { 
-                                  name: 'Inconsistent Body Proportions', 
-                                  score: 40,
-                                  desc: 'Some body parts appear unnaturally elongated and slander in proportion to the overall body structure.'
-                                },
-                                { 
-                                  name: 'Lighting Inconsistency', 
-                                  score: 25,
-                                  desc: 'The light interaction appears somewhat flat compared to the strong direct lighting conditions.'
-                                },
-                                { 
-                                  name: 'Background Coherence', 
-                                  score: 20,
-                                  desc: 'The background details appear authentic and consistent with a real-world location.'
-                                }
-                              ].map((indicator, idx) => {
+                              {/* Real Indicators from backend */}
+                              {(item.result.detailed_analysis?.items || []).map((indicator, idx) => {
                                 const level = indicator.score > 70 ? 'CRITICAL' : indicator.score > 50 ? 'WARNING' : 'NORMAL';
                                 const bgColor = level === 'CRITICAL' ? 'rgba(220, 38, 38, 0.05)' :
                                                 level === 'WARNING' ? 'rgba(245, 158, 11, 0.05)' :
@@ -2011,7 +1958,7 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
                                       <span style={{ fontSize: 14, fontWeight: 700, color: scoreColor }}>{indicator.score}%</span>
                                     </div>
                                     <div style={{ fontSize: 11, color: '#999', lineHeight: 1.5, textAlign: 'justify' }}>
-                                      {indicator.desc}
+                                      {indicator.description}
                                     </div>
                                   </div>
                                 );

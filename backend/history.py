@@ -24,6 +24,7 @@ class DetectionHistoryCreate(BaseModel):
     image_data: Optional[str] = None
     detailed_analysis: Optional[dict] = None
     explanation: Optional[dict] = None
+    ai_detection: Optional[dict] = None
 
 
 class DetectionHistory(BaseModel):
@@ -40,6 +41,7 @@ class DetectionHistory(BaseModel):
     image_data: Optional[str] = None
     detailed_analysis: Optional[dict] = None
     explanation: Optional[dict] = None
+    ai_detection: Optional[dict] = None
     created_at: str
 
 
@@ -79,6 +81,10 @@ def init_history_table():
         if 'explanation' not in columns:
             cursor.execute("ALTER TABLE detection_history ADD COLUMN explanation TEXT")
             print("✅ Added column: explanation")
+        
+        if 'ai_detection' not in columns:
+            cursor.execute("ALTER TABLE detection_history ADD COLUMN ai_detection TEXT")
+            print("✅ Added column: ai_detection")
     except Exception as e:
         print(f"⚠️  Migration error: {e}")
     
@@ -120,8 +126,8 @@ def save_detection_history(
         INSERT INTO detection_history (
             user_id, image_name, result_label, prob_fake, model_name,
             model_selection_reason, image_size, complexity_level, image_data,
-            detailed_analysis, explanation
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            detailed_analysis, explanation, ai_detection
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         user_id,
         detection_data.image_name,
@@ -133,7 +139,8 @@ def save_detection_history(
         detection_data.complexity_level,
         detection_data.image_data,
         json.dumps(detection_data.detailed_analysis) if detection_data.detailed_analysis else None,
-        json.dumps(detection_data.explanation) if detection_data.explanation else None
+        json.dumps(detection_data.explanation) if detection_data.explanation else None,
+        json.dumps(detection_data.ai_detection) if detection_data.ai_detection else None
     ))
     
     history_id = cursor.lastrowid
@@ -167,7 +174,7 @@ def get_user_history(
         SELECT 
             id, user_id, image_name, result_label, prob_fake, model_name,
             model_selection_reason, image_size, complexity_level, image_data,
-            detailed_analysis, explanation,
+            detailed_analysis, explanation, ai_detection,
             datetime(created_at, 'localtime') as created_at
         FROM detection_history
         WHERE user_id = ?
@@ -193,6 +200,11 @@ def get_user_history(
                 row_dict['explanation'] = json.loads(row_dict['explanation'])
             except:
                 row_dict['explanation'] = None
+        if row_dict.get('ai_detection'):
+            try:
+                row_dict['ai_detection'] = json.loads(row_dict['ai_detection'])
+            except:
+                row_dict['ai_detection'] = None
         results.append(row_dict)
     
     return results

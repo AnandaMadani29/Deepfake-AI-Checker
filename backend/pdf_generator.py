@@ -15,12 +15,20 @@ from PIL import Image as PILImage
 def generate_detailed_analysis(prob_fake, image_complexity=None):
     """
     Generate detailed analysis breakdown based on probability
-    This is a mock implementation - in production, this would come from actual model analysis
+    
+    IMPORTANT: This is a MOCK/ESTIMATED breakdown for visualization purposes.
+    The actual model only outputs a single prob_fake score.
+    These individual scores are derived estimates, not real model outputs.
+    
+    The function is deterministic - same prob_fake always produces same scores.
     """
     analysis_items = []
     
-    # Eye Reflections
-    eye_score = min(95, prob_fake * 100 + 15)
+    # Round prob_fake to avoid floating point inconsistencies
+    prob_fake = round(prob_fake, 4)
+    
+    # Eye Reflections - highest indicator for deepfakes
+    eye_score = round(min(95, max(0, prob_fake * 100 + 15)))
     analysis_items.append({
         'name': 'Unnatural Eye Reflections',
         'score': eye_score,
@@ -29,7 +37,7 @@ def generate_detailed_analysis(prob_fake, image_complexity=None):
     })
     
     # Skin Texture
-    skin_score = min(90, prob_fake * 100 + 10)
+    skin_score = round(min(90, max(0, prob_fake * 100 + 10)))
     analysis_items.append({
         'name': 'Overly Smooth Skin Texture',
         'score': skin_score,
@@ -38,7 +46,7 @@ def generate_detailed_analysis(prob_fake, image_complexity=None):
     })
     
     # Hair Texture
-    hair_score = min(85, prob_fake * 100 + 5)
+    hair_score = round(min(85, max(0, prob_fake * 100 + 5)))
     analysis_items.append({
         'name': 'Hair Texture Anomalies',
         'score': hair_score,
@@ -47,7 +55,7 @@ def generate_detailed_analysis(prob_fake, image_complexity=None):
     })
     
     # Facial Distortions
-    facial_score = min(80, prob_fake * 100)
+    facial_score = round(min(80, max(0, prob_fake * 100)))
     analysis_items.append({
         'name': 'Subtle Facial Distortions',
         'score': facial_score,
@@ -56,7 +64,7 @@ def generate_detailed_analysis(prob_fake, image_complexity=None):
     })
     
     # Body Proportions
-    body_score = min(75, prob_fake * 100 - 5)
+    body_score = round(min(75, max(0, prob_fake * 100 - 5)))
     analysis_items.append({
         'name': 'Inconsistent Body Proportions',
         'score': body_score,
@@ -65,7 +73,7 @@ def generate_detailed_analysis(prob_fake, image_complexity=None):
     })
     
     # Lighting
-    lighting_score = min(70, prob_fake * 100 - 10)
+    lighting_score = round(min(70, max(0, prob_fake * 100 - 10)))
     analysis_items.append({
         'name': 'Lighting Inconsistency',
         'score': lighting_score,
@@ -73,8 +81,8 @@ def generate_detailed_analysis(prob_fake, image_complexity=None):
         'description': 'The light interaction appears somewhat flat compared to the strong direct lighting conditions.'
     })
     
-    # Background
-    bg_score = max(20, 100 - prob_fake * 100)
+    # Background - inverse relationship (higher prob_fake = lower background coherence)
+    bg_score = round(max(20, min(100, 100 - prob_fake * 100)))
     analysis_items.append({
         'name': 'Background Coherence',
         'score': bg_score,
@@ -261,18 +269,23 @@ def create_pdf_report(history_items):
         elements.append(info_table)
         elements.append(Spacer(1, 0.2*inch))
         
-        # Analysis Summary
-        analysis = generate_detailed_analysis(prob_fake)
+        # Analysis Summary - use data from database (comes from backend detection result)
+        detailed_analysis_data = item.get('detailed_analysis', {})
+        
+        # Fallback to generated analysis only if no data exists
+        if not detailed_analysis_data or not detailed_analysis_data.get('items'):
+            detailed_analysis_data = generate_detailed_analysis(prob_fake)
         
         elements.append(Paragraph("Analysis Summary", heading_style))
-        elements.append(Paragraph(analysis['summary'], normal_style))
+        elements.append(Paragraph(detailed_analysis_data.get('summary', 'No analysis available'), normal_style))
         elements.append(Spacer(1, 0.2*inch))
         
         # Detailed Breakdown
         elements.append(Paragraph("Detailed Breakdown", heading_style))
         
-        # Add AI Generated Content percentage first
-        ai_confidence = prob_fake * 100
+        # Add AI Generated Content percentage first (from ai_detection data)
+        ai_detection = item.get('ai_detection') or {}
+        ai_confidence = ai_detection.get('confidence', 0) * 100
         ai_level = 'CRITICAL' if ai_confidence > 70 else 'WARNING' if ai_confidence > 50 else 'NORMAL'
         ai_bg_color = colors.HexColor('#fee2e2') if ai_level == 'CRITICAL' else colors.HexColor('#fef3c7') if ai_level == 'WARNING' else colors.HexColor('#f5f5f5')
         ai_border_color = colors.HexColor('#dc2626') if ai_level == 'CRITICAL' else colors.HexColor('#f59e0b') if ai_level == 'WARNING' else colors.HexColor('#d4d4d4')
@@ -300,7 +313,8 @@ def create_pdf_report(history_items):
         elements.append(ai_table)
         elements.append(Spacer(1, 0.08*inch))
         
-        for analysis_item in analysis['items']:
+        # Use real analysis items from backend
+        for analysis_item in detailed_analysis_data.get('items', []):
             # Analysis item box
             item_data = [
                 [Paragraph(f"<b>{analysis_item['name']}</b> - {analysis_item['level']}", normal_style), 

@@ -7,7 +7,7 @@ import numpy as np
 import torch
 from fastapi import FastAPI, File, HTTPException, UploadFile, Header
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, Response
 from pydantic import BaseModel
 
 from google.oauth2 import id_token as google_id_token
@@ -397,6 +397,42 @@ async def delete_all_history(authorization: Optional[str] = Header(None)) -> dic
     }
 
 
+@app.get("/history/download-last-50")
+async def download_last_50_detections(authorization: Optional[str] = Header(None)):
+    """Download last 50 detection results as PDF report"""
+    user = get_current_user(authorization)
+    
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Not authenticated"
+        )
+    
+    # Get last 50 detections
+    history_records = get_user_history(user["id"], limit=50)
+    
+    if not history_records:
+        raise HTTPException(
+            status_code=404,
+            detail="No detection history found"
+        )
+    
+    # Generate PDF
+    pdf_buffer = generate_history_pdf(history_records)
+    
+    # Return as downloadable file
+    from datetime import datetime
+    filename = f"detection_report_last50_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+    
+    return Response(
+        content=pdf_buffer.getvalue(),
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}"
+        }
+    )
+
+
 @app.post("/compare")
 async def compare(
     file: UploadFile = File(...),
@@ -573,12 +609,12 @@ async def predict(
         result = _predictor.predict(img_rgb, img_pil=enhanced_img)
         
         # Combine model prediction with AI-generated detection
-        # DISABLED: AI-generated detection boost
-        # if is_ai_generated:
-        #     # If AI detector says it's AI-generated, boost significantly
-        #     boost = ai_score * 0.6  # Increased from 0.4 to 0.6 for higher sensitivity
-        #     result["prob_fake"] = min(0.99, result["prob_fake"] + boost)
-        #     result["label"] = "Fake" if result["prob_fake"] > 0.5 else "Real"
+        # ENABLED: AI-generated detection boost
+        if is_ai_generated:
+            # If AI detector says it's AI-generated, boost significantly
+            boost = ai_score * 0.6  # Increased from 0.4 to 0.6 for higher sensitivity
+            result["prob_fake"] = min(0.99, result["prob_fake"] + boost)
+            result["label"] = "Fake" if result["prob_fake"] > 0.5 else "Real"
         
         # Add all improvement results
         if selection_reason:
@@ -615,12 +651,10 @@ async def predict(
         
         result["explanation"] = explanation
         
-        # Generate detailed analysis breakdown
-        from backend.pdf_generator import generate_detailed_analysis
-        detailed_analysis = generate_detailed_analysis(
-            result["prob_fake"],
-            result.get("image_analysis", {}).get("complexity")
-        )
+        # Generate detailed analysis breakdown using REAL computer vision analysis
+        from backend.real_breakdown_analyzer import get_real_breakdown_analyzer
+        real_analyzer = get_real_breakdown_analyzer()
+        detailed_analysis = real_analyzer.analyze(img, result["prob_fake"])
         result["detailed_analysis"] = detailed_analysis
         
         # Save to history if user is authenticated
@@ -645,7 +679,8 @@ async def predict(
                     complexity_level=result.get("image_analysis", {}).get("complexity"),
                     image_data=f"data:image/jpeg;base64,{img_base64}",
                     detailed_analysis=result.get("detailed_analysis"),
-                    explanation=result.get("explanation")
+                    explanation=result.get("explanation"),
+                    ai_detection=result.get("ai_detection")
                 )
                 history_id = save_detection_history(current_user["id"], history_data)
                 result["saved_to_history"] = True
@@ -692,6 +727,22 @@ async def export_detection_pdf(
         if image_data:
             print(f"[DEBUG] Image data length: {len(str(image_data))}")
         
+        detailed_analysis = request.detection.get('detailed_analysis')
+        ai_detection = request.detection.get('ai_detection')
+        print(f"[DEBUG] detailed_analysis present: {detailed_analysis is not None}")
+        print(f"[DEBUG] ai_detection present: {ai_detection is not None}")
+        
+        if detailed_analysis:
+            print(f"[DEBUG] detailed_analysis type: {type(detailed_analysis)}")
+            print(f"[DEBUG] detailed_analysis keys: {detailed_analysis.keys() if isinstance(detailed_analysis, dict) else 'N/A'}")
+            if isinstance(detailed_analysis, dict) and 'items' in detailed_analysis:
+                print(f"[DEBUG] detailed_analysis items count: {len(detailed_analysis['items'])}")
+                if detailed_analysis['items']:
+                    print(f"[DEBUG] First item: {detailed_analysis['items'][0]}")
+        
+        if ai_detection:
+            print(f"[DEBUG] ai_detection: {ai_detection}")
+        
         detection_item = {
             'id': 0,
             'image_name': request.detection.get('image_name', 'detection.jpg'),
@@ -699,11 +750,15 @@ async def export_detection_pdf(
             'prob_fake': request.detection.get('prob_fake', 0.5),
             'model_name': request.detection.get('model_name', 'resnet_revised'),
             'created_at': created_at_str,
-            'image_data': image_data  # Include image for PDF
+            'image_data': image_data,  # Include image for PDF
+            'detailed_analysis': detailed_analysis,  # Include real analysis data
+            'ai_detection': ai_detection  # Include AI detection data
         }
         
+        print(f"[DEBUG] Generating PDF for detection item...")
         # Generate PDF for single item
         pdf_buffer = generate_history_pdf([detection_item])
+        print(f"[DEBUG] PDF generated successfully")
         
         # Return as streaming response
         filename = request.detection.get('image_name', 'detection').replace('.', '_')
@@ -715,7 +770,10 @@ async def export_detection_pdf(
             }
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"PDF generation failed: {e}")
+        import traceback
+        print(f"[ERROR] PDF generation failed: {e}")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
 
 @app.post("/history/export-pdf")
 async def export_history_pdf(
