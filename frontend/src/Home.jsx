@@ -17,6 +17,7 @@ import {
 import { BiAnalyse } from "react-icons/bi";
 import { MdSecurity } from "react-icons/md";
 import Logo from "./components/Logo";
+import Footer from "./components/Footer";
 
 function FAQItem({ question, answer }) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -1296,135 +1297,20 @@ export default function Home({
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer
-        style={{
-          background: "#E94E1B",
-          padding: isMobile ? "40px 20px" : "50px 60px",
+      <Footer 
+        onNavigateToHome={() => scrollToSection('about')}
+        onNavigateToDetection={onNavigateToDetection}
+        onNavigateToArticles={onNavigateToArticles}
+        onNavigateToTerms={() => {
+          window.location.hash = 'terms'
+          window.location.reload()
         }}
-      >
-        <div style={{ maxWidth: 1400, margin: "0 auto" }}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: isMobile ? "column" : "row",
-              alignItems: isMobile ? "flex-start" : "center",
-              justifyContent: isMobile ? "flex-start" : "space-between",
-              gap: isMobile ? 24 : 0,
-              paddingBottom: isMobile ? 24 : 30,
-              borderBottom: "1px solid rgba(255,255,255,0.2)",
-              marginBottom: isMobile ? 24 : 30,
-            }}
-          >
-            <Logo onClick={scrollToTop} isMobile={isMobile} variant="footer" />
-            <div
-              style={{
-                display: "flex",
-                flexDirection: isMobile ? "column" : "row",
-                gap: isMobile ? 12 : 48,
-                alignItems: isMobile ? "flex-start" : "center",
-              }}
-            >
-              <a
-                onClick={() => scrollToSection("about")}
-                style={{
-                  color: "#fff",
-                  textDecoration: "none",
-                  fontSize: 13,
-                  cursor: "pointer",
-                  fontWeight: 500,
-                  transition: "opacity 0.2s",
-                  textTransform: "uppercase",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-              >
-                About Us
-              </a>
-              <a
-                onClick={onNavigateToDetection}
-                style={{
-                  color: "#fff",
-                  textDecoration: "none",
-                  fontSize: 13,
-                  cursor: "pointer",
-                  fontWeight: 500,
-                  transition: "opacity 0.2s",
-                  textTransform: "uppercase",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-              >
-                Service
-              </a>
-              <a
-                onClick={onNavigateToArticles}
-                style={{
-                  color: "#fff",
-                  textDecoration: "none",
-                  fontSize: 13,
-                  cursor: "pointer",
-                  fontWeight: 500,
-                  transition: "opacity 0.2s",
-                  textTransform: "uppercase",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-              >
-                Resources
-              </a>
-              <a
-                href="#"
-                style={{
-                  color: "#fff",
-                  textDecoration: "none",
-                  fontSize: 13,
-                  cursor: "pointer",
-                  fontWeight: 500,
-                  transition: "opacity 0.2s",
-                  textTransform: "uppercase",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-              >
-                Terms
-              </a>
-              <a
-                href="#"
-                style={{
-                  color: "#fff",
-                  textDecoration: "none",
-                  fontSize: 13,
-                  cursor: "pointer",
-                  fontWeight: 500,
-                  transition: "opacity 0.2s",
-                  textTransform: "uppercase",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-              >
-                Privacy Policy
-              </a>
-            </div>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: isMobile ? "column" : "row",
-              justifyContent: "space-between",
-              alignItems: isMobile ? "flex-start" : "center",
-              gap: isMobile ? 8 : 0,
-            }}
-          >
-            <div style={{ color: "#fff", fontSize: 13 }}>
-              © 2025 Fact.it All rights reserved
-            </div>
-            <div style={{ color: "#fff", fontSize: 13 }}>
-              factit.support@gmail.com
-            </div>
-          </div>
-        </div>
-      </footer>
+        onNavigateToPrivacy={() => {
+          window.location.hash = 'privacy'
+          window.location.reload()
+        }}
+        isMobile={isMobile}
+      />
 
       {/* ── BACK TO TOP ── */}
       {showBackToTop && (

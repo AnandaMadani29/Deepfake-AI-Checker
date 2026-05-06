@@ -1,44 +1,27 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 
-export default function Privacy() {
+export default function Privacy({ onNavigateToHome, onNavigateToDetection }) {
+  const navigateTo = (page) => {
+    window.location.hash = page
+    window.location.reload()
+  }
+  
   return (
     <div style={{
       minHeight: '100vh',
       background: '#0a0a0a',
       color: '#fff'
     }}>
-      {/* Header */}
-      <header style={{
-        background: '#1a1a1a',
-        padding: '20px 40px',
-        borderBottom: '1px solid #2a2a2a'
-      }}>
-        <div style={{
-          maxWidth: 1200,
-          margin: '0 auto',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <Link to="/" style={{
-            fontSize: 32,
-            fontWeight: 700,
-            color: '#fff',
-            textDecoration: 'none',
-            fontFamily: 'serif'
-          }}>
-            FACT.IT
-          </Link>
-          <nav style={{ display: 'flex', gap: 30 }}>
-            <Link to="/" style={{ color: '#999', textDecoration: 'none', fontSize: 14 }}>ABOUT US</Link>
-            <Link to="/detection" style={{ color: '#999', textDecoration: 'none', fontSize: 14 }}>SERVICE</Link>
-            <Link to="/resources" style={{ color: '#999', textDecoration: 'none', fontSize: 14 }}>RESOURCES</Link>
-            <Link to="/terms" style={{ color: '#999', textDecoration: 'none', fontSize: 14 }}>TERMS</Link>
-            <Link to="/privacy" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>PRIVACY</Link>
-          </nav>
-        </div>
-      </header>
+      <Navbar 
+        onNavigateToAbout={() => navigateTo('')}
+        onNavigateToDetection={() => navigateTo('detection')}
+        onNavigateToArticles={() => navigateTo('articles')}
+        onNavigateToTerms={() => navigateTo('terms')}
+        onNavigateToPrivacy={() => navigateTo('privacy')}
+        activeLink="privacy"
+      />
 
       {/* Content */}
       <main style={{
@@ -500,45 +483,14 @@ export default function Privacy() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer style={{
-        background: '#ff6b35',
-        padding: '40px',
-        marginTop: 'auto'
-      }}>
-        <div style={{
-          maxWidth: 1200,
-          margin: '0 auto',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <div style={{
-            fontSize: 48,
-            fontWeight: 700,
-            color: '#fff',
-            fontFamily: 'serif'
-          }}>
-            FACT.IT
-          </div>
-          <nav style={{ display: 'flex', gap: 30 }}>
-            <Link to="/" style={{ color: '#fff', textDecoration: 'none', fontSize: 14 }}>ABOUT US</Link>
-            <Link to="/detection" style={{ color: '#fff', textDecoration: 'none', fontSize: 14 }}>SERVICE</Link>
-            <Link to="/resources" style={{ color: '#fff', textDecoration: 'none', fontSize: 14 }}>RESOURCES</Link>
-            <Link to="/terms" style={{ color: '#fff', textDecoration: 'none', fontSize: 14 }}>TERMS</Link>
-            <Link to="/privacy" style={{ color: '#fff', textDecoration: 'none', fontSize: 14, fontWeight: 700 }}>PRIVACY</Link>
-          </nav>
-        </div>
-        <div style={{
-          maxWidth: 1200,
-          margin: '30px auto 0',
-          textAlign: 'center',
-          color: '#fff',
-          fontSize: 12
-        }}>
-          © 2026 Fact.it. All rights reserved.
-        </div>
-      </footer>
+      <Footer 
+        onNavigateToHome={() => navigateTo('')}
+        onNavigateToDetection={() => navigateTo('detection')}
+        onNavigateToArticles={() => navigateTo('articles')}
+        onNavigateToTerms={() => navigateTo('terms')}
+        onNavigateToPrivacy={() => navigateTo('privacy')}
+        activeLink="privacy"
+      />
     </div>
   )
 }
