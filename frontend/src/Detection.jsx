@@ -1727,7 +1727,8 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
                         style={{ 
                           width: '100%', 
                           height: '100%',
-                          objectFit: 'contain'
+                          objectFit: 'contain',
+                          opacity: item.error ? 0.3 : 1
                         }}
                       />
                       {item.result && (
@@ -1745,6 +1746,39 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
                           border: `1px solid ${item.result.label === 'Real' ? '#4ade80' : '#f87171'}`
                         }}>
                           {item.result.label === 'Fake' ? 'Fake' : 'Real'}
+                        </div>
+                      )}
+                      {item.error && (
+                        <div style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          background: 'rgba(0,0,0,0.85)',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: 20,
+                          textAlign: 'center'
+                        }}>
+                          <div style={{
+                            fontSize: 48,
+                            marginBottom: 12
+                          }}>⚠️</div>
+                          <div style={{
+                            color: '#f87171',
+                            fontSize: 16,
+                            fontWeight: 700,
+                            marginBottom: 8
+                          }}>Detection Failed</div>
+                          <div style={{
+                            color: '#ccc',
+                            fontSize: 13,
+                            lineHeight: 1.5,
+                            maxWidth: 300
+                          }}>{item.error}</div>
                         </div>
                       )}
                     </div>
