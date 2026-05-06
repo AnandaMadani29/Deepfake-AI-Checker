@@ -24,6 +24,10 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy application code
 COPY . .
 
+# Copy and make startup script executable
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
 # Create necessary directories
 RUN mkdir -p outputs/models
 
@@ -34,6 +38,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD python -c "import requests; import os; requests.get(f'http://localhost:{os.getenv(\"PORT\", 8000)}/health')"
 
-# Run the application (download model first, then start server)
-# Use explicit shell to ensure proper execution
-CMD ["/bin/sh", "-c", "python download_model.py && uvicorn backend.app:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Run the application using startup script
+CMD ["/app/start.sh"]
