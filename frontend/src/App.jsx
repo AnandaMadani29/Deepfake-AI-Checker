@@ -11,6 +11,7 @@ import History from './History.jsx'
 import Articles from './Articles.jsx'
 import ArticleDetail from './ArticleDetail.jsx'
 import Terms from './Terms.jsx'
+import Privacy from './Privacy.jsx'
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home')
@@ -36,9 +37,14 @@ export default function App() {
     // Check URL for reset-password route
     const path = window.location.pathname
     const params = new URLSearchParams(window.location.search)
+    const hash = window.location.hash.slice(1) // Remove # from hash
     
     if (path === '/reset-password' || params.has('token')) {
       setCurrentPage('reset-password')
+    } else if (hash === 'terms') {
+      setCurrentPage('terms')
+    } else if (hash === 'privacy') {
+      setCurrentPage('privacy')
     }
     
     setIsAuthChecked(true)
@@ -217,6 +223,15 @@ export default function App() {
       <>
         {toasterComponent}
         <Terms />
+      </>
+    )
+  }
+
+  if (currentPage === 'privacy') {
+    return (
+      <>
+        {toasterComponent}
+        <Privacy />
       </>
     )
   }

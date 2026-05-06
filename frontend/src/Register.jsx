@@ -474,7 +474,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
           </button>
 
           {/* Login Link */}
-          <div style={{ textAlign: 'center', fontSize: 14, color: '#999' }}>
+          <div style={{ textAlign: 'center', fontSize: 14, color: '#999', marginBottom: 16 }}>
             Don't you have an account?{' '}
             <a
               onClick={onNavigateToLogin}
@@ -486,6 +486,40 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
               }}
             >
               Login
+            </a>
+          </div>
+
+          {/* Terms & Privacy Links */}
+          <div style={{ textAlign: 'center', fontSize: 12, color: '#666', lineHeight: 1.6 }}>
+            By creating an account, you agree to our{' '}
+            <a
+              onClick={() => {
+                // Navigate to terms page
+                window.location.hash = '#terms'
+                window.location.reload()
+              }}
+              style={{
+                color: '#FF5733',
+                cursor: 'pointer',
+                textDecoration: 'underline'
+              }}
+            >
+              Terms & Conditions
+            </a>
+            {' '}and{' '}
+            <a
+              onClick={() => {
+                // Navigate to privacy page
+                window.location.hash = '#privacy'
+                window.location.reload()
+              }}
+              style={{
+                color: '#FF5733',
+                cursor: 'pointer',
+                textDecoration: 'underline'
+              }}
+            >
+              Privacy Policy
             </a>
           </div>
         </form>
