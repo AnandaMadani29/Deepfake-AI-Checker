@@ -1394,7 +1394,40 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
                     <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#fff' }}>
                       Detailed Breakdown
                     </h3>
-                    <FaInfoCircle style={{ color: '#666', fontSize: 16 }} />
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                      <FaInfoCircle 
+                        style={{ color: '#666', fontSize: 16, cursor: 'pointer' }}
+                        onMouseEnter={(e) => {
+                          const tooltip = e.currentTarget.nextSibling;
+                          if (tooltip) tooltip.style.opacity = '1';
+                        }}
+                        onMouseLeave={(e) => {
+                          const tooltip = e.currentTarget.nextSibling;
+                          if (tooltip) tooltip.style.opacity = '0';
+                        }}
+                      />
+                      <div style={{
+                        position: 'absolute',
+                        top: '30px',
+                        right: 0,
+                        width: '320px',
+                        padding: '16px',
+                        background: '#1a1a1a',
+                        border: '1px solid #333',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+                        opacity: 0,
+                        pointerEvents: 'none',
+                        transition: 'opacity 0.2s ease',
+                        zIndex: 1000,
+                        fontSize: '12px',
+                        lineHeight: '1.6',
+                        color: '#ccc',
+                        textAlign: 'justify'
+                      }}>
+                        The Detailed Breakdown provides a clearer explanation of the AI analysis results. Each indicator highlights visual patterns such as skin texture, lighting, reflections, or facial structure that may suggest possible AI-generated or manipulated content. The percentage shows the AI's confidence level for each indicator.
+                      </div>
+                    </div>
                   </div>
 
                   {/* AI Generated Content */}
