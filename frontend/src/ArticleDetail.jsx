@@ -3,8 +3,10 @@ import { FaClock, FaUser, FaArrowLeft, FaBars, FaTimes, FaShareAlt, FaArrowRight
 import Logo from './components/Logo'
 import { HiArrowLeft } from 'react-icons/hi'
 import { getArticleById, getRelatedArticles } from './articlesData'
+import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 
-export default function ArticleDetail({ articleId, onNavigateToArticles, onNavigateToArticleDetail, onNavigateToHome }) {
+export default function ArticleDetail({ articleId, onNavigateToArticles, onNavigateToArticleDetail, onNavigateToHome, user, onLogout, onNavigateToHistory }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768)
   const [menuOpen, setMenuOpen] = React.useState(false)
 
@@ -221,129 +223,20 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
         </>
       )}
 
-      {/* ── LOGO: hanya position absolute di desktop ── */}
-      {!isMobile && (
-        <div style={{ position: 'absolute', top: 40, left: 60, zIndex: 1001 }}>
-          <Logo onClick={onNavigateToHome} isMobile={isMobile} variant="header" />
-        </div>
-      )}
-
       {/* ── NAVBAR ── */}
-      <nav
-        style={{
-          position: 'absolute',
-          top: isMobile ? 30 : 20,
-          right: isMobile ? 0 : 60,
-          left: isMobile ? 0 : 'auto',
-          padding: isMobile ? '0 20px' : 0,
-          display: 'flex',
-          justifyContent: isMobile ? 'space-between' : 'flex-end',
-          alignItems: 'center',
-          zIndex: 1000
-        }}
-      >
-        {isMobile ? (
-          <>
-            <Logo onClick={onNavigateToHome} isMobile={isMobile} variant="header" />
-            <button
-              onClick={() => setMenuOpen(true)}
-              style={{
-                background: 'rgba(13,13,13,0.8)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                color: '#fff',
-                fontSize: 24,
-                cursor: 'pointer',
-                padding: 12,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 8,
-                boxShadow: '0 4px 24px rgba(0,0,0,0.4)'
-              }}
-            >
-              <FaBars />
-            </button>
-          </>
-        ) : (
-          <div
-            style={{
-              display: 'flex',
-              gap: 24,
-              alignItems: 'center',
-              background: 'rgba(13,13,13,0.8)',
-              backdropFilter: 'blur(10px)',
-              padding: '12px 20px',
-              borderRadius: 8,
-              border: '1px solid rgba(255,255,255,0.1)',
-              boxShadow: '0 4px 24px rgba(0,0,0,0.4)'
-            }}
-          >
-            <a
-              onClick={() => onNavigateToHome('about')}
-              style={{
-                color: '#999',
-                textDecoration: 'none',
-                fontSize: 14,
-                cursor: 'pointer',
-                transition: 'color 0.2s'
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = '#999')}
-            >
-              About us
-            </a>
-            <a
-              onClick={() => onNavigateToHome()}
-              style={{
-                color: '#999',
-                textDecoration: 'none',
-                fontSize: 14,
-                cursor: 'pointer',
-                transition: 'color 0.2s'
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = '#999')}
-            >
-              Services
-            </a>
-            <a
-              onClick={onNavigateToArticles}
-              style={{
-                color: '#fff',
-                textDecoration: 'none',
-                fontSize: 14,
-                cursor: 'pointer',
-                fontWeight: 600
-              }}
-            >
-              Resources
-            </a>
-            <button
-              onClick={onNavigateToHome}
-              style={{
-                background: '#E94E1B',
-                color: '#fff',
-                border: 'none',
-                padding: '10px 20px',
-                borderRadius: 4,
-                fontWeight: 600,
-                cursor: 'pointer',
-                fontSize: 14,
-                transition: 'background 0.2s'
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background = '#d43e0f')
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.background = '#E94E1B')
-              }
-            >
-              Home
-            </button>
-          </div>
-        )}
-      </nav>
+      <Navbar 
+        onNavigateToAbout={() => onNavigateToHome('about')}
+        onNavigateToDetection={() => onNavigateToHome()}
+        onNavigateToArticles={onNavigateToArticles}
+        onNavigateToHistory={user ? onNavigateToHistory : null}
+        onNavigateToTerms={() => window.location.hash = 'terms'}
+        onNavigateToPrivacy={() => window.location.hash = 'privacy'}
+        onNavigateToHome={onNavigateToHome}
+        user={user}
+        onLogout={onLogout}
+        isMobile={isMobile}
+        activeLink="resources"
+      />
 
       {/* Back Button */}
       <div style={{ 
@@ -552,136 +445,21 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
         </section>
       )}
 
-      {/* Footer */}
-      <footer
-        style={{
-          background: '#E94E1B',
-          padding: isMobile ? '40px 20px' : '50px 60px'
+      <Footer 
+        onNavigateToHome={() => onNavigateToHome('about')}
+        onNavigateToDetection={() => onNavigateToHome()}
+        onNavigateToArticles={onNavigateToArticles}
+        onNavigateToTerms={() => {
+          window.location.hash = 'terms'
+          window.location.reload()
         }}
-      >
-        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: isMobile ? 'column' : 'row',
-              alignItems: isMobile ? 'flex-start' : 'center',
-              justifyContent: isMobile ? 'flex-start' : 'space-between',
-              gap: isMobile ? 24 : 0,
-              paddingBottom: isMobile ? 24 : 30,
-              borderBottom: '1px solid rgba(255,255,255,0.2)',
-              marginBottom: isMobile ? 24 : 30
-            }}
-          >
-            <Logo
-              onClick={onNavigateToHome}
-              isMobile={isMobile}
-              variant="footer"
-            />
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: isMobile ? 'column' : 'row',
-                gap: isMobile ? 12 : 48,
-                alignItems: isMobile ? 'flex-start' : 'center'
-              }}
-            >
-              <a
-                onClick={() => onNavigateToHome('about')}
-                style={{
-                  color: '#fff',
-                  textDecoration: 'none',
-                  fontSize: 13,
-                  cursor: 'pointer',
-                  fontWeight: 500,
-                  transition: 'opacity 0.2s',
-                  textTransform: 'uppercase'
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.7')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-              >
-                About Us
-              </a>
-              <a
-                onClick={() => onNavigateToHome()}
-                style={{
-                  color: '#fff',
-                  textDecoration: 'none',
-                  fontSize: 13,
-                  cursor: 'pointer',
-                  fontWeight: 500,
-                  transition: 'opacity 0.2s',
-                  textTransform: 'uppercase'
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.7')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-              >
-                Service
-              </a>
-              <a
-                onClick={onNavigateToArticles}
-                style={{
-                  color: '#fff',
-                  textDecoration: 'none',
-                  fontSize: 13,
-                  cursor: 'pointer',
-                  fontWeight: 700,
-                  textTransform: 'uppercase'
-                }}
-              >
-                Resources
-              </a>
-              <a
-                href="#"
-                style={{
-                  color: '#fff',
-                  textDecoration: 'none',
-                  fontSize: 13,
-                  cursor: 'pointer',
-                  fontWeight: 500,
-                  transition: 'opacity 0.2s',
-                  textTransform: 'uppercase'
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.7')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-              >
-                Terms
-              </a>
-              <a
-                href="#"
-                style={{
-                  color: '#fff',
-                  textDecoration: 'none',
-                  fontSize: 13,
-                  cursor: 'pointer',
-                  fontWeight: 500,
-                  transition: 'opacity 0.2s',
-                  textTransform: 'uppercase'
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.7')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-              >
-                Privacy Policy
-              </a>
-            </div>
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: isMobile ? 'column' : 'row',
-              justifyContent: 'space-between',
-              alignItems: isMobile ? 'flex-start' : 'center',
-              gap: isMobile ? 8 : 0
-            }}
-          >
-            <div style={{ color: '#fff', fontSize: 13 }}>
-              © 2025 Fact.it All rights reserved
-            </div>
-            <div style={{ color: '#fff', fontSize: 13 }}>
-              factit.support@gmail.com
-            </div>
-          </div>
-        </div>
-      </footer>
+        onNavigateToPrivacy={() => {
+          window.location.hash = 'privacy'
+          window.location.reload()
+        }}
+        isMobile={isMobile}
+        activeLink="resources"
+      />
     </div>
   )
 }

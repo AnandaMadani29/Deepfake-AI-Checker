@@ -2,10 +2,17 @@ import React from 'react'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 
-export default function Privacy({ onNavigateToHome, onNavigateToDetection }) {
+export default function Privacy({ onNavigateToHome, onNavigateToDetection, onNavigateToArticles, user, onLogout, onLogin }) {
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768)
+
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+  
   const navigateTo = (page) => {
     window.location.hash = page
-    window.location.reload()
   }
   
   return (
@@ -15,11 +22,17 @@ export default function Privacy({ onNavigateToHome, onNavigateToDetection }) {
       color: '#fff'
     }}>
       <Navbar 
-        onNavigateToAbout={() => navigateTo('')}
-        onNavigateToDetection={() => navigateTo('detection')}
-        onNavigateToArticles={() => navigateTo('articles')}
+        onNavigateToAbout={() => onNavigateToHome && onNavigateToHome('about')}
+        onNavigateToDetection={onNavigateToDetection}
+        onNavigateToArticles={onNavigateToArticles}
+        onNavigateToHistory={user ? () => window.location.hash = 'history' : null}
         onNavigateToTerms={() => navigateTo('terms')}
         onNavigateToPrivacy={() => navigateTo('privacy')}
+        onNavigateToHome={() => onNavigateToHome && onNavigateToHome()}
+        user={user}
+        onLogout={onLogout}
+        onLogin={onLogin}
+        isMobile={isMobile}
         activeLink="privacy"
       />
 
@@ -484,9 +497,9 @@ export default function Privacy({ onNavigateToHome, onNavigateToDetection }) {
       </main>
 
       <Footer 
-        onNavigateToHome={() => navigateTo('')}
-        onNavigateToDetection={() => navigateTo('detection')}
-        onNavigateToArticles={() => navigateTo('articles')}
+        onNavigateToHome={() => onNavigateToHome && onNavigateToHome('about')}
+        onNavigateToDetection={onNavigateToDetection}
+        onNavigateToArticles={onNavigateToArticles}
         onNavigateToTerms={() => navigateTo('terms')}
         onNavigateToPrivacy={() => navigateTo('privacy')}
         activeLink="privacy"

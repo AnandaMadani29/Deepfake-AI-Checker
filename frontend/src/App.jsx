@@ -34,10 +34,12 @@ export default function App() {
       }
     }
     
-    // Check URL for reset-password route
+    // Check URL for reset-password route or hash
     const path = window.location.pathname
     const params = new URLSearchParams(window.location.search)
-    const hash = window.location.hash.slice(1) // Remove # from hash
+    const hash = window.location.hash.slice(1)
+    
+    console.log('Initial load - hash:', hash) // Debug log
     
     if (path === '/reset-password' || params.has('token')) {
       setCurrentPage('reset-password')
@@ -45,14 +47,47 @@ export default function App() {
       setCurrentPage('terms')
     } else if (hash === 'privacy') {
       setCurrentPage('privacy')
+    } else if (hash === 'history') {
+      setCurrentPage('history')
     }
     
     setIsAuthChecked(true)
+    
+    // Listen for hash changes after initial load
+    const handleHashChange = () => {
+      const newHash = window.location.hash.slice(1)
+      console.log('Hash changed to:', newHash) // Debug log
+      if (newHash === 'terms') {
+        setCurrentPage('terms')
+      } else if (newHash === 'privacy') {
+        setCurrentPage('privacy')
+      } else if (newHash === 'history') {
+        setCurrentPage('history')
+      } else if (!newHash) {
+        setCurrentPage('home')
+      }
+    }
+
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
   }, [])
 
   const navigateToHome = (sectionId = null) => {
     setTargetSection(sectionId)
     setCurrentPage('home')
+  }
+
+  const handleNavigateToHome = (sectionId = null) => {
+    setTargetSection(sectionId)
+    setCurrentPage('home')
+  }
+
+  const handleNavigateToDetection = () => {
+    setCurrentPage('detection')
+  }
+
+  const handleNavigateToArticles = () => {
+    setCurrentPage('articles')
   }
 
   const handleLoginSuccess = (userData) => {
@@ -87,6 +122,8 @@ export default function App() {
       </div>
     )
   }
+
+  console.log('Current page:', currentPage) // Debug log
 
   // Toaster component for all pages
   const toasterComponent = (
@@ -200,6 +237,9 @@ export default function App() {
         }}
         onNavigateToHome={navigateToHome}
         onNavigateToDetection={() => setCurrentPage('detection')}
+        user={user}
+        onLogout={handleLogout}
+        onNavigateToHistory={() => setCurrentPage('history')}
       />
     )
   }
@@ -214,6 +254,9 @@ export default function App() {
           window.scrollTo(0, 0)
         }}
         onNavigateToHome={navigateToHome}
+        user={user}
+        onLogout={handleLogout}
+        onNavigateToHistory={() => setCurrentPage('history')}
       />
     )
   }
@@ -222,7 +265,14 @@ export default function App() {
     return (
       <>
         {toasterComponent}
-        <Terms />
+        <Terms 
+          onNavigateToHome={handleNavigateToHome}
+          onNavigateToDetection={handleNavigateToDetection}
+          onNavigateToArticles={handleNavigateToArticles}
+          user={user}
+          onLogout={handleLogout}
+          onLogin={() => setCurrentPage('login')}
+        />
       </>
     )
   }
@@ -231,7 +281,14 @@ export default function App() {
     return (
       <>
         {toasterComponent}
-        <Privacy />
+        <Privacy 
+          onNavigateToHome={handleNavigateToHome}
+          onNavigateToDetection={handleNavigateToDetection}
+          onNavigateToArticles={handleNavigateToArticles}
+          user={user}
+          onLogout={handleLogout}
+          onLogin={() => setCurrentPage('login')}
+        />
       </>
     )
   }

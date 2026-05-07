@@ -18,6 +18,7 @@ import { BiAnalyse } from "react-icons/bi";
 import { MdSecurity } from "react-icons/md";
 import Logo from "./components/Logo";
 import Footer from "./components/Footer";
+import Navbar from "./components/Navbar";
 
 function FAQItem({ question, answer }) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -206,7 +207,7 @@ export default function Home({
                   cursor: "pointer",
                 }}
               >
-                Service
+                Detection
               </a>
               <a
                 onClick={() => {
@@ -222,6 +223,36 @@ export default function Home({
                 }}
               >
                 Resources
+              </a>
+              <a
+                onClick={() => {
+                  window.location.hash = 'terms';
+                  setMenuOpen(false);
+                }}
+                style={{
+                  color: "#fff",
+                  textDecoration: "none",
+                  fontSize: 20,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Terms
+              </a>
+              <a
+                onClick={() => {
+                  window.location.hash = 'privacy';
+                  setMenuOpen(false);
+                }}
+                style={{
+                  color: "#fff",
+                  textDecoration: "none",
+                  fontSize: 20,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Privacy
               </a>
             </div>
             <div style={{ marginTop: "auto", paddingBottom: 40 }}>
@@ -300,196 +331,55 @@ export default function Home({
         </>
       )}
 
-      {/* ── LOGO: hanya position absolute di desktop ──
-          Di mobile, logo masuk ke dalam navbar row
-          sehingga zIndex-nya 1000 (di bawah overlay 99998) */}
-      {!isMobile && (
-        <div style={{ position: "absolute", top: 40, left: 60, zIndex: 1001 }}>
-          <Logo onClick={scrollToTop} isMobile={isMobile} variant="header" />
-        </div>
-      )}
-
       {/* ── NAVBAR ── */}
-      <nav
-        style={{
-          position: "absolute",
-          top: isMobile ? 30 : 20,
-          right: isMobile ? 0 : 60,
-          left: isMobile ? 0 : "auto",
-          padding: isMobile ? "0 20px" : 0,
-          display: "flex",
-          justifyContent: isMobile ? "space-between" : "flex-end",
-          alignItems: "center",
-          zIndex: 1000,
-        }}
-      >
-        {isMobile ? (
-          <>
-            {/* Logo kiri — zIndex ikut nav (1000), di bawah overlay */}
-            <Logo onClick={scrollToTop} isMobile={isMobile} variant="header" />
-            {/* Hamburger kanan */}
-            <button
-              onClick={() => setMenuOpen(true)}
-              style={{
-                background: "rgba(13,13,13,0.8)",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                color: "#fff",
-                fontSize: 24,
-                cursor: "pointer",
-                padding: 12,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 8,
-                boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
-              }}
-            >
-              <FaBars />
-            </button>
-          </>
-        ) : (
-          <div
+      {isMobile ? (
+        <nav
+          style={{
+            position: "absolute",
+            top: 30,
+            right: 0,
+            left: 0,
+            padding: "0 20px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <Logo onClick={scrollToTop} isMobile={isMobile} variant="header" />
+          <button
+            onClick={() => setMenuOpen(true)}
             style={{
-              display: "flex",
-              gap: 24,
-              alignItems: "center",
               background: "rgba(13,13,13,0.8)",
               backdropFilter: "blur(10px)",
-              padding: "12px 20px",
-              borderRadius: 8,
               border: "1px solid rgba(255,255,255,0.1)",
+              color: "#fff",
+              fontSize: 24,
+              cursor: "pointer",
+              padding: 12,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 8,
               boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
             }}
           >
-            <a
-              onClick={() => scrollToSection("about")}
-              style={{
-                color: "#999",
-                textDecoration: "none",
-                fontSize: 14,
-                cursor: "pointer",
-                transition: "color 0.2s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#999")}
-            >
-              About us
-            </a>
-            <a
-              onClick={onNavigateToDetection}
-              style={{
-                color: "#999",
-                textDecoration: "none",
-                fontSize: 14,
-                cursor: "pointer",
-                transition: "color 0.2s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#999")}
-            >
-              Services
-            </a>
-            <a
-              onClick={onNavigateToArticles}
-              style={{
-                color: "#999",
-                textDecoration: "none",
-                fontSize: 14,
-                cursor: "pointer",
-                transition: "color 0.2s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#999")}
-            >
-              Resources
-            </a>
-            {user ? (
-              <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-                <button
-                  onClick={onNavigateToHistory}
-                  style={{
-                    background: "transparent",
-                    color: "#999",
-                    border: "1px solid #2a2a2a",
-                    padding: "10px 20px",
-                    borderRadius: 4,
-                    fontWeight: 500,
-                    cursor: "pointer",
-                    fontSize: 14,
-                    transition: "all 0.2s",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "#2a2a2a";
-                    e.currentTarget.style.borderColor = "#E94E1B";
-                    e.currentTarget.style.color = "#fff";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "transparent";
-                    e.currentTarget.style.borderColor = "#2a2a2a";
-                    e.currentTarget.style.color = "#999";
-                  }}
-                >
-                  History
-                </button>
-                <span style={{ color: "#fff", fontSize: 14 }}>
-                  <span style={{ fontWeight: 600 }}>Hi,</span>{" "}
-                  <span style={{ fontWeight: 600 }}>
-                    {user.full_name || user.email}
-                  </span>
-                </span>
-                <button
-                  onClick={onLogout}
-                  style={{
-                    background: "transparent",
-                    color: "#999",
-                    border: "1px solid #2a2a2a",
-                    padding: "10px 20px",
-                    borderRadius: 4,
-                    fontWeight: 500,
-                    cursor: "pointer",
-                    fontSize: 14,
-                    transition: "all 0.2s",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "#2a2a2a";
-                    e.currentTarget.style.color = "#fff";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "transparent";
-                    e.currentTarget.style.color = "#999";
-                  }}
-                >
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={onNavigateToLogin}
-                style={{
-                  background: "#E94E1B",
-                  color: "#fff",
-                  border: "none",
-                  padding: "10px 20px",
-                  borderRadius: 4,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  fontSize: 14,
-                  transition: "background 0.2s",
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.background = "#d43e0f")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.background = "#E94E1B")
-                }
-              >
-                Log in
-              </button>
-            )}
-          </div>
-        )}
-      </nav>
+            <FaBars />
+          </button>
+        </nav>
+      ) : (
+        <Navbar 
+          onNavigateToAbout={() => scrollToSection("about")}
+          onNavigateToDetection={onNavigateToDetection}
+          onNavigateToArticles={onNavigateToArticles}
+          onNavigateToHistory={user ? onNavigateToHistory : null}
+          onNavigateToTerms={() => window.location.hash = 'terms'}
+          onNavigateToPrivacy={() => window.location.hash = 'privacy'}
+          user={user}
+          onLogout={onLogout}
+          activeLink="about"
+        />
+      )}
 
       {/* ── HERO ── */}
       <section
@@ -1301,14 +1191,8 @@ export default function Home({
         onNavigateToHome={() => scrollToSection('about')}
         onNavigateToDetection={onNavigateToDetection}
         onNavigateToArticles={onNavigateToArticles}
-        onNavigateToTerms={() => {
-          window.location.hash = 'terms'
-          window.location.reload()
-        }}
-        onNavigateToPrivacy={() => {
-          window.location.hash = 'privacy'
-          window.location.reload()
-        }}
+        onNavigateToTerms={() => window.location.hash = 'terms'}
+        onNavigateToPrivacy={() => window.location.hash = 'privacy'}
         isMobile={isMobile}
       />
 

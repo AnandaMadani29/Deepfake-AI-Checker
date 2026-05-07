@@ -4,6 +4,8 @@ import { HiClock, HiTrash, HiChartBar, HiDownload, HiSearch } from 'react-icons/
 import Logo from './components/Logo'
 import { MdDelete, MdHistory } from 'react-icons/md'
 import { FaCheckCircle, FaTimesCircle, FaBars, FaTimes } from 'react-icons/fa'
+import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 
 const DEFAULT_API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
@@ -375,158 +377,23 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
 
   return (
     <div style={{ minHeight: '100vh', background: '#1a1a1a', color: '#fff', margin: 0, position: 'relative' }}>
-      {/* Logo - Fixed on Page */}
-      <div style={{
-        position: 'absolute',
-        top: isMobile ? 30 : 40,
-        left: isMobile ? 20 : 60,
-        zIndex: 1001
-      }}>
-        <Logo onClick={() => onNavigateToHome()} isMobile={isMobile} variant="header" />
-      </div>
-
-      {/* Navbar - Floating Design */}
-      <nav style={{ 
-        position: 'absolute',
-        top: isMobile ? 30 : 20,
-        right: isMobile ? 20 : 60,
-        width: 'auto',
-        background: isMobile ? 'transparent' : 'rgba(13, 13, 13, 0.8)',
-        backdropFilter: isMobile ? 'none' : 'blur(10px)',
-        padding: isMobile ? '0' : '12px 20px',
-        display: 'flex',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        gap: 24,
-        borderRadius: isMobile ? 0 : 8,
-        border: isMobile ? 'none' : '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: isMobile ? 'none' : '0 4px 24px rgba(0, 0, 0, 0.4)',
-        zIndex: 1000
-      }}>
-        {isMobile ? (
-          // Mobile Menu
-          <>
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              style={{
-                background: 'rgba(13, 13, 13, 0.8)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                color: '#fff',
-                fontSize: 24,
-                cursor: 'pointer',
-                padding: 12,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 8,
-                boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4)'
-              }}
-            >
-              {menuOpen ? <FaTimes /> : <FaBars />}
-            </button>
-            {menuOpen && (
-              <>
-                <div 
-                  onClick={() => setMenuOpen(false)}
-                  style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'rgba(0, 0, 0, 0.5)',
-                    zIndex: 9998,
-                    animation: 'fadeIn 0.3s ease-in-out'
-                  }}
-                />
-                <div style={{
-                  position: 'fixed',
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  width: '280px',
-                  maxWidth: '80vw',
-                  background: '#FF5733',
-                  zIndex: 9999,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  padding: '20px',
-                  boxShadow: '-4px 0 24px rgba(0, 0, 0, 0.3)',
-                  animation: 'slideInRight 0.3s ease-in-out'
-                }}>
-                  <button
-                    onClick={() => setMenuOpen(false)}
-                    style={{
-                      position: 'absolute',
-                      top: 30,
-                      right: 30,
-                      background: 'transparent',
-                      border: 'none',
-                      color: '#fff',
-                      fontSize: 28,
-                      cursor: 'pointer',
-                      padding: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <FaTimes />
-                  </button>
-                  <div style={{ 
-                    display: 'flex', 
-                    flexDirection: 'column', 
-                    gap: 32,
-                    marginTop: 80
-                  }}>
-                    <a onClick={() => { onNavigateToHome('about'); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 20, fontWeight: 600, cursor: 'pointer' }}>About Us</a>
-                    <a onClick={() => { onNavigateToDetection(); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 20, fontWeight: 600, cursor: 'pointer' }}>Service</a>
-                    <a onClick={() => { onNavigateToArticles(); setMenuOpen(false); }} style={{ color: '#fff', textDecoration: 'none', fontSize: 20, fontWeight: 600, cursor: 'pointer' }}>Resources</a>
-                  </div>
-                  <div style={{ marginTop: 'auto', paddingBottom: 40 }}>
-                    {user ? (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                        <div style={{ color: '#fff', fontSize: 16, marginBottom: 8 }}>
-                          <span style={{ fontWeight: 600 }}>Hi,</span> <span style={{ fontWeight: 600 }}>{user.full_name || user.email}</span>
-                        </div>
-                        <button onClick={() => { onLogout(); setMenuOpen(false); }} style={{ background: 'transparent', color: '#fff', border: '1px solid #fff', padding: '16px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 16, width: '100%' }}>Logout</button>
-                      </div>
-                    ) : (
-                      <button onClick={() => { onNavigateToLogin(); setMenuOpen(false); }} style={{ background: '#1a1a1a', color: '#fff', border: 'none', padding: '18px', borderRadius: 4, fontWeight: 600, cursor: 'pointer', fontSize: 18, width: '100%' }}>Log in</button>
-                    )}
-                  </div>
-                </div>
-              </>
-            )}
-          </>
-        ) : (
-          // Desktop Menu
-          <>
-            <a onClick={() => onNavigateToHome('about')} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>About us</a>
-            <a onClick={onNavigateToDetection} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Services</a>
-            <a onClick={onNavigateToArticles} style={{ color: '#999', textDecoration: 'none', fontSize: 14, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#999'}>Resources</a>
-            <button 
-              onClick={onNavigateToHome}
-              style={{
-                background: '#E94E1B',
-                color: '#fff',
-                border: 'none',
-                padding: '10px 20px',
-                borderRadius: 4,
-                fontWeight: 600,
-                cursor: 'pointer',
-                fontSize: 14,
-                transition: 'background 0.2s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#d43e0f'}
-              onMouseLeave={(e) => e.currentTarget.style.background = '#E94E1B'}
-            >
-              Home
-            </button>
-          </>
-        )}
-      </nav>
+      {/* Navbar */}
+      <Navbar 
+        onNavigateToAbout={() => onNavigateToHome('about')}
+        onNavigateToDetection={onNavigateToDetection}
+        onNavigateToArticles={onNavigateToArticles}
+        onNavigateToHistory={() => {}}
+        onNavigateToTerms={() => window.location.hash = 'terms'}
+        onNavigateToPrivacy={() => window.location.hash = 'privacy'}
+        onNavigateToHome={onNavigateToHome}
+        user={user}
+        onLogout={() => {
+          localStorage.removeItem('access_token')
+          localStorage.removeItem('user')
+          onNavigateToHome()
+        }}
+        isMobile={isMobile}
+      />
 
       {/* Content */}
       <div style={{ padding: isMobile ? '100px 20px 30px' : '140px 60px 60px', maxWidth: 1400, margin: '0 auto' }}>
@@ -1041,63 +908,16 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
         )}
       </div>
 
-      {/* Footer */}
-      <footer style={{ 
-        background: '#E94E1B',
-        padding: isMobile ? '40px 20px' : '50px 60px',
-        marginTop: isMobile ? 80 : 120,
-        borderTop: 'none'
-      }}>
-        <div style={{ 
-          maxWidth: 1400,
-          margin: '0 auto'
-        }}>
-          {/* Main Footer Content */}
-          <div style={{
-            display: 'flex',
-            flexDirection: isMobile ? 'column' : 'row',
-            alignItems: isMobile ? 'flex-start' : 'center',
-            justifyContent: isMobile ? 'flex-start' : 'space-between',
-            gap: isMobile ? 24 : 0,
-            paddingBottom: isMobile ? 24 : 30,
-            borderBottom: '1px solid rgba(255,255,255,0.2)',
-            marginBottom: isMobile ? 24 : 30
-          }}>
-            {/* Logo - Larger */}
-            <Logo onClick={() => onNavigateToHome()} isMobile={isMobile} variant="footer" />
-            
-            {/* Links Section - Aligned with logo center */}
-            <div style={{ 
-              display: 'flex',
-              flexDirection: isMobile ? 'column' : 'row',
-              gap: isMobile ? 12 : 48,
-              alignItems: isMobile ? 'flex-start' : 'center'
-            }}>
-              <a onClick={() => onNavigateToHome('about')} style={{ color: '#fff', textDecoration: 'none', fontSize: 13, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s', textTransform: 'uppercase' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>About Us</a>
-              <a onClick={onNavigateToDetection} style={{ color: '#fff', textDecoration: 'none', fontSize: 13, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s', textTransform: 'uppercase' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>Service</a>
-              <a onClick={onNavigateToArticles} style={{ color: '#fff', textDecoration: 'none', fontSize: 13, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s', textTransform: 'uppercase' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>Resources</a>
-              <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 13, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s', textTransform: 'uppercase' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>Terms</a>
-              <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 13, cursor: 'pointer', fontWeight: 500, transition: 'opacity 0.2s', textTransform: 'uppercase' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>Privacy Policy</a>
-            </div>
-          </div>
-
-          {/* Bottom Section */}
-          <div style={{ 
-            display: 'flex', 
-            flexDirection: isMobile ? 'column' : 'row',
-            justifyContent: 'space-between',
-            alignItems: isMobile ? 'flex-start' : 'center',
-            gap: isMobile ? 8 : 0
-          }}>
-            <div style={{ color: '#fff', fontSize: 13 }}>
-              © 2025 Fact.it All rights reserved
-            </div>
-            <div style={{ color: '#fff', fontSize: 13 }}>
-              factit.support@gmail.com
-            </div>
-          </div>
-        </div>
-      </footer>
+      <div style={{ marginTop: isMobile ? 80 : 120 }}>
+        <Footer 
+          onNavigateToHome={() => onNavigateToHome('about')}
+          onNavigateToDetection={onNavigateToDetection}
+          onNavigateToArticles={onNavigateToArticles}
+          onNavigateToTerms={() => window.location.hash = 'terms'}
+          onNavigateToPrivacy={() => window.location.hash = 'privacy'}
+          isMobile={isMobile}
+        />
+      </div>
     </div>
   )
 }
