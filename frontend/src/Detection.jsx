@@ -16,7 +16,7 @@ function formatPct(x) {
   return `${(x * 100).toFixed(2)}%`
 }
 
-export default function Detection({ onNavigateToHome, onNavigateToHistory, onNavigateToArticles, user }) {
+export default function Detection({ onNavigateToHome, onNavigateToHistory, onNavigateToArticles, onLogin, user }) {
   const [files, setFiles] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -473,6 +473,7 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
         onNavigateToTerms={() => window.location.hash = 'terms'}
         onNavigateToPrivacy={() => window.location.hash = 'privacy'}
         onNavigateToHome={onNavigateToHome}
+        onLogin={onLogin}
         user={user}
         onLogout={() => {
           localStorage.removeItem('access_token')

@@ -212,6 +212,7 @@ export default function App() {
         onNavigateToHome={navigateToHome}
         onNavigateToHistory={() => setCurrentPage('history')}
         onNavigateToArticles={() => setCurrentPage('articles')}
+        onLogin={() => setCurrentPage('home')}
         user={user}
       />
     )
@@ -237,6 +238,7 @@ export default function App() {
         }}
         onNavigateToHome={navigateToHome}
         onNavigateToDetection={() => setCurrentPage('detection')}
+        onLogin={() => setCurrentPage('home')}
         user={user}
         onLogout={handleLogout}
         onNavigateToHistory={() => setCurrentPage('history')}

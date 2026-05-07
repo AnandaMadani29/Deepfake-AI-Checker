@@ -10,6 +10,7 @@ export default function Articles({
   onNavigateToArticleDetail,
   onNavigateToHome,
   onNavigateToDetection,
+  onLogin,
   user,
   onLogout,
   onNavigateToHistory,
@@ -190,6 +191,7 @@ export default function Articles({
         onNavigateToTerms={() => window.location.hash = 'terms'}
         onNavigateToPrivacy={() => window.location.hash = 'privacy'}
         onNavigateToHome={onNavigateToHome}
+        onLogin={onLogin}
         user={user}
         onLogout={onLogout}
         isMobile={isMobile}
