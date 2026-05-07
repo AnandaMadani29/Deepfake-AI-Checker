@@ -249,7 +249,7 @@ export default function Navbar({
         {/* Mobile Navbar */}
         <nav
           style={{
-            position: "absolute",
+            position: "fixed",
             top: 30,
             right: 0,
             left: 0,
@@ -287,23 +287,30 @@ export default function Navbar({
 
   // Desktop Navbar
   return (
-    <nav
-      style={{
-        position: "absolute",
-        top: 20,
-        right: 60,
-        zIndex: 1000,
-        display: "flex",
-        gap: 24,
-        alignItems: "center",
-        background: "rgba(13,13,13,0.8)",
-        backdropFilter: "blur(10px)",
-        padding: "12px 20px",
-        borderRadius: 8,
-        border: "1px solid rgba(255,255,255,0.1)",
-        boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
-      }}
-    >
+    <>
+      {/* Logo - Desktop */}
+      <div style={{ position: "absolute", top: 40, left: 60, zIndex: 1001 }}>
+        <Logo onClick={onNavigateToHome || onNavigateToAbout} isMobile={false} variant="header" />
+      </div>
+
+      {/* Navbar - Desktop */}
+      <nav
+        style={{
+          position: "fixed",
+          top: 20,
+          right: 60,
+          zIndex: 1000,
+          display: "flex",
+          gap: 24,
+          alignItems: "center",
+          background: "rgba(13,13,13,0.8)",
+          backdropFilter: "blur(10px)",
+          padding: "12px 20px",
+          borderRadius: 8,
+          border: "1px solid rgba(255,255,255,0.1)",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
+        }}
+      >
       <a
         onClick={onNavigateToAbout}
         style={{
@@ -437,5 +444,6 @@ export default function Navbar({
         </div>
       )}
     </nav>
+    </>
   )
 }

@@ -332,54 +332,20 @@ export default function Home({
       )}
 
       {/* ── NAVBAR ── */}
-      {isMobile ? (
-        <nav
-          style={{
-            position: "absolute",
-            top: 30,
-            right: 0,
-            left: 0,
-            padding: "0 20px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            zIndex: 1000,
-          }}
-        >
-          <Logo onClick={scrollToTop} isMobile={isMobile} variant="header" />
-          <button
-            onClick={() => setMenuOpen(true)}
-            style={{
-              background: "rgba(13,13,13,0.8)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              color: "#fff",
-              fontSize: 24,
-              cursor: "pointer",
-              padding: 12,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 8,
-              boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
-            }}
-          >
-            <FaBars />
-          </button>
-        </nav>
-      ) : (
-        <Navbar 
-          onNavigateToAbout={() => scrollToSection("about")}
-          onNavigateToDetection={onNavigateToDetection}
-          onNavigateToArticles={onNavigateToArticles}
-          onNavigateToHistory={user ? onNavigateToHistory : null}
-          onNavigateToTerms={() => window.location.hash = 'terms'}
-          onNavigateToPrivacy={() => window.location.hash = 'privacy'}
-          user={user}
-          onLogout={onLogout}
-          activeLink="about"
-        />
-      )}
+      <Navbar 
+        onNavigateToAbout={() => scrollToSection("about")}
+        onNavigateToDetection={onNavigateToDetection}
+        onNavigateToArticles={onNavigateToArticles}
+        onNavigateToHistory={user ? onNavigateToHistory : null}
+        onNavigateToTerms={() => window.location.hash = 'terms'}
+        onNavigateToPrivacy={() => window.location.hash = 'privacy'}
+        onNavigateToHome={scrollToTop}
+        user={user}
+        onLogout={onLogout}
+        onLogin={onNavigateToLogin}
+        isMobile={isMobile}
+        activeLink="about"
+      />
 
       {/* ── HERO ── */}
       <section
