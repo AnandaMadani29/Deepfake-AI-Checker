@@ -229,8 +229,14 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
         onNavigateToDetection={() => onNavigateToHome()}
         onNavigateToArticles={onNavigateToArticles}
         onNavigateToHistory={user ? onNavigateToHistory : null}
-        onNavigateToTerms={() => window.location.hash = 'terms'}
-        onNavigateToPrivacy={() => window.location.hash = 'privacy'}
+        onNavigateToTerms={() => {
+          window.location.hash = 'terms'
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
+        onNavigateToPrivacy={() => {
+          window.location.hash = 'privacy'
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
         onNavigateToHome={onNavigateToHome}
         user={user}
         onLogout={onLogout}
@@ -446,16 +452,16 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
       )}
 
       <Footer 
-        onNavigateToHome={() => onNavigateToHome('about')}
+        onNavigateToHome={onNavigateToHome}
         onNavigateToDetection={() => onNavigateToHome()}
         onNavigateToArticles={onNavigateToArticles}
         onNavigateToTerms={() => {
           window.location.hash = 'terms'
-          window.location.reload()
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
         }}
         onNavigateToPrivacy={() => {
           window.location.hash = 'privacy'
-          window.location.reload()
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
         }}
         isMobile={isMobile}
         activeLink="resources"

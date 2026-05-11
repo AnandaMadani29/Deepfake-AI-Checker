@@ -910,11 +910,17 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
 
       <div style={{ marginTop: isMobile ? 80 : 120 }}>
         <Footer 
-          onNavigateToHome={() => onNavigateToHome('about')}
+          onNavigateToHome={onNavigateToHome}
           onNavigateToDetection={onNavigateToDetection}
           onNavigateToArticles={onNavigateToArticles}
-          onNavigateToTerms={() => window.location.hash = 'terms'}
-          onNavigateToPrivacy={() => window.location.hash = 'privacy'}
+          onNavigateToTerms={() => {
+            window.location.hash = 'terms'
+            setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+          }}
+          onNavigateToPrivacy={() => {
+            window.location.hash = 'privacy'
+            setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+          }}
           isMobile={isMobile}
         />
       </div>

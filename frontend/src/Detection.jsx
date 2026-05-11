@@ -470,8 +470,14 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
         onNavigateToDetection={() => onNavigateToHome()}
         onNavigateToArticles={onNavigateToArticles}
         onNavigateToHistory={onNavigateToHistory}
-        onNavigateToTerms={() => window.location.hash = 'terms'}
-        onNavigateToPrivacy={() => window.location.hash = 'privacy'}
+        onNavigateToTerms={() => {
+          window.location.hash = 'terms'
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
+        onNavigateToPrivacy={() => {
+          window.location.hash = 'privacy'
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
         onNavigateToHome={onNavigateToHome}
         onLogin={onLogin}
         user={user}
@@ -1942,8 +1948,14 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
           onNavigateToHome={onNavigateToHome}
           onNavigateToDetection={() => onNavigateToHome()}
           onNavigateToArticles={onNavigateToArticles}
-          onNavigateToTerms={() => window.location.hash = 'terms'}
-          onNavigateToPrivacy={() => window.location.hash = 'privacy'}
+          onNavigateToTerms={() => {
+            window.location.hash = 'terms'
+            setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+          }}
+          onNavigateToPrivacy={() => {
+            window.location.hash = 'privacy'
+            setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+          }}
           isMobile={isMobile}
           activeLink="detection"
         />

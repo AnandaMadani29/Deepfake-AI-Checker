@@ -497,11 +497,12 @@ export default function Privacy({ onNavigateToHome, onNavigateToDetection, onNav
       </main>
 
       <Footer 
-        onNavigateToHome={() => onNavigateToHome && onNavigateToHome('about')}
+        onNavigateToHome={onNavigateToHome}
         onNavigateToDetection={onNavigateToDetection}
         onNavigateToArticles={onNavigateToArticles}
         onNavigateToTerms={() => navigateTo('terms')}
         onNavigateToPrivacy={() => navigateTo('privacy')}
+        isMobile={isMobile}
         activeLink="privacy"
       />
     </div>

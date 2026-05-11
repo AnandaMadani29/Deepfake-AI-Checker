@@ -75,19 +75,29 @@ export default function App() {
   const navigateToHome = (sectionId = null) => {
     setTargetSection(sectionId)
     setCurrentPage('home')
+    // Scroll to top if no section specified
+    if (!sectionId) {
+      setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+    }
   }
 
   const handleNavigateToHome = (sectionId = null) => {
     setTargetSection(sectionId)
     setCurrentPage('home')
+    // Scroll to top if no section specified
+    if (!sectionId) {
+      setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+    }
   }
 
   const handleNavigateToDetection = () => {
     setCurrentPage('detection')
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
   }
 
   const handleNavigateToArticles = () => {
     setCurrentPage('articles')
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
   }
 
   const handleLoginSuccess = (userData) => {
@@ -210,9 +220,18 @@ export default function App() {
     return (
       <Detection 
         onNavigateToHome={navigateToHome}
-        onNavigateToHistory={() => setCurrentPage('history')}
-        onNavigateToArticles={() => setCurrentPage('articles')}
-        onLogin={() => setCurrentPage('home')}
+        onNavigateToHistory={() => {
+          setCurrentPage('history')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
+        onNavigateToArticles={() => {
+          setCurrentPage('articles')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
+        onLogin={() => {
+          setCurrentPage('home')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
         user={user}
       />
     )
@@ -222,8 +241,14 @@ export default function App() {
     return (
       <History 
         onNavigateToHome={navigateToHome}
-        onNavigateToDetection={() => setCurrentPage('detection')}
-        onNavigateToArticles={() => setCurrentPage('articles')}
+        onNavigateToDetection={() => {
+          setCurrentPage('detection')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
+        onNavigateToArticles={() => {
+          setCurrentPage('articles')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
         user={user}
       />
     )
@@ -235,13 +260,23 @@ export default function App() {
         onNavigateToArticleDetail={(articleId) => {
           setSelectedArticleId(articleId)
           setCurrentPage('article-detail')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
         }}
         onNavigateToHome={navigateToHome}
-        onNavigateToDetection={() => setCurrentPage('detection')}
-        onLogin={() => setCurrentPage('home')}
+        onNavigateToDetection={() => {
+          setCurrentPage('detection')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
+        onLogin={() => {
+          setCurrentPage('home')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
         user={user}
         onLogout={handleLogout}
-        onNavigateToHistory={() => setCurrentPage('history')}
+        onNavigateToHistory={() => {
+          setCurrentPage('history')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
       />
     )
   }
@@ -250,15 +285,21 @@ export default function App() {
     return (
       <ArticleDetail 
         articleId={selectedArticleId}
-        onNavigateToArticles={() => setCurrentPage('articles')}
+        onNavigateToArticles={() => {
+          setCurrentPage('articles')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
         onNavigateToArticleDetail={(articleId) => {
           setSelectedArticleId(articleId)
-          window.scrollTo(0, 0)
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
         }}
         onNavigateToHome={navigateToHome}
         user={user}
         onLogout={handleLogout}
-        onNavigateToHistory={() => setCurrentPage('history')}
+        onNavigateToHistory={() => {
+          setCurrentPage('history')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
       />
     )
   }
@@ -323,11 +364,20 @@ export default function App() {
         }}
       />
       <Home 
-        onNavigateToDetection={() => setCurrentPage('detection')}
+        onNavigateToDetection={() => {
+          setCurrentPage('detection')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
         onNavigateToLogin={() => setCurrentPage('login')}
         onNavigateToRegister={() => setCurrentPage('register')}
-        onNavigateToHistory={() => setCurrentPage('history')}
-        onNavigateToArticles={() => setCurrentPage('articles')}
+        onNavigateToHistory={() => {
+          setCurrentPage('history')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
+        onNavigateToArticles={() => {
+          setCurrentPage('articles')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
         onLogout={handleLogout}
         targetSection={targetSection}
         onSectionScrolled={() => setTargetSection(null)}
