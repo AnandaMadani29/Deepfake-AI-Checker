@@ -391,7 +391,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             </div>
           </div>
 
-          {/* Terms Checkbox */}
+          {/* Terms Checkbox
           <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', gap: 10 }}>
             <input
               type="checkbox"
@@ -409,7 +409,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
               {' '}and{' '}
               <span style={{ color: '#FF5733' }}>Privacy Policies</span>
             </label>
-          </div>
+          </div> */}
 
           {/* Submit Button */}
           <button
@@ -432,7 +432,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
 
-          {/* OR Divider */}
+          {/* OR Divider
           <div style={{ 
             textAlign: 'center', 
             fontSize: 13, 
@@ -441,9 +441,9 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             fontWeight: 500 
           }}>
             or
-          </div>
+          </div> */}
 
-          {/* Google Register */}
+          {/* Google Register
           <button
             type="button"
             onClick={() => toast.info('Google Sign-up not implemented yet')}
@@ -471,7 +471,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
               <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
             </svg>
             Register with Google
-          </button>
+          </button> */}
 
           {/* Login Link */}
           <div style={{ textAlign: 'center', fontSize: 14, color: '#999', marginBottom: 16 }}>

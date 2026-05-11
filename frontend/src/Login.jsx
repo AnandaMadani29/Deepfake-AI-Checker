@@ -74,7 +74,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
           callback: async (resp) => {
             const idToken = resp?.credential
             if (!idToken) {
-              toast.error('Google sign-in failed')
+              toast.error('Google sign-in failed - no credential received')
               return
             }
 
@@ -88,12 +88,14 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
                 body: JSON.stringify({ id_token: idToken })
               })
 
-              const rawText = await response.text()
-              let data = {}
-              try {
-                data = rawText ? JSON.parse(rawText) : {}
-              } catch {
-                data = {}
+              const data = await response.json()
+
+              if (response.status === 403) {
+                throw new Error('Access forbidden. Please ensure localhost:5173 is added to Google Cloud Console authorized origins.')
+              }
+
+              if (response.status === 401) {
+                throw new Error('Invalid Google credentials')
               }
 
               if (!response.ok) {
@@ -102,12 +104,13 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
 
               localStorage.setItem('access_token', data.access_token)
               localStorage.setItem('user', JSON.stringify(data.user))
-              toast.success('Login successful! Welcome back.', { id: loadingToast })
+              toast.success('Login successful!', { id: loadingToast })
 
               if (onLoginSuccess) {
                 onLoginSuccess(data.user)
               }
             } catch (err) {
+              console.error('Google login error:', err)
               toast.error(err.message || 'Google login failed', { id: loadingToast })
             }
           }
@@ -374,15 +377,14 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
             className="transition-all"
             style={{
               width: '100%',
-              padding: '18px',
+              padding: '14px',
               background: loading ? '#999' : '#FF5733',
               color: '#fff',
               border: 'none',
               borderRadius: 4,
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: 700,
               cursor: loading ? 'not-allowed' : 'pointer',
-              marginBottom: 20,
               transform: 'scale(1)'
             }}
             onMouseEnter={(e) => !loading && (e.currentTarget.style.transform = 'scale(1.02)')}
@@ -411,7 +413,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
             textAlign: 'center', 
             fontSize: 13, 
             color: '#666', 
-            margin: '20px 0', 
+            margin: '10px 0', 
             fontWeight: 500 
           }}>
             or
@@ -441,13 +443,13 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
                 onClick={() => toast.error('Google sign-in is not configured')}
                 style={{
                   width: '100%',
-                  padding: '14px',
+                  padding: '18px',
                   background: 'transparent',
                   color: '#fff',
                   border: '1px solid #555',
                   borderRadius: 4,
-                  fontSize: 14,
-                  fontWeight: 600,
+                  fontSize: 18,
+                  fontWeight: 700,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',

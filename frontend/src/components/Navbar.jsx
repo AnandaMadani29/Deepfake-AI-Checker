@@ -131,7 +131,7 @@ export default function Navbar({
                 >
                   Resources
                 </a>
-                {onNavigateToTerms && (
+                {false && onNavigateToTerms && (
                   <a
                     onClick={() => {
                       onNavigateToTerms()
@@ -148,7 +148,7 @@ export default function Navbar({
                     Terms
                   </a>
                 )}
-                {onNavigateToPrivacy && (
+                {false && onNavigateToPrivacy && (
                   <a
                     onClick={() => {
                       onNavigateToPrivacy()
@@ -356,7 +356,7 @@ export default function Navbar({
       >
         Resources
       </a>
-      {onNavigateToTerms && (
+      {false && onNavigateToTerms && (
         <a
           onClick={onNavigateToTerms}
           style={{
@@ -373,7 +373,7 @@ export default function Navbar({
           Terms
         </a>
       )}
-      {onNavigateToPrivacy && (
+      {false && onNavigateToPrivacy && (
         <a
           onClick={onNavigateToPrivacy}
           style={{
@@ -390,64 +390,41 @@ export default function Navbar({
           Privacy
         </a>
       )}
-      {user ? (
-        onNavigateToHistory && (
-          <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-            <div style={{ 
-              color: "#fff", 
-              fontSize: 14,
-              fontWeight: 500
-            }}>
-              Hi, <span style={{ fontWeight: 600 }}>{user.full_name || user.email}</span>
-            </div>
-            <button
-              onClick={onNavigateToHistory}
-              style={{
-                background: "transparent",
-                border: "1px solid rgba(255,255,255,0.2)",
-                color: "#fff",
-                padding: "8px 16px",
-                borderRadius: 6,
-                fontSize: 13,
-                cursor: "pointer",
-                fontWeight: 500,
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(255,255,255,0.1)"
-                e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "transparent"
-                e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"
-              }}
-            >
-              History
-            </button>
-            <button
-              onClick={onLogout}
-              style={{
-                background: "#E94E1B",
-                border: "none",
-                color: "#fff",
-                padding: "8px 16px",
-                borderRadius: 6,
-                fontSize: 13,
-                cursor: "pointer",
-                fontWeight: 500,
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "#d43d0f")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "#E94E1B")}
-            >
-              Logout
-            </button>
+      {user && onNavigateToHistory && (
+        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+          <div style={{ 
+            color: "#fff", 
+            fontSize: 14,
+            fontWeight: 500
+          }}>
+            Hi, <span style={{ fontWeight: 600 }}>{user.full_name || user.email}</span>
           </div>
-        )
-      ) : (
-        onLogin && (
           <button
-            onClick={onLogin}
+            onClick={onNavigateToHistory}
+            style={{
+              background: "transparent",
+              border: "1px solid rgba(255,255,255,0.2)",
+              color: "#fff",
+              padding: "8px 16px",
+              borderRadius: 6,
+              fontSize: 13,
+              cursor: "pointer",
+              fontWeight: 500,
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.1)"
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent"
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"
+            }}
+          >
+            History
+          </button>
+          <button
+            onClick={onLogout}
             style={{
               background: "#E94E1B",
               border: "none",
@@ -462,9 +439,29 @@ export default function Navbar({
             onMouseEnter={(e) => (e.currentTarget.style.background = "#d43d0f")}
             onMouseLeave={(e) => (e.currentTarget.style.background = "#E94E1B")}
           >
-            Log in
+            Logout
           </button>
-        )
+        </div>
+      )}
+      {!user && onLogin && (
+        <button
+          onClick={onLogin}
+          style={{
+            background: "#E94E1B",
+            border: "none",
+            color: "#fff",
+            padding: "8px 16px",
+            borderRadius: 6,
+            fontSize: 13,
+            cursor: "pointer",
+            fontWeight: 500,
+            transition: "all 0.2s",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "#d43d0f")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "#E94E1B")}
+        >
+          Log in
+        </button>
       )}
     </nav>
     </>
