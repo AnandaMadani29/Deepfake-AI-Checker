@@ -88,7 +88,7 @@ export default function Navbar({
               >
                 <a
                   onClick={() => {
-                    onNavigateToAbout && onNavigateToAbout()
+                    onNavigateToHome && onNavigateToHome()
                     setMenuOpen(false)
                   }}
                   style={{
@@ -99,7 +99,7 @@ export default function Navbar({
                     cursor: "pointer",
                   }}
                 >
-                  About Us
+                  Home
                 </a>
                 <a
                   onClick={() => {
@@ -246,21 +246,20 @@ export default function Navbar({
           </>
         )}
 
-        {/* Mobile Navbar */}
+        {/* Mobile Logo - Absolute */}
+        <div style={{ position: "absolute", top: 30, left: 20, zIndex: 1001 }}>
+          <Logo onClick={onNavigateToHome} isMobile={true} variant="header" />
+        </div>
+
+        {/* Mobile Navbar - Hamburger Button */}
         <nav
           style={{
-            position: "fixed",
+            position:"fixed",
             top: 30,
-            right: 0,
-            left: 0,
-            padding: "0 20px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            right: 20,
             zIndex: 1000,
           }}
         >
-          <Logo onClick={onNavigateToHome || onNavigateToAbout} isMobile={true} variant="header" />
           <button
             onClick={() => setMenuOpen(true)}
             style={{
@@ -312,7 +311,7 @@ export default function Navbar({
         }}
       >
       <a
-        onClick={onNavigateToAbout}
+        onClick={onNavigateToHome}
         style={{
           color: activeLink === 'about' ? '#fff' : '#999',
           textDecoration: "none",
@@ -324,7 +323,7 @@ export default function Navbar({
         onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
         onMouseLeave={(e) => (e.currentTarget.style.color = activeLink === 'about' ? '#fff' : "#999")}
       >
-        About us
+        Home
       </a>
       <a
         onClick={onNavigateToDetection}

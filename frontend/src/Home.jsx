@@ -1154,7 +1154,7 @@ export default function Home({
       </section>
 
       <Footer 
-        onNavigateToHome={() => scrollToSection('about')}
+        onNavigateToHome={scrollToTop}
         onNavigateToDetection={onNavigateToDetection}
         onNavigateToArticles={onNavigateToArticles}
         onNavigateToTerms={() => window.location.hash = 'terms'}

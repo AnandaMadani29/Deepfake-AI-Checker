@@ -628,7 +628,7 @@ export default function Articles({
       </section>
 
       <Footer 
-        onNavigateToHome={() => onNavigateToHome("about")}
+        onNavigateToHome={onNavigateToHome}
         onNavigateToDetection={onNavigateToDetection}
         onNavigateToArticles={() => {}}
         onNavigateToTerms={() => {

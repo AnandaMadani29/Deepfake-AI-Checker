@@ -1939,7 +1939,7 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
 
       <div style={{ marginTop: isMobile ? 80 : 120 }}>
         <Footer 
-          onNavigateToHome={() => onNavigateToHome('about')}
+          onNavigateToHome={onNavigateToHome}
           onNavigateToDetection={() => onNavigateToHome()}
           onNavigateToArticles={onNavigateToArticles}
           onNavigateToTerms={() => window.location.hash = 'terms'}
