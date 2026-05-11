@@ -938,7 +938,7 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
               display: 'flex',
               height: '100%'
             }}>
-              {/* Fake Example - Left Half */}
+              {/* Real Example - Left Half */}
               <div style={{ 
                 flex: 1,
                 position: 'relative',
@@ -965,14 +965,14 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
                   <div style={{ 
                     fontSize: isMobile ? 11 : 12, 
                     fontWeight: 600, 
-                    color: '#f87171'
+                    color: '#4ade80'
                   }}>
-                    Fake
+                    Real
                   </div>
                 </div>
               </div>
 
-              {/* Real Example - Right Half */}
+              {/* Fake Example - Right Half */}
               <div style={{ 
                 flex: 1,
                 position: 'relative',
@@ -999,9 +999,9 @@ export default function Detection({ onNavigateToHome, onNavigateToHistory, onNav
                   <div style={{ 
                     fontSize: isMobile ? 11 : 12, 
                     fontWeight: 600, 
-                    color: '#4ade80'
+                    color: '#f87171'
                   }}>
-                    Real
+                    Fake
                   </div>
                 </div>
               </div>
