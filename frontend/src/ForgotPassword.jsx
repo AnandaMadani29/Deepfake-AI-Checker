@@ -288,6 +288,24 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
 
         {step === 'check-email' && (
           <>
+            {/* Email Image */}
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: isMobile ? 'flex-start' : 'center', 
+              marginBottom: 24 
+            }}>
+              <img 
+                src="/pass-to-email.png" 
+                alt="Check Email" 
+                style={{ 
+                  width: isMobile ? 120 : 150, 
+                  height: 'auto',
+                  filter: 'brightness(1.1) contrast(1.05)',
+                  opacity: 0.95
+                }} 
+              />
+            </div>
+
             <h2 style={{ 
               fontSize: isMobile ? 48 : 48, 
               fontWeight: 700, 
