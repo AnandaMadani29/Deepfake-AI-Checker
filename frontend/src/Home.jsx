@@ -47,7 +47,7 @@ function FAQItem({ question, answer }) {
           {question}
         </h3>
         {isOpen ? (
-          <FaMinus size={16} color="#E94E1B" />
+          <FaMinus size={16} color="#FF4B25" />
         ) : (
           <FaPlus size={16} color="#999" />
         )}
@@ -371,7 +371,7 @@ export default function Home({
               letterSpacing: "-0.02em",
             }}
           >
-            <span style={{ color: "#E94E1B" }}>Detect Deepfakes</span>
+            <span style={{ color: "#FF4B25" }}>Detect Deepfakes</span>
             <br />
             <span style={{ color: "#fff" }}>with AI</span>
             <br />
@@ -490,7 +490,7 @@ export default function Home({
                 e.currentTarget.style.transform = "translateY(-2px)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#E94E1B";
+                e.currentTarget.style.background = "#FF4B25";
                 e.currentTarget.style.transform = "translateY(0)";
               }}
             >
@@ -513,7 +513,7 @@ export default function Home({
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = "#E94E1B";
-                e.currentTarget.style.color = "#E94E1B";
+                e.currentTarget.style.color = "#FF4B25";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = "#666";
@@ -618,7 +618,7 @@ export default function Home({
               margin: "0 0 60px 0",
             }}
           >
-            About <span style={{ color: "#E94E1B" }}>Fact.it</span>
+            About <span style={{ color: "#FF4B25" }}>Fact.it</span>
           </h2>
           <div
             style={{
@@ -742,35 +742,25 @@ export default function Home({
                   style={{
                     background: "#2a2a2a",
                     borderRadius: 8,
-                    padding: isMobile ? "30px 20px" : "40px",
+                    padding: isMobile ? "20px" : "30px",
                     marginBottom: 20,
-                    border: "2px dashed #444",
+                    minHeight: isMobile ? 120 : 150,
                     display: "flex",
-                    flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    minHeight: isMobile ? 120 : 150,
                   }}
                 >
-                  <HiPhotograph size={isMobile ? 40 : 60} color="#E94E1B" />
-                  <div
-                    style={{
-                      fontSize: isMobile ? 13 : 14,
-                      color: "#999",
-                      marginTop: 12,
+                  <img 
+                    src="/assets/howToUse/howToUse1.png" 
+                    alt="Upload Image" 
+                    style={{ 
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                      width: 'auto',
+                      height: 'auto',
+                      objectFit: 'contain'
                     }}
-                  >
-                    Drag & drop an image or click
-                  </div>
-                  <div
-                    style={{
-                      fontSize: isMobile ? 11 : 12,
-                      color: "#666",
-                      marginTop: 4,
-                    }}
-                  >
-                    PNG, JPG, up to 3 MB
-                  </div>
+                  />
                 </div>
               ),
               text: "Start by uploading the image you want to analyze. You can select a file from your device or simply drag and drop it into the upload area. We support JPG, PNG, and other common image formats. No account is required—just upload your image and continue.",
@@ -791,39 +781,17 @@ export default function Home({
                     justifyContent: "center",
                   }}
                 >
-                  <div
-                    style={{
-                      width: "100%",
-                      background:
-                        "linear-gradient(135deg, #333 0%, #2a2a2a 100%)",
-                      borderRadius: 8,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      position: "relative",
-                      padding: "20px",
+                  <img 
+                    src="/assets/howToUse/howToUse2.png" 
+                    alt="Detect Image" 
+                    style={{ 
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                      width: 'auto',
+                      height: 'auto',
+                      objectFit: 'contain'
                     }}
-                  >
-                    <HiPhotograph size={isMobile ? 50 : 80} color="#444" />
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: 10,
-                        right: 10,
-                        width: 24,
-                        height: 24,
-                        borderRadius: "50%",
-                        background: "#E94E1B",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 14,
-                        color: "#fff",
-                      }}
-                    >
-                      ×
-                    </div>
-                  </div>
+                  />
                 </div>
               ),
               text: "Once your image is uploaded, our AI system immediately begins analyzing it. The technology examines elements such as lighting, shadows, pixel patterns, and facial details. It then compares these features against a large dataset of real and manipulated images to detect potential deepfake indicators.",
@@ -836,93 +804,25 @@ export default function Home({
                   style={{
                     background: "#2a2a2a",
                     borderRadius: 8,
-                    padding: isMobile ? "15px" : "20px",
+                    padding: isMobile ? "20px" : "30px",
                     marginBottom: 20,
                     minHeight: isMobile ? 120 : 150,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  <div
-                    style={{ display: "flex", flexDirection: "column", gap: 8 }}
-                  >
-                    <div
-                      style={{
-                        background: "#1a1a1a",
-                        padding: isMobile ? "8px 12px" : "10px 15px",
-                        borderRadius: 6,
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        border: "1px solid #E94E1B",
-                      }}
-                    >
-                      <span
-                        style={{ fontSize: isMobile ? 11 : 12, color: "#999" }}
-                      >
-                        Unnatural Eye Reflections
-                      </span>
-                      <span
-                        style={{
-                          fontSize: isMobile ? 11 : 12,
-                          color: "#E94E1B",
-                          fontWeight: 600,
-                        }}
-                      >
-                        89%
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        background: "#1a1a1a",
-                        padding: isMobile ? "8px 12px" : "10px 15px",
-                        borderRadius: 6,
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        border: "1px solid #f59e0b",
-                      }}
-                    >
-                      <span
-                        style={{ fontSize: isMobile ? 11 : 12, color: "#999" }}
-                      >
-                        Overly Smooth Skin Texture
-                      </span>
-                      <span
-                        style={{
-                          fontSize: isMobile ? 11 : 12,
-                          color: "#f59e0b",
-                          fontWeight: 600,
-                        }}
-                      >
-                        71%
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        background: "#1a1a1a",
-                        padding: isMobile ? "8px 12px" : "10px 15px",
-                        borderRadius: 6,
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        border: "1px solid #666",
-                      }}
-                    >
-                      <span
-                        style={{ fontSize: isMobile ? 11 : 12, color: "#999" }}
-                      >
-                        Greedy Smooth Skin Texture
-                      </span>
-                      <span
-                        style={{
-                          fontSize: isMobile ? 11 : 12,
-                          color: "#999",
-                          fontWeight: 600,
-                        }}
-                      >
-                        71%
-                      </span>
-                    </div>
-                  </div>
+                  <img 
+                    src="/assets/howToUse/howToUse3.png" 
+                    alt="Review Detection Report" 
+                    style={{ 
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                      width: 'auto',
+                      height: 'auto',
+                      objectFit: 'contain'
+                    }}
+                  />
                 </div>
               ),
               text: "Within seconds, the system generates an authenticity score that indicates the likelihood of the image being real or manipulated. The results are presented in a clear and user-friendly format, combining visual summary with a more detailed report for those who want deeper insights into the analysis.",
@@ -935,86 +835,25 @@ export default function Home({
                   style={{
                     background: "#2a2a2a",
                     borderRadius: 8,
-                    padding: isMobile ? "15px" : "20px",
+                    padding: isMobile ? "20px" : "30px",
                     marginBottom: 20,
                     minHeight: isMobile ? 120 : 150,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  <div
-                    style={{ display: "flex", flexDirection: "column", gap: 8 }}
-                  >
-                    {[
-                      { label: "Fake Label", prob: "1%", badge: "Fake" },
-                      { label: "Real-Art", prob: "88.7%", badge: "Real" },
-                      { label: "Real-Art", prob: "1.0%", badge: "Real" },
-                    ].map((item, idx) => (
-                      <div
-                        key={idx}
-                        style={{
-                          background: "#1a1a1a",
-                          padding: isMobile ? "8px 12px" : "10px 15px",
-                          borderRadius: 6,
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 8,
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: isMobile ? 30 : 40,
-                              height: isMobile ? 30 : 40,
-                              background: "#333",
-                              borderRadius: 4,
-                            }}
-                          />
-                          <span
-                            style={{
-                              fontSize: isMobile ? 11 : 12,
-                              color: "#999",
-                            }}
-                          >
-                            {item.label}
-                          </span>
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 8,
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontSize: isMobile ? 11 : 12,
-                              color: "#999",
-                            }}
-                          >
-                            Fake Probability: {item.prob}
-                          </span>
-                          <span
-                            style={{
-                              fontSize: isMobile ? 10 : 11,
-                              padding: "4px 8px",
-                              borderRadius: 4,
-                              background:
-                                item.badge === "Fake" ? "#E94E1B" : "#10b981",
-                              color: "#fff",
-                              fontWeight: 600,
-                            }}
-                          >
-                            {item.badge}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <img 
+                    src="/assets/howToUse/howToUse4.png" 
+                    alt="View History & Download Reports" 
+                    style={{ 
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                      width: 'auto',
+                      height: 'auto',
+                      objectFit: 'contain'
+                    }}
+                  />
                 </div>
               ),
               text: "For a more complete experience, you can log in to access your analysis history. This feature allows you to view all previously uploaded images along with their results and reports. You can also download the analysis reports anytime for future reference.",
@@ -1024,7 +863,7 @@ export default function Home({
               key={step.title}
               style={{
                 background: "#1a1a1a",
-                padding: isMobile ? "30px 20px" : "40px",
+                padding: isMobile ? "20px 10px" : "30px",
                 borderRadius: 12,
                 border: "2px solid #333",
                 textAlign: "left",
@@ -1043,11 +882,13 @@ export default function Home({
                 e.currentTarget.style.boxShadow = "none";
               }}
             >
+              {step.visual}
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
                   gap: 12,
+                  marginTop: 20,
                   marginBottom: 20,
                   color: "#E94E1B",
                 }}
@@ -1063,7 +904,6 @@ export default function Home({
                   {step.title}
                 </h3>
               </div>
-              {step.visual}
               <p
                 style={{
                   fontSize: isMobile ? 13 : 14,
@@ -1157,14 +997,8 @@ export default function Home({
         onNavigateToHome={scrollToTop}
         onNavigateToDetection={onNavigateToDetection}
         onNavigateToArticles={onNavigateToArticles}
-        onNavigateToTerms={() => {
-          window.location.hash = 'terms'
-          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
-        }}
-        onNavigateToPrivacy={() => {
-          window.location.hash = 'privacy'
-          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
-        }}
+        onNavigateToTerms={() => window.location.hash = 'terms'}
+        onNavigateToPrivacy={() => window.location.hash = 'privacy'}
         isMobile={isMobile}
       />
 

@@ -161,44 +161,19 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
           }}>
             {/* Success Icon */}
             <div style={{
-              width: 120,
-              height: 120,
-              margin: '0 auto 32px',
-              position: 'relative'
+              textAlign: 'center',
+              marginBottom: isMobile ? 20 : 30
             }}>
-              <div style={{
-                width: '100%',
-                height: '100%',
-                borderRadius: '50%',
-                border: '2px solid #444',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: '#1a1a1a'
-              }}>
-                <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" fill="#2a2a2a"/>
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="#666"/>
-                  <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z" fill="#999"/>
-                </svg>
-                <div style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  right: 0,
-                  width: 36,
-                  height: 36,
-                  borderRadius: '50%',
-                  background: '#FF5733',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: '3px solid #1a1a1a'
-                }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                </div>
-              </div>
+              <img 
+                src="/assets/resetPass/reset2.png" 
+                alt="Password Reset Success" 
+                style={{ 
+                  maxWidth: isMobile ? '100px' : '150px',
+                  height: 'auto',
+                  width: '100%',
+                  objectFit: 'contain'
+                }}
+              />
             </div>
 
             <h2 style={{ 

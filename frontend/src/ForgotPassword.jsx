@@ -93,11 +93,8 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
         throw new Error(data.detail || 'Password reset failed')
       }
 
-      toast.success('Password reset successfully! Redirecting to login...')
-      
-      setTimeout(() => {
-        onNavigateToLogin()
-      }, 2000)
+      toast.success('Password reset successfully!')
+      setStep('success')
     } catch (err) {
       toast.error(err.message || 'Password reset failed. Please try again.')
     } finally {
@@ -288,26 +285,23 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
 
         {step === 'check-email' && (
           <>
-            {/* Email Image */}
             <div style={{ 
-              display: 'flex', 
-              justifyContent: isMobile ? 'flex-start' : 'center', 
-              marginBottom: 24 
+              textAlign: 'center', 
+              marginBottom: isMobile ? 20 : 30 
             }}>
               <img 
-                src="/pass-to-email.png" 
+                src="/assets/resetPass/reset1.png" 
                 alt="Check Email" 
                 style={{ 
-                  width: isMobile ? 120 : 150, 
+                  maxWidth: isMobile ? '100px' : '150px',
                   height: 'auto',
-                  filter: 'brightness(1.1) contrast(1.05)',
-                  opacity: 0.95
-                }} 
+                  width: '100%',
+                  objectFit: 'contain'
+                }}
               />
             </div>
-
             <h2 style={{ 
-              fontSize: isMobile ? 48 : 48, 
+              fontSize: isMobile ? 48  : 48, 
               fontWeight: 700, 
               margin: '0 0 12px 0', 
               color: '#fff', 
