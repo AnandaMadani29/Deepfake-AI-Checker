@@ -25,7 +25,7 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
         <div style={{ textAlign: 'center' }}>
           <h2 style={{ fontSize: 24, marginBottom: 16 }}>Article not found</h2>
           <button onClick={onNavigateToArticles} style={{ background: '#E94E1B', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: 6, cursor: 'pointer' }}>
-            Back to Articles
+            Back
           </button>
         </div>
       </div>
@@ -267,7 +267,7 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
           }}
         >
           <HiArrowLeft size={16} />
-          Back to Articles
+          Back
         </button>
       </div>
 

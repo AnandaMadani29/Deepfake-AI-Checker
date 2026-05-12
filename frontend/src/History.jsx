@@ -9,7 +9,7 @@ import Footer from './components/Footer'
 
 const DEFAULT_API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
-export default function History({ onNavigateToHome, onNavigateToDetection, onNavigateToArticles, user }) {
+export default function History({ onNavigateToHome, onNavigateToDetection, onNavigateToArticles, user, fromDetection, onBackToDetection }) {
   const [history, setHistory] = useState([])
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -400,22 +400,77 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
         <div style={{ marginBottom: isMobile ? 30 : 40 }}>
           <h1 style={{ fontSize: isMobile ? 32 : 48, fontWeight: 700, margin: '0 0 12px 0' }}>Detection History</h1>
           <p style={{ fontSize: isMobile ? 14 : 16, color: '#999' }}>View and manage your deepfake detection history</p>
+          
+          {/* Back to Detection Button */}
+          {fromDetection && onBackToDetection && (
+            <button
+              onClick={onBackToDetection}
+              style={{
+                marginTop: 16,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                background: '#E94E1B',
+                color: '#fff',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: 6,
+                cursor: 'pointer',
+                fontSize: 14,
+                fontWeight: 600,
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#d43d0f'
+                e.currentTarget.style.transform = 'translateY(-2px)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#E94E1B'
+                e.currentTarget.style.transform = 'translateY(0)'
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+              Back to Detection
+            </button>
+          )}
         </div>
 
         {/* Stats Cards */}
         {stats && (
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(3, 1fr)', gap: isMobile ? 12 : 20, marginBottom: isMobile ? 30 : 40 }}>
-            <div style={{ background: '#0d0d0d', padding: 24, borderRadius: 8, border: '1px solid #2a2a2a' }}>
-              <div style={{ fontSize: 14, color: '#999', marginBottom: 8 }}>Total Detections</div>
-              <div style={{ fontSize: 32, fontWeight: 700 }}>{stats.total_detections}</div>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(3, 1fr)', 
+            gap: isMobile ? 8 : 20, 
+            marginBottom: isMobile ? 30 : 40 
+          }}>
+            <div style={{ 
+              background: '#0d0d0d', 
+              padding: isMobile ? 16 : 24, 
+              borderRadius: 8, 
+              border: '1px solid #2a2a2a' 
+            }}>
+              <div style={{ fontSize: isMobile ? 12 : 14, color: '#999', marginBottom: 8 }}>Total Detections</div>
+              <div style={{ fontSize: isMobile ? 24 : 32, fontWeight: 700 }}>{stats.total_detections}</div>
             </div>
-            <div style={{ background: '#0d0d0d', padding: 24, borderRadius: 8, border: '1px solid #2a2a2a' }}>
-              <div style={{ fontSize: 14, color: '#999', marginBottom: 8 }}>Fake Detected</div>
-              <div style={{ fontSize: 32, fontWeight: 700, color: '#f87171' }}>{stats.fake_count}</div>
+            <div style={{ 
+              background: '#0d0d0d', 
+              padding: isMobile ? 16 : 24, 
+              borderRadius: 8, 
+              border: '1px solid #2a2a2a' 
+            }}>
+              <div style={{ fontSize: isMobile ? 12 : 14, color: '#999', marginBottom: 8 }}>Fake Detected</div>
+              <div style={{ fontSize: isMobile ? 24 : 32, fontWeight: 700, color: '#f87171' }}>{stats.fake_count}</div>
             </div>
-            <div style={{ background: '#0d0d0d', padding: 24, borderRadius: 8, border: '1px solid #2a2a2a' }}>
-              <div style={{ fontSize: 14, color: '#999', marginBottom: 8 }}>Real Detected</div>
-              <div style={{ fontSize: 32, fontWeight: 700, color: '#4ade80' }}>{stats.real_count}</div>
+            <div style={{ 
+              background: '#0d0d0d', 
+              padding: isMobile ? 16 : 24, 
+              borderRadius: 8, 
+              border: '1px solid #2a2a2a' 
+            }}>
+              <div style={{ fontSize: isMobile ? 12 : 14, color: '#999', marginBottom: 8 }}>Real Detected</div>
+              <div style={{ fontSize: isMobile ? 24 : 32, fontWeight: 700, color: '#4ade80' }}>{stats.real_count}</div>
             </div>
           </div>
         )}
@@ -723,31 +778,66 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
         ) : (
           <div style={{ display: 'grid', gap: 16 }}>
             {paginatedHistory.map((item, index) => (
-              <div key={item.id} className={`animate-fade-in-up stagger-${Math.min(index + 1, 6)}`} style={{ background: '#0d0d0d', padding: 24, borderRadius: 8, border: selectedItems.includes(item.id) ? '2px solid #3b82f6' : '1px solid #2a2a2a', display: 'flex', gap: 20, alignItems: 'flex-start' }}>
-                {/* Checkbox (Always visible) */}
-                <div style={{ flexShrink: 0, paddingTop: 4 }}>
-                  <input
-                    type="checkbox"
-                    checked={selectedItems.includes(item.id)}
-                    onChange={() => handleToggleSelect(item.id)}
-                    style={{
-                      width: 20,
-                      height: 20,
-                      cursor: 'pointer',
-                      accentColor: '#3b82f6'
-                    }}
-                  />
-                </div>
+              <div 
+                key={item.id} 
+                className={`animate-fade-in-up stagger-${Math.min(index + 1, 6)}`} 
+                onClick={isMobile ? () => handleToggleSelect(item.id) : undefined}
+                style={{ 
+                  background: '#0d0d0d', 
+                  padding: isMobile ? 16 : 24, 
+                  borderRadius: 8, 
+                  border: selectedItems.includes(item.id) ? '2px solid #E94E1B' : '1px solid #2a2a2a', 
+                  display: 'flex', 
+                  flexDirection: isMobile ? 'column' : 'row',
+                  gap: isMobile ? 16 : 20, 
+                  alignItems: isMobile ? 'stretch' : 'center',
+                  position: 'relative',
+                  cursor: isMobile ? 'pointer' : 'default',
+                  transition: 'transform 0.2s, border-color 0.2s',
+                  transform: isMobile && selectedItems.includes(item.id) ? 'scale(0.98)' : 'scale(1)'
+                }}
+                onMouseEnter={(e) => {
+                  if (isMobile) e.currentTarget.style.transform = 'scale(0.98)'
+                }}
+                onMouseLeave={(e) => {
+                  if (isMobile && !selectedItems.includes(item.id)) e.currentTarget.style.transform = 'scale(1)'
+                }}
+              >
+                {/* Checkbox - Desktop Only */}
+                {!isMobile && (
+                  <div style={{ 
+                    flexShrink: 0, 
+                    display: 'flex', 
+                    alignItems: 'center'
+                  }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedItems.includes(item.id)}
+                      onChange={() => handleToggleSelect(item.id)}
+                      style={{
+                        width: 20,
+                        height: 20,
+                        cursor: 'pointer',
+                        accentColor: '#E94E1B',
+                        opacity: 0.5
+                      }}
+                    />
+                  </div>
+                )}
                 
-                {/* Thumbnail */}
+                {/* Thumbnail - Center for Mobile */}
                 {item.image_data && (
-                  <div style={{ flexShrink: 0 }}>
+                  <div style={{ 
+                    flexShrink: 0,
+                    display: 'flex',
+                    justifyContent: isMobile ? 'center' : 'flex-start'
+                  }}>
                     <img 
                       src={item.image_data} 
                       alt={item.image_name}
                       style={{
-                        width: isMobile ? '80px' : '120px',
-                        height: isMobile ? '80px' : '120px',
+                        width: isMobile ? '200px' : '120px',
+                        height: isMobile ? '200px' : '120px',
                         objectFit: 'cover',
                         borderRadius: 8,
                         border: '2px solid #2a2a2a'
@@ -775,13 +865,21 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                   {/* Filename */}
                   <div style={{ fontSize: 18, fontWeight: 600, wordBreak: 'break-word', marginBottom: 8, paddingRight: 80 }}>{item.image_name}</div>
                   
-                  {/* Probabilities */}
-                  <div style={{ display: 'flex', gap: 16, marginBottom: 8, fontSize: 13, flexWrap: 'wrap' }}>
-                    <div>
-                      <span style={{ color: '#666' }}>Real Probability:</span> <span style={{ color: '#4ade80', fontWeight: 600 }}>{((1 - item.prob_fake) * 100).toFixed(1)}%</span>
+                  {/* Probabilities - Single Row */}
+                  <div style={{ 
+                    display: 'flex', 
+                    gap: 24, 
+                    marginBottom: 8, 
+                    fontSize: 13,
+                    alignItems: 'center'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ color: '#666' }}>Real:</span>
+                      <span style={{ color: '#4ade80', fontWeight: 600 }}>{((1 - item.prob_fake) * 100).toFixed(1)}%</span>
                     </div>
-                    <div>
-                      <span style={{ color: '#666' }}>Fake Probability:</span> <span style={{ color: '#f87171', fontWeight: 600 }}>{(item.prob_fake * 100).toFixed(1)}%</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ color: '#666' }}>Fake:</span>
+                      <span style={{ color: '#f87171', fontWeight: 600 }}>{(item.prob_fake * 100).toFixed(1)}%</span>
                     </div>
                   </div>
                   
@@ -791,7 +889,8 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                       fontSize: 13, 
                       color: '#999', 
                       marginBottom: 8,
-                      lineHeight: 1.5
+                      lineHeight: 1.5,
+                      textAlign: 'justify'
                     }}>
                       {item.detailed_analysis.summary}
                     </div>

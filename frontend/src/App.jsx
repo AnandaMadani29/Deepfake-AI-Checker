@@ -19,6 +19,8 @@ export default function App() {
   const [user, setUser] = useState(null)
   const [isAuthChecked, setIsAuthChecked] = useState(false)
   const [selectedArticleId, setSelectedArticleId] = useState(null)
+  const [detectionResults, setDetectionResults] = useState([])
+  const [fromDetection, setFromDetection] = useState(false)
 
   // Check if user is already logged in on mount
   useEffect(() => {
@@ -221,6 +223,7 @@ export default function App() {
       <Detection 
         onNavigateToHome={navigateToHome}
         onNavigateToHistory={() => {
+          setFromDetection(detectionResults.length > 0)
           setCurrentPage('history')
           setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
         }}
@@ -233,6 +236,8 @@ export default function App() {
           setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
         }}
         user={user}
+        detectionResults={detectionResults}
+        setDetectionResults={setDetectionResults}
       />
     )
   }
@@ -250,6 +255,12 @@ export default function App() {
           setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
         }}
         user={user}
+        fromDetection={fromDetection}
+        onBackToDetection={() => {
+          setFromDetection(false)
+          setCurrentPage('detection')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
       />
     )
   }
