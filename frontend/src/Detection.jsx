@@ -33,6 +33,8 @@ export default function Detection({
   onNavigateToHome,
   onNavigateToHistory,
   onNavigateToArticles,
+  onNavigateToTerms,
+  onNavigateToPrivacy,
   onLogin,
   user,
 }) {
@@ -1037,11 +1039,11 @@ export default function Detection({
 
       <div style={{ marginTop: isMobile ? 80 : 120 }}>
         <Footer
-          onNavigateToHome={() => onNavigateToHome("about")}
+          onNavigateToHome={onNavigateToHome}
           onNavigateToDetection={() => onNavigateToHome()}
           onNavigateToArticles={onNavigateToArticles}
-          onNavigateToTerms={() => (window.location.hash = "terms")}
-          onNavigateToPrivacy={() => (window.location.hash = "privacy")}
+          onNavigateToTerms={onNavigateToTerms}
+          onNavigateToPrivacy={onNavigateToPrivacy}
           isMobile={isMobile}
           activeLink="detection"
         />

@@ -1012,14 +1012,8 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
           onNavigateToHome={onNavigateToHome}
           onNavigateToDetection={onNavigateToDetection}
           onNavigateToArticles={onNavigateToArticles}
-          onNavigateToTerms={() => {
-            window.location.hash = 'terms'
-            setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
-          }}
-          onNavigateToPrivacy={() => {
-            window.location.hash = 'privacy'
-            setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
-          }}
+          onNavigateToTerms={() => window.location.hash = 'terms'}
+          onNavigateToPrivacy={() => window.location.hash = 'privacy'}
           isMobile={isMobile}
         />
       </div>

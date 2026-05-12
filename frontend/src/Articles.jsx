@@ -10,6 +10,8 @@ export default function Articles({
   onNavigateToArticleDetail,
   onNavigateToHome,
   onNavigateToDetection,
+  onNavigateToTerms,
+  onNavigateToPrivacy,
   onLogin,
   user,
   onLogout,
@@ -637,14 +639,8 @@ export default function Articles({
         onNavigateToHome={onNavigateToHome}
         onNavigateToDetection={onNavigateToDetection}
         onNavigateToArticles={() => {}}
-        onNavigateToTerms={() => {
-          window.location.hash = 'terms'
-          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
-        }}
-        onNavigateToPrivacy={() => {
-          window.location.hash = 'privacy'
-          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
-        }}
+        onNavigateToTerms={onNavigateToTerms}
+        onNavigateToPrivacy={onNavigateToPrivacy}
         isMobile={isMobile}
         activeLink="resources"
       />

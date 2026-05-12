@@ -73,6 +73,8 @@ export default function Home({
   onNavigateToLogin,
   onNavigateToHistory,
   onNavigateToArticles,
+  onNavigateToTerms,
+  onNavigateToPrivacy,
   onLogout,
   targetSection,
   onSectionScrolled,
@@ -997,8 +999,8 @@ export default function Home({
         onNavigateToHome={scrollToTop}
         onNavigateToDetection={onNavigateToDetection}
         onNavigateToArticles={onNavigateToArticles}
-        onNavigateToTerms={() => window.location.hash = 'terms'}
-        onNavigateToPrivacy={() => window.location.hash = 'privacy'}
+        onNavigateToTerms={onNavigateToTerms}
+        onNavigateToPrivacy={onNavigateToPrivacy}
         isMobile={isMobile}
       />
 

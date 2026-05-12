@@ -455,14 +455,8 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
         onNavigateToHome={onNavigateToHome}
         onNavigateToDetection={() => onNavigateToHome()}
         onNavigateToArticles={onNavigateToArticles}
-        onNavigateToTerms={() => {
-          window.location.hash = 'terms'
-          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
-        }}
-        onNavigateToPrivacy={() => {
-          window.location.hash = 'privacy'
-          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
-        }}
+        onNavigateToTerms={() => window.location.hash = 'terms'}
+        onNavigateToPrivacy={() => window.location.hash = 'privacy'}
         isMobile={isMobile}
         activeLink="resources"
       />

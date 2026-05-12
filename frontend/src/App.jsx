@@ -102,6 +102,18 @@ export default function App() {
     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
   }
 
+  const handleNavigateToTerms = () => {
+    window.location.hash = 'terms'
+    setCurrentPage('terms')
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+  }
+
+  const handleNavigateToPrivacy = () => {
+    window.location.hash = 'privacy'
+    setCurrentPage('privacy')
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+  }
+
   const handleLoginSuccess = (userData) => {
     setUser(userData)
     setCurrentPage('home')
@@ -231,6 +243,8 @@ export default function App() {
           setCurrentPage('articles')
           setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
         }}
+        onNavigateToTerms={handleNavigateToTerms}
+        onNavigateToPrivacy={handleNavigateToPrivacy}
         onLogin={() => {
           setCurrentPage('home')
           setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
@@ -278,6 +292,8 @@ export default function App() {
           setCurrentPage('detection')
           setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
         }}
+        onNavigateToTerms={handleNavigateToTerms}
+        onNavigateToPrivacy={handleNavigateToPrivacy}
         onLogin={() => {
           setCurrentPage('home')
           setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
@@ -389,6 +405,8 @@ export default function App() {
           setCurrentPage('articles')
           setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
         }}
+        onNavigateToTerms={handleNavigateToTerms}
+        onNavigateToPrivacy={handleNavigateToPrivacy}
         onLogout={handleLogout}
         targetSection={targetSection}
         onSectionScrolled={() => setTargetSection(null)}
