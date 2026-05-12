@@ -13,6 +13,7 @@ export default function Privacy({ onNavigateToHome, onNavigateToDetection, onNav
   
   const navigateTo = (page) => {
     window.location.hash = page
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
   }
   
   return (

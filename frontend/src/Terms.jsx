@@ -15,6 +15,7 @@ export default function Terms({ onNavigateToHome, onNavigateToDetection, onNavig
   
   const navigateTo = (page) => {
     window.location.hash = page
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
   }
   
   return (

@@ -310,9 +310,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
         <div style={{
           background: isMobile ? 'rgba(26, 26, 26, 0.95)' : '#1a1a1a',
           padding: isMobile ? '32px 24px' : '48px 40px',
-          borderRadius: 12,
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+          borderRadius: 12
         }}>
           <h2 style={{ 
             fontSize: isMobile ? 28 : 32, 
