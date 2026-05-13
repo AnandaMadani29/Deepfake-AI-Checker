@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
-import { HiClock, HiTrash, HiChartBar, HiDownload, HiSearch } from 'react-icons/hi'
+import { HiClock, HiTrash, HiChartBar, HiDownload, HiSearch, HiArrowLeft } from 'react-icons/hi'
 import Logo from './components/Logo'
 import { MdDelete, MdHistory } from 'react-icons/md'
 import { FaCheckCircle, FaTimesCircle, FaBars, FaTimes } from 'react-icons/fa'
@@ -23,7 +23,8 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
   const [selectMode, setSelectMode] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [menuOpen, setMenuOpen] = useState(false)
-  const itemsPerPage = 10
+  const [itemsPerPage, setItemsPerPage] = useState(10)
+  const [itemsPerPageDropdownOpen, setItemsPerPageDropdownOpen] = useState(false)
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768)
@@ -407,31 +408,20 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
               onClick={onBackToDetection}
               style={{
                 marginTop: 16,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 8,
-                background: '#E94E1B',
-                color: '#fff',
-                border: 'none',
+                background: 'transparent',
+                border: '1px solid #2a2a2a',
+                color: '#999',
                 padding: '10px 20px',
                 borderRadius: 6,
                 cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
                 fontSize: 14,
-                fontWeight: 600,
-                transition: 'all 0.2s'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#d43d0f'
-                e.currentTarget.style.transform = 'translateY(-2px)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#E94E1B'
-                e.currentTarget.style.transform = 'translateY(0)'
+                fontWeight: 600
               }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
-              </svg>
+              <HiArrowLeft size={16} />
               Back to Detection
             </button>
           )}
@@ -475,42 +465,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
           </div>
         )}
 
-        {/* Search Input */}
-        {history.length > 0 && (
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ position: 'relative', maxWidth: isMobile ? '100%' : 400 }}>
-              <HiSearch 
-                size={20} 
-                style={{ 
-                  position: 'absolute', 
-                  left: 12, 
-                  top: '50%', 
-                  transform: 'translateY(-50%)', 
-                  color: '#666' 
-                }} 
-              />
-              <input
-                type="text"
-                placeholder="Search by image name..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '10px 12px 10px 40px',
-                  background: '#0d0d0d',
-                  border: '1px solid #2a2a2a',
-                  borderRadius: 4,
-                  color: '#fff',
-                  fontSize: 14,
-                  outline: 'none'
-                }}
-              />
-            </div>
-          </div>
-        )}
-
-
-        {/* Filter and Actions - Single Row */}
+        {/* Search, Filter and Actions - Single Row */}
         {history.length > 0 && (
           <div style={{ 
             marginBottom: 24, 
@@ -518,10 +473,41 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
             justifyContent: 'space-between', 
             alignItems: 'center', 
             gap: 12, 
-            flexWrap: 'wrap' 
+            flexWrap: isMobile ? 'wrap' : 'nowrap' 
           }}>
-            {/* Filter Dropdown and Clear Button */}
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            {/* Left Side: Search + Filter Dropdowns */}
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center', flex: isMobile ? '1 1 100%' : '1' }}>
+              {/* Search Input */}
+              <div style={{ position: 'relative', flex: isMobile ? '1' : '0 1 320px' }}>
+                <HiSearch 
+                  size={20} 
+                  style={{ 
+                    position: 'absolute', 
+                    left: 12, 
+                    top: '50%', 
+                    transform: 'translateY(-50%)', 
+                    color: '#666' 
+                  }} 
+                />
+                <input
+                  type="text"
+                  placeholder="Search by image name..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px 10px 40px',
+                    background: '#0d0d0d',
+                    border: '1px solid #2a2a2a',
+                    borderRadius: 4,
+                    color: '#fff',
+                    fontSize: 14,
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
+              {/* Filter Result Dropdown */}
               <div style={{ position: 'relative' }}>
                 <button
                   onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
@@ -537,7 +523,8 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                     display: 'flex',
                     alignItems: 'center',
                     gap: 8,
-                    minWidth: 120
+                    minWidth: 100,
+                    whiteSpace: 'nowrap'
                   }}
                 >
                   {filterResult === 'all' ? 'All' : filterResult === 'fake' ? 'Fake' : 'Real'}
@@ -618,7 +605,75 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                 </div>
               )}
               </div>
-              
+
+              {/* Items Per Page Dropdown */}
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setItemsPerPageDropdownOpen(!itemsPerPageDropdownOpen)}
+                  style={{
+                    padding: '10px 16px',
+                    background: '#2a2a2a',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 4,
+                    cursor: 'pointer',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    minWidth: 80,
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  {itemsPerPage}
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" style={{ transform: itemsPerPageDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
+                    <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+                {itemsPerPageDropdownOpen && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    marginTop: 4,
+                    background: '#0d0d0d',
+                    border: '1px solid #2a2a2a',
+                    borderRadius: 4,
+                    overflow: 'hidden',
+                    zIndex: 10,
+                    minWidth: 80
+                  }}>
+                    {[5, 10, 20, 50, 100].map(num => (
+                      <button
+                        key={num}
+                        onClick={() => {
+                          setItemsPerPage(num)
+                          setItemsPerPageDropdownOpen(false)
+                          setCurrentPage(1)
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '10px 16px',
+                          background: itemsPerPage === num ? '#E94E1B' : 'transparent',
+                          color: '#fff',
+                          border: 'none',
+                          cursor: 'pointer',
+                          fontSize: 13,
+                          fontWeight: 600,
+                          textAlign: 'left'
+                        }}
+                      >
+                        {num}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right Side: Action Buttons */}
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
               {/* Clear Selection Button */}
               {selectedItems.length > 0 && (
                 <button
@@ -631,55 +686,35 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                     borderRadius: 4,
                     cursor: 'pointer',
                     fontSize: 13,
-                    fontWeight: 600
+                    fontWeight: 600,
+                    whiteSpace: 'nowrap'
                   }}
                 >
                   Clear ({selectedItems.length})
                 </button>
               )}
-            </div>
-
-            {/* Action Buttons */}
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+              
               <button 
                 onClick={handleDownloadHistory}
                 style={{ 
                   background: '#E94E1B', 
                   color: '#fff', 
                   border: 'none', 
-                  padding: '12px 24px', 
+                  padding: '10px 20px', 
                   borderRadius: 4, 
                   cursor: 'pointer', 
                   fontSize: 14, 
                   fontWeight: 600,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 8
+                  gap: 8,
+                  whiteSpace: 'nowrap'
                 }}
               >
                 <HiDownload size={16} />
                 {selectedItems.length > 0 
                   ? `Download (${selectedItems.length})` 
                   : 'Download All'}
-              </button>
-              <button 
-                onClick={handleDownloadLast50}
-                style={{ 
-                  background: '#f59e0b', 
-                  color: '#fff', 
-                  border: 'none', 
-                  padding: '12px 24px', 
-                  borderRadius: 4, 
-                  cursor: 'pointer', 
-                  fontSize: 14, 
-                  fontWeight: 600,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8
-                }}
-              >
-                <HiDownload size={16} />
-                Download Last 50
               </button>
               <button 
                 onClick={handleDeleteAll}
@@ -691,7 +726,8 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                   borderRadius: 4, 
                   cursor: 'pointer', 
                   fontSize: 14, 
-                  fontWeight: 600 
+                  fontWeight: 600,
+                  whiteSpace: 'nowrap'
                 }}
               >
                 {selectedItems.length > 0 

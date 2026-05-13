@@ -37,11 +37,14 @@ export default function Detection({
   onNavigateToPrivacy,
   onLogin,
   user,
+  detectionResults,
+  setDetectionResults,
 }) {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [results, setResults] = useState([]);
+  const results = detectionResults || [];
+  const setResults = setDetectionResults || (() => {});
   const [dragActive, setDragActive] = useState(false);
   const [processingIndex, setProcessingIndex] = useState(-1);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);

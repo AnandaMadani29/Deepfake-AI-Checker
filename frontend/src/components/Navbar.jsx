@@ -171,12 +171,6 @@ export default function Navbar({
               <div style={{ marginTop: "auto", paddingBottom: 40 }}>
                 {user ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                    <div style={{ color: "#fff", fontSize: 16, marginBottom: 8 }}>
-                      <span style={{ fontWeight: 600 }}>Hi,</span>{" "}
-                      <span style={{ fontWeight: 600 }}>
-                        {user.full_name || user.email}
-                      </span>
-                    </div>
                     {onNavigateToHistory && (
                       <button
                         onClick={() => {
@@ -198,6 +192,12 @@ export default function Navbar({
                         History
                       </button>
                     )}
+                    <div style={{ color: "#fff", fontSize: 16, marginBottom: 8 }}>
+                      <span style={{ fontWeight: 600 }}>Hi,</span>{" "}
+                      <span style={{ fontWeight: 600 }}>
+                        {user.full_name || user.email}
+                      </span>
+                    </div>
                     <button
                       onClick={() => {
                         onLogout && onLogout()
@@ -391,13 +391,6 @@ export default function Navbar({
       )}
       {user && onNavigateToHistory && (
         <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-          <div style={{ 
-            color: "#fff", 
-            fontSize: 14,
-            fontWeight: 500
-          }}>
-            Hi, <span style={{ fontWeight: 600 }}>{user.full_name || user.email}</span>
-          </div>
           <button
             onClick={onNavigateToHistory}
             style={{
@@ -422,6 +415,13 @@ export default function Navbar({
           >
             History
           </button>
+          <div style={{ 
+            color: "#fff", 
+            fontSize: 14,
+            fontWeight: 500
+          }}>
+            Hi, <span style={{ fontWeight: 600 }}>{user.full_name || user.email}</span>
+          </div>
           <button
             onClick={onLogout}
             style={{
