@@ -18,7 +18,7 @@ def download_model_weights():
     weights_dir.mkdir(parents=True, exist_ok=True)
     
     # Construct filename based on model name
-    if MODEL_NAME in ["resnet_revised", "resnet_curated_dataset", "2000datasetresnet", "resnet1704", "new_script_resnet", "best_resnet50", "resnetgacor"]:
+    if MODEL_NAME in ["resnet_revised", "resnet_curated_dataset", "2000datasetresnet", "resnet1704", "new_script_resnet", "best_resnet50", "resnet50"]:
         weights_filename = f"{MODEL_NAME}.pth"
     else:
         # Fallback to resnet_revised for other models

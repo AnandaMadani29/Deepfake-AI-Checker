@@ -63,7 +63,7 @@ MODEL_REGISTRY = {
     "densenet121_fold5": {"timm_name": "densenet121",    "params": "~7M"},
     
     # Custom ResNet model
-    "resnetgacor": {"timm_name": "resnet50", "params": "~23M"},
+    "resnet50": {"timm_name": "resnet50", "params": "~23M"},
 }
 
 
