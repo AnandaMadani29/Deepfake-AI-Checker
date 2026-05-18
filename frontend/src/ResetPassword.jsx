@@ -100,7 +100,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
         display: 'flex', 
         alignItems: 'center',
         justifyContent: 'center',
-        background: isMobile ? '#000' : '#FF5733',
+        background: isMobile ? '#000' : '#FF4B25',
         position: 'relative',
         overflow: 'hidden',
         padding: '20px'
@@ -120,16 +120,18 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
             preserveAspectRatio="none"
           >
             <path
-              d="M 250,0 
+              d="M 250,-1 
                  Q 150,150 250,300 
                  Q 350,450 250,600 
                  Q 150,750 250,900 
                  L 1190,900 
                  Q 1290,750 1190,600 
                  Q 1090,450 1190,300 
-                 Q 1290,150 1190,0 
+                 Q 1290,150 1190,-20 
                  Z"
               fill="#1a1a1a"
+              stroke="#fff"
+              strokeWidth="2"
             />
           </svg>
         )}
@@ -199,7 +201,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
               style={{
                 width: '100%',
                 padding: '16px',
-                background: '#FF5733',
+                background: '#FF4B25',
                 color: '#fff',
                 border: 'none',
                 borderRadius: 6,
@@ -209,7 +211,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
                 transition: 'background 0.2s'
               }}
               onMouseEnter={(e) => e.currentTarget.style.background = '#E94E1B'}
-              onMouseLeave={(e) => e.currentTarget.style.background = '#FF5733'}
+              onMouseLeave={(e) => e.currentTarget.style.background = '#FF4B25'}
             >
               Sign In
             </button>
@@ -226,7 +228,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
       display: 'flex', 
       alignItems: 'center',
       justifyContent: 'center',
-      background: isMobile ? '#000' : '#FF5733',
+      background: isMobile ? '#000' : '#FF4B25',
       position: 'relative',
       overflow: 'hidden',
       padding: '20px'
@@ -246,16 +248,18 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
           preserveAspectRatio="none"
         >
           <path
-            d="M 250,0 
+            d="M 250,-20 
                Q 150,150 250,300 
                Q 350,450 250,600 
                Q 150,750 250,900 
                L 1190,900 
                Q 1290,750 1190,600 
                Q 1090,450 1190,300 
-               Q 1290,150 1190,0 
+               Q 1290,150 1190,-20 
                Z"
             fill="#1a1a1a"
+            stroke="#fff"
+            strokeWidth="2"
           />
         </svg>
       )}
@@ -469,7 +473,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
               style={{
                 width: '100%',
                 padding: '16px',
-                background: loading ? '#666' : '#FF5733',
+                background: loading ? '#666' : '#FF4B25',
                 color: '#fff',
                 border: 'none',
                 borderRadius: 6,
@@ -483,7 +487,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
                 if (!loading) e.currentTarget.style.background = '#E94E1B'
               }}
               onMouseLeave={(e) => {
-                if (!loading) e.currentTarget.style.background = '#FF5733'
+                if (!loading) e.currentTarget.style.background = '#FF4B25'
               }}
             >
               {loading ? 'Resetting...' : 'Reset Password'}
@@ -502,7 +506,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
                   textDecoration: 'none',
                   transition: 'color 0.2s'
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#FF5733'}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#FF4B25'}
                 onMouseLeave={(e) => e.currentTarget.style.color = '#999'}
               >
                 Back to Login

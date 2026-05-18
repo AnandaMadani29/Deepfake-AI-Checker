@@ -43,7 +43,7 @@ export default function Terms({ onNavigateToHome, onNavigateToDetection, onNavig
       <main style={{
         maxWidth: 800,
         margin: '0 auto',
-        padding: '60px 40px 100px'
+        padding: isMobile ? '100px 20px 100px' : '60px 40px 100px'
       }}>
         {/* Title */}
         <h1 style={{

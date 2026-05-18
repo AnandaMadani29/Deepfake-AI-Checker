@@ -110,7 +110,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
       display: 'flex', 
       alignItems: 'center',
       justifyContent: 'center',
-      background: isMobile ? '#000' : '#FF5733',
+      background: isMobile ? '#000' : '#FF4B25',
       position: 'relative',
       overflow: 'hidden',
       padding: '20px'
@@ -130,16 +130,18 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
           preserveAspectRatio="none"
         >
           <path
-            d="M 250,0 
+            d="M 250,-1
                Q 150,150 250,300 
                Q 350,450 250,600 
                Q 150,750 250,900 
                L 1190,900 
                Q 1290,750 1190,600 
                Q 1090,450 1190,300 
-               Q 1290,150 1190,0 
+               Q 1290,150 1190,-20 
                Z"
             fill="#1a1a1a"
+            stroke="#fff"
+            strokeWidth="2"
           />
         </svg>
       )}
@@ -151,7 +153,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
         left: isMobile ? 20 : 40,
         zIndex: 3
       }}>
-        <Logo onClick={undefined} isMobile={isMobile} variant="header" />
+        <Logo onClick={isMobile ? undefined : onNavigateToHome} isMobile={isMobile} variant="header" />
       </div>
 
       {/* Back Button - Mobile Only (Icon) */}
@@ -241,7 +243,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                     outline: 'none',
                     boxSizing: 'border-box'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = '#FF5733'}
+                  onFocus={(e) => e.target.style.borderColor = '#FF4B25'}
                   onBlur={(e) => e.target.style.borderColor = '#444'}
                 />
               </div>
@@ -252,7 +254,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                 style={{
                   width: '100%',
                   padding: '18px',
-                  background: loading ? '#999' : '#FF5733',
+                  background: loading ? '#999' : '#FF4B25',
                   color: '#fff',
                   border: 'none',
                   borderRadius: 4,
@@ -270,7 +272,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                 <a
                   onClick={onNavigateToLogin}
                   style={{
-                    color: '#FF5733',
+                    color: '#FF4B25',
                     cursor: 'pointer',
                     textDecoration: 'none',
                     fontWeight: 600
@@ -325,7 +327,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
               style={{
                 width: '100%',
                 padding: '18px',
-                background: '#FF5733',
+                background: '#FF4B25',
                 color: '#fff',
                 border: 'none',
                 borderRadius: 4,
@@ -365,7 +367,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
               <a
                 onClick={() => setStep('request')}
                 style={{
-                  color: '#FF5733',
+                  color: '#FF4B25',
                   cursor: 'pointer',
                   textDecoration: 'none',
                   fontWeight: 600
@@ -427,7 +429,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                     boxSizing: 'border-box',
                     fontFamily: 'monospace'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = '#FF5733'}
+                  onFocus={(e) => e.target.style.borderColor = '#FF4B25'}
                   onBlur={(e) => e.target.style.borderColor = '#444'}
                 />
               </div>
@@ -461,7 +463,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                       outline: 'none',
                       boxSizing: 'border-box'
                     }}
-                    onFocus={(e) => e.target.style.borderColor = '#FF5733'}
+                    onFocus={(e) => e.target.style.borderColor = '#FF4B25'}
                     onBlur={(e) => e.target.style.borderColor = '#444'}
                   />
                   <button
@@ -514,7 +516,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                       outline: 'none',
                       boxSizing: 'border-box'
                     }}
-                    onFocus={(e) => e.target.style.borderColor = '#FF5733'}
+                    onFocus={(e) => e.target.style.borderColor = '#FF4B25'}
                     onBlur={(e) => e.target.style.borderColor = '#444'}
                   />
                   <button
@@ -544,7 +546,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                 style={{
                   width: '100%',
                   padding: isMobile ? '18px' : '16px',
-                  background: loading ? '#999' : '#FF5733',
+                  background: loading ? '#999' : '#FF4B25',
                   color: '#fff',
                   border: 'none',
                   borderRadius: 4,
@@ -562,7 +564,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                 <a
                   onClick={onNavigateToLogin}
                   style={{
-                    color: '#FF5733',
+                    color: '#FF4B25',
                     cursor: 'pointer',
                     textDecoration: 'none',
                     fontWeight: 600

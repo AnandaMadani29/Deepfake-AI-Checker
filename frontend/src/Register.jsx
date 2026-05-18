@@ -84,7 +84,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
       display: 'flex', 
       alignItems: 'center',
       justifyContent: 'center',
-      background: isMobile ? '#000' : '#FF5733',
+      background: isMobile ? '#000' : '#FF4B25',
       position: 'relative',
       overflow: 'hidden',
       padding: '20px'
@@ -104,16 +104,18 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
           preserveAspectRatio="none"
         >
           <path
-            d="M 250,0 
+            d="M 250,-1 
                Q 150,150 250,300 
                Q 350,450 250,600 
                Q 150,750 250,900 
                L 1190,900 
                Q 1290,750 1190,600 
                Q 1090,450 1190,300 
-               Q 1290,150 1190,0 
+               Q 1290,150 1190,-20 
                Z"
             fill="#1a1a1a"
+            stroke="#fff"
+            strokeWidth="2"
           />
         </svg>
       )}
@@ -217,7 +219,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
                 outline: 'none',
                 boxSizing: 'border-box'
               }}
-              onFocus={(e) => e.target.style.borderColor = '#FF5733'}
+              onFocus={(e) => e.target.style.borderColor = '#FF4B25'}
               onBlur={(e) => e.target.style.borderColor = '#444'}
             />
           </div>
@@ -251,7 +253,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
                 outline: 'none',
                 boxSizing: 'border-box'
               }}
-              onFocus={(e) => e.target.style.borderColor = '#FF5733'}
+              onFocus={(e) => e.target.style.borderColor = '#FF4B25'}
               onBlur={(e) => e.target.style.borderColor = '#444'}
             />
           </div>
@@ -287,7 +289,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
                   outline: 'none',
                   boxSizing: 'border-box'
                 }}
-                onFocus={(e) => e.target.style.borderColor = '#FF5733'}
+                onFocus={(e) => e.target.style.borderColor = '#FF4B25'}
                 onBlur={(e) => e.target.style.borderColor = '#444'}
               />
               <button
@@ -391,7 +393,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             </div>
           </div>
 
-          {/* Terms Checkbox
+          {/* Terms Checkbox */}
           <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', gap: 10 }}>
             <input
               type="checkbox"
@@ -405,11 +407,11 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             />
             <label style={{ fontSize: 13, color: '#999', cursor: 'pointer' }} onClick={() => setAgreedToTerms(!agreedToTerms)}>
               I agree to all the{' '}
-              <span style={{ color: '#FF5733' }}>Terms</span>
+              <span style={{ color: '#FF4B25' }}>Terms</span>
               {' '}and{' '}
-              <span style={{ color: '#FF5733' }}>Privacy Policies</span>
+              <span style={{ color: '#FF4B25' }}>Privacy Policies</span>
             </label>
-          </div> */}
+          </div>
 
           {/* Submit Button */}
           <button
@@ -419,20 +421,23 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             style={{
               width: '100%',
               padding: '16px',
-              background: loading ? '#999' : '#FF5733',
+              background: loading ? '#999' : '#FF4B25',
               color: '#fff',
               border: 'none',
               borderRadius: 4,
               fontSize: 16,
               fontWeight: 700,
               cursor: loading ? 'not-allowed' : 'pointer',
-              marginBottom: 20
+              marginBottom: 20,
+              transform: 'scale(1)'
             }}
+            onMouseEnter={(e) => !loading && (e.currentTarget.style.transform = 'scale(1.02)')}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
 
-          {/* OR Divider
+          {/* OR Divider */}
           <div style={{ 
             textAlign: 'center', 
             fontSize: 13, 
@@ -441,9 +446,9 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             fontWeight: 500 
           }}>
             or
-          </div> */}
+          </div>
 
-          {/* Google Register
+          {/* Google Register */}
           <button
             type="button"
             onClick={() => toast.info('Google Sign-up not implemented yet')}
@@ -471,7 +476,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
               <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
             </svg>
             Register with Google
-          </button> */}
+          </button>
 
           {/* Login Link */}
           <div style={{ textAlign: 'center', fontSize: 14, color: '#999', marginBottom: 16 }}>
@@ -479,7 +484,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             <a
               onClick={onNavigateToLogin}
               style={{
-                color: '#FF5733',
+                color: '#FF4B25',
                 cursor: 'pointer',
                 textDecoration: 'none',
                 fontWeight: 600
@@ -499,7 +504,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
                 window.location.reload()
               }}
               style={{
-                color: '#FF5733',
+                color: '#FF4B25',
                 cursor: 'pointer',
                 textDecoration: 'underline'
               }}

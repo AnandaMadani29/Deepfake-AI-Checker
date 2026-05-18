@@ -59,7 +59,7 @@ import {
 
 // Reusable Icon Components with consistent styling
 
-export const ShieldIcon = ({ size = 24, color = '#E94E1B' }) => (
+export const ShieldIcon = ({ size = 24, color = '#FF4B25' }) => (
   <FaShieldAlt size={size} color={color} />
 )
 
@@ -75,7 +75,7 @@ export const ErrorIcon = ({ size = 24, color = '#f87171' }) => (
   <FaTimesCircle size={size} color={color} />
 )
 
-export const RobotIcon = ({ size = 24, color = '#E94E1B' }) => (
+export const RobotIcon = ({ size = 24, color = '#FF4B25' }) => (
   <AiOutlineRobot size={size} color={color} />
 )
 
@@ -83,7 +83,7 @@ export const AnalysisIcon = ({ size = 24, color = '#60a5fa' }) => (
   <BiAnalyse size={size} color={color} />
 )
 
-export const HistoryIcon = ({ size = 24, color = '#E94E1B' }) => (
+export const HistoryIcon = ({ size = 24, color = '#FF4B25' }) => (
   <HiClock size={size} color={color} />
 )
 
@@ -95,7 +95,7 @@ export const ImageIcon = ({ size = 24, color = '#999' }) => (
   <BiImageAlt size={size} color={color} />
 )
 
-export const BrainIcon = ({ size = 24, color = '#E94E1B' }) => (
+export const BrainIcon = ({ size = 24, color = '#FF4B25' }) => (
   <BiBrain size={size} color={color} />
 )
 
@@ -103,7 +103,7 @@ export const LightbulbIcon = ({ size = 24, color = '#fbbf24' }) => (
   <FaLightbulb size={size} color={color} />
 )
 
-export const SecurityIcon = ({ size = 24, color = '#E94E1B' }) => (
+export const SecurityIcon = ({ size = 24, color = '#FF4B25' }) => (
   <MdSecurity size={size} color={color} />
 )
 
@@ -119,7 +119,7 @@ export const InfoIcon = ({ size = 24, color = '#60a5fa' }) => (
   <MdInfo size={size} color={color} />
 )
 
-export const ChartIcon = ({ size = 24, color = '#E94E1B' }) => (
+export const ChartIcon = ({ size = 24, color = '#FF4B25' }) => (
   <FaChartLine size={size} color={color} />
 )
 

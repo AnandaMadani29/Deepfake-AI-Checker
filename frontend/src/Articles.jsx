@@ -22,6 +22,7 @@ export default function Articles({
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [menuOpen, setMenuOpen] = useState(false);
   const [tempSearch, setTempSearch] = useState("");
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const articlesGridRef = useRef(null);
 
   useEffect(() => {
@@ -29,6 +30,14 @@ export default function Articles({
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => setShowBackToTop(window.scrollY > 400);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   const filteredArticles = getArticlesByCategory(selectedCategory).filter(
     (article) => {
@@ -41,10 +50,7 @@ export default function Articles({
 
   const featuredArticle = articles[0];
 
-  const gridArticles =
-    !searchQuery && selectedCategory === "All"
-      ? filteredArticles.slice(1)
-      : filteredArticles;
+  const gridArticles = filteredArticles;
 
   return (
     <div
@@ -81,7 +87,7 @@ export default function Articles({
               bottom: 0,
               width: "280px",
               maxWidth: "80vw",
-              background: "#FF5733",
+              background: "#FF4B25",
               zIndex: 99999,
               display: "flex",
               flexDirection: "column",
@@ -244,7 +250,7 @@ export default function Articles({
             alignItems: "center",
             background: "#1a1a1a",
             border: "1px solid #2a2a2a",
-            borderRadius: 8,
+            borderRadius: 2,
             overflow: "hidden",
           }}
         >
@@ -289,7 +295,7 @@ export default function Articles({
               );
             }}
             style={{
-              background: "#E94E1B",
+              background: "#FF4B25",
               border: "none",
               padding: "16px 22px",
               display: "flex",
@@ -299,7 +305,7 @@ export default function Articles({
               transition: "background 0.2s",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.background = "#d43e0f")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "#E94E1B")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "#FF4B25")}
           >
             <HiSearch size={18} color="#fff" />
           </button>
@@ -321,7 +327,7 @@ export default function Articles({
               marginBottom: 30,
             }}
           >
-            Featured Article
+            Latest Post
           </h2>
           <div
             onClick={() => onNavigateToArticleDetail(featuredArticle.id)}
@@ -330,14 +336,14 @@ export default function Articles({
               gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
               gap: 40,
               background: "#0d0d0d",
-              borderRadius: 12,
+              borderRadius: 2,
               overflow: "hidden",
               cursor: "pointer",
               border: "1px solid #2a2a2a",
               transition: "border-color 0.3s",
             }}
             onMouseEnter={(e) =>
-              (e.currentTarget.style.borderColor = "#E94E1B")
+              (e.currentTarget.style.borderColor = "#FF4B25")
             }
             onMouseLeave={(e) =>
               (e.currentTarget.style.borderColor = "#2a2a2a")
@@ -374,7 +380,7 @@ export default function Articles({
                 style={{
                   display: "inline-block",
                   padding: "4px 12px",
-                  background: "#E94E1B",
+                  background: "#FF4B25",
                   color: "#fff",
                   borderRadius: 4,
                   fontSize: 11,
@@ -429,7 +435,7 @@ export default function Articles({
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 8,
-                  color: "#E94E1B",
+                  color: "#FF4B25",
                   fontSize: 14,
                   fontWeight: 600,
                 }}
@@ -461,6 +467,7 @@ export default function Articles({
               gap: isMobile ? 16 : 40,
               overflowX: "auto",
               paddingBottom: 16,
+              justifyContent: "center",
             }}
           >
             {categories.map((category) => (
@@ -470,14 +477,14 @@ export default function Articles({
                 style={{
                   background: "transparent",
                   border: "none",
-                  color: selectedCategory === category ? "#E94E1B" : "#999",
+                  color: selectedCategory === category ? "#FF4B25" : "#999",
                   fontSize: 14,
                   fontWeight: 600,
                   cursor: "pointer",
                   padding: "8px 0",
                   borderBottom:
                     selectedCategory === category
-                      ? "2px solid #E94E1B"
+                      ? "2px solid #FF4B25"
                       : "2px solid transparent",
                   whiteSpace: "nowrap",
                 }}
@@ -519,7 +526,7 @@ export default function Articles({
                   onClick={() => onNavigateToArticleDetail(article.id)}
                   style={{
                     background: "#0d0d0d",
-                    borderRadius: 8,
+                    borderRadius: 2,
                     overflow: "hidden",
                     cursor: "pointer",
                     border: "1px solid #2a2a2a",
@@ -563,7 +570,7 @@ export default function Articles({
                       style={{
                         display: "inline-block",
                         padding: "4px 10px",
-                        background: "#E94E1B",
+                        background: "#FF4B25",
                         color: "#fff",
                         borderRadius: 4,
                         fontSize: 10,
@@ -620,7 +627,7 @@ export default function Articles({
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 6,
-                        color: "#E94E1B",
+                        color: "#FF4B25",
                         fontSize: 13,
                         fontWeight: 600,
                       }}
@@ -644,6 +651,41 @@ export default function Articles({
         isMobile={isMobile}
         activeLink="resources"
       />
+
+      {/* ── BACK TO TOP ── */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          style={{
+            position: "fixed",
+            bottom: 40,
+            right: 40,
+            background: "#FF4B25",
+            color: "#ffffff",
+            border: "1px solid #ffffff",
+            borderRadius: "50%",
+            width: 50,
+            height: 50,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            zIndex: 1000,
+            transition: "all 0.3s",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-4px)";
+            e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.25)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+          }}
+        >
+          <img src="/assets/icons/arrowUp.svg" alt="Back to top" style={{ width: 24, height: 24 }} />
+        </button>
+      )}
     </div>
   );
 }

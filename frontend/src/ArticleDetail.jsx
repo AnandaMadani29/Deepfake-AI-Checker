@@ -6,15 +6,24 @@ import { getArticleById, getRelatedArticles } from './articlesData'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 
-export default function ArticleDetail({ articleId, onNavigateToArticles, onNavigateToArticleDetail, onNavigateToHome, user, onLogout, onNavigateToHistory }) {
+export default function ArticleDetail({ articleId, onNavigateToArticles, onNavigateToArticleDetail, onNavigateToHome, onNavigateToDetection, onLogin, user, onLogout, onNavigateToHistory }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768)
   const [menuOpen, setMenuOpen] = React.useState(false)
+  const [showBackToTop, setShowBackToTop] = React.useState(false)
 
   React.useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768)
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
+
+  React.useEffect(() => {
+    const handleScroll = () => setShowBackToTop(window.scrollY > 400)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
 
   const article = getArticleById(articleId)
   const relatedArticles = getRelatedArticles(articleId)
@@ -24,7 +33,7 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
       <div style={{ minHeight: '100vh', background: '#000', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center' }}>
           <h2 style={{ fontSize: 24, marginBottom: 16 }}>Article not found</h2>
-          <button onClick={onNavigateToArticles} style={{ background: '#E94E1B', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: 6, cursor: 'pointer' }}>
+          <button onClick={onNavigateToArticles} style={{ background: '#FF4B25', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: 6, cursor: 'pointer' }}>
             Back
           </button>
         </div>
@@ -50,7 +59,7 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
           elements.push(<p key={`p-${index}`} style={{ fontSize: 15, color: '#ccc', lineHeight: 1.8, marginBottom: 20 }}>{currentParagraph.join(' ')}</p>)
           currentParagraph = []
         }
-        elements.push(<h2 key={`h2-${index}`} style={{ fontSize: isMobile ? 22 : 28, fontWeight: 700, marginBottom: 20, marginTop: 32, color: '#E94E1B' }}>{line.substring(3)}</h2>)
+        elements.push(<h2 key={`h2-${index}`} style={{ fontSize: isMobile ? 22 : 28, fontWeight: 700, marginBottom: 20, marginTop: 32, color: '#FF4B25' }}>{line.substring(3)}</h2>)
       } else if (line.startsWith('### ')) {
         if (currentParagraph.length > 0) {
           elements.push(<p key={`p-${index}`} style={{ fontSize: 15, color: '#ccc', lineHeight: 1.8, marginBottom: 20 }}>{currentParagraph.join(' ')}</p>)
@@ -116,7 +125,7 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
               bottom: 0,
               width: '280px',
               maxWidth: '80vw',
-              background: '#FF5733',
+              background: '#FF4B25',
               zIndex: 99999,
               display: 'flex',
               flexDirection: 'column',
@@ -225,19 +234,14 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
 
       {/* ── NAVBAR ── */}
       <Navbar 
-        onNavigateToAbout={() => onNavigateToHome('about')}
-        onNavigateToDetection={() => onNavigateToHome()}
-        onNavigateToArticles={onNavigateToArticles}
+        onNavigateToAbout={() => onNavigateToHome("about")}
+        onNavigateToDetection={onNavigateToDetection}
+        onNavigateToArticles={() => {}}
         onNavigateToHistory={user ? onNavigateToHistory : null}
-        onNavigateToTerms={() => {
-          window.location.hash = 'terms'
-          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
-        }}
-        onNavigateToPrivacy={() => {
-          window.location.hash = 'privacy'
-          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
-        }}
+        onNavigateToTerms={() => window.location.hash = 'terms'}
+        onNavigateToPrivacy={() => window.location.hash = 'privacy'}
         onNavigateToHome={onNavigateToHome}
+        onLogin={onLogin}
         user={user}
         onLogout={onLogout}
         isMobile={isMobile}
@@ -280,7 +284,7 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
         <div style={{ 
           display: 'inline-block',
           padding: '6px 14px',
-          background: '#E94E1B',
+          background: '#FF4B25',
           color: '#fff',
           borderRadius: 4,
           fontSize: 11,
@@ -327,13 +331,26 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
           height: isMobile ? 250 : 400,
           borderRadius: 12,
           marginBottom: 40,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#666',
-          fontSize: 14
+          overflow: 'hidden',
+          position: 'relative'
         }}>
-          Article Featured Image
+          <img
+            src={article.image}
+            alt={article.title}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              position: 'absolute',
+              top: 0,
+              left: 0
+            }}
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.parentElement.innerHTML =
+                '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#666;font-size:14px;">Image not available</div>';
+            }}
+          />
         </div>
 
         {/* Article Content */}
@@ -350,7 +367,7 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
           marginBottom: 60,
           textAlign: 'center'
         }}>
-          <FaShareAlt size={24} color="#E94E1B" style={{ marginBottom: 16 }} />
+          <FaShareAlt size={24} color="#FF4B25" style={{ marginBottom: 16 }} />
           <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>Found this helpful?</h3>
           <p style={{ fontSize: 14, color: '#999', marginBottom: 20 }}>Share this article with others who might benefit from it</p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 12 }}>
@@ -398,7 +415,7 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-4px)'
-                    e.currentTarget.style.borderColor = '#E94E1B'
+                    e.currentTarget.style.borderColor = '#FF4B25'
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0)'
@@ -408,13 +425,26 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
                   <div style={{ 
                     background: '#2a2a2a',
                     height: 180,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#666',
-                    fontSize: 12
+                    overflow: 'hidden',
+                    position: 'relative'
                   }}>
-                    Related Article
+                    <img
+                      src={relatedArticle.image}
+                      alt={relatedArticle.title}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0
+                      }}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.parentElement.innerHTML =
+                          '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#666;font-size:12px;">Image not available</div>';
+                      }}
+                    />
                   </div>
                   <div style={{ padding: 20 }}>
                     <h3 style={{ 
@@ -437,7 +467,7 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: 6,
-                      color: '#E94E1B',
+                      color: '#FF4B25',
                       fontSize: 13,
                       fontWeight: 600
                     }}>
@@ -460,6 +490,41 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
         isMobile={isMobile}
         activeLink="resources"
       />
+
+      {/* ── BACK TO TOP ── */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          style={{
+            position: "fixed",
+            bottom: 40,
+            right: 40,
+            background: "#FF4B25",
+            color: "#ffffff",
+            border: "1px solid #ffffff",
+            borderRadius: "50%",
+            width: 50,
+            height: 50,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            zIndex: 1000,
+            transition: "all 0.3s",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-4px)";
+            e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.25)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+          }}
+        >
+          <img src="/assets/icons/arrowUp.svg" alt="Back to top" style={{ width: 24, height: 24 }} />
+        </button>
+      )}
     </div>
   )
 }

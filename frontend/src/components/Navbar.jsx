@@ -1,5 +1,4 @@
 import React from 'react'
-import { FaBars, FaTimes } from 'react-icons/fa'
 import Logo from './Logo'
 
 export default function Navbar({ 
@@ -47,7 +46,7 @@ export default function Navbar({
                 bottom: 0,
                 width: "280px",
                 maxWidth: "80vw",
-                background: "#FF5733",
+                background: "#FF4B25",
                 zIndex: 99999,
                 display: "flex",
                 flexDirection: "column",
@@ -65,8 +64,6 @@ export default function Navbar({
                   right: 30,
                   background: "transparent",
                   border: "none",
-                  color: "#fff",
-                  fontSize: 28,
                   cursor: "pointer",
                   padding: 0,
                   display: "flex",
@@ -74,7 +71,7 @@ export default function Navbar({
                   justifyContent: "center",
                 }}
               >
-                <FaTimes />
+                <img src="/assets/icons/closeIcon.png" alt="Close" style={{ width: 28, height: 28 }} />
               </button>
 
               {/* Menu Items */}
@@ -83,7 +80,7 @@ export default function Navbar({
                   display: "flex",
                   flexDirection: "column",
                   gap: 32,
-                  marginTop: 80,
+                  marginTop: 60,
                 }}
               >
                 <a
@@ -171,6 +168,12 @@ export default function Navbar({
               <div style={{ marginTop: "auto", paddingBottom: 40 }}>
                 {user ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                    <div style={{ color: "#fff", fontSize: 16, marginBottom: 8 }}>
+                      <span style={{ fontWeight: 600 }}>Hi,</span>{" "}
+                      <span style={{ fontWeight: 600 }}>
+                        {user.full_name || user.email}
+                      </span>
+                    </div>
                     {onNavigateToHistory && (
                       <button
                         onClick={() => {
@@ -192,12 +195,6 @@ export default function Navbar({
                         History
                       </button>
                     )}
-                    <div style={{ color: "#fff", fontSize: 16, marginBottom: 8 }}>
-                      <span style={{ fontWeight: 600 }}>Hi,</span>{" "}
-                      <span style={{ fontWeight: 600 }}>
-                        {user.full_name || user.email}
-                      </span>
-                    </div>
                     <button
                       onClick={() => {
                         onLogout && onLogout()
@@ -255,7 +252,7 @@ export default function Navbar({
         <nav
           style={{
             position:"fixed",
-            top: 30,
+            top: 20,
             right: 20,
             zIndex: 1000,
           }}
@@ -269,15 +266,15 @@ export default function Navbar({
               color: "#fff",
               fontSize: 24,
               cursor: "pointer",
-              padding: 12,
+              padding: 10,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              borderRadius: 8,
+              borderRadius: 2,
               boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
             }}
           >
-            <FaBars />
+            <img src="/assets/icons/burgerIcon.png" alt="Menu" style={{ width: 30, height: 30 }} />
           </button>
         </nav>
       </>
@@ -300,20 +297,20 @@ export default function Navbar({
           right: 60,
           zIndex: 1000,
           display: "flex",
-          gap: 24,
+          gap: 40,
           alignItems: "center",
-          background: "rgba(13,13,13,0.8)",
+          background: "#000000",
           backdropFilter: "blur(10px)",
-          padding: "12px 20px",
-          borderRadius: 8,
-          border: "1px solid rgba(255,255,255,0.1)",
+          padding: "10px 20px",
+          border: "1px solid transparent",
+          borderImage: "linear-gradient(90deg, rgba(102,102,102,0) 0%, rgba(102,102,102,1) 25%, rgba(102,102,102,1) 75%, rgba(102,102,102,0) 100%) 1",
           boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
         }}
       >
       <a
         onClick={onNavigateToHome}
         style={{
-          color: activeLink === 'about' ? '#fff' : '#999',
+          color: activeLink === 'about' ? '#fff' : '#666666',
           textDecoration: "none",
           fontSize: 14,
           cursor: "pointer",
@@ -328,7 +325,7 @@ export default function Navbar({
       <a
         onClick={onNavigateToDetection}
         style={{
-          color: activeLink === 'detection' ? '#fff' : '#999',
+          color: activeLink === 'detection' ? '#fff' : '#666666',
           textDecoration: "none",
           fontSize: 14,
           cursor: "pointer",
@@ -343,7 +340,7 @@ export default function Navbar({
       <a
         onClick={onNavigateToArticles}
         style={{
-          color: activeLink === 'resources' ? '#fff' : '#999',
+          color: activeLink === 'resources' ? '#fff' : '#666666',
           textDecoration: "none",
           fontSize: 14,
           cursor: "pointer",
@@ -359,7 +356,7 @@ export default function Navbar({
         <a
           onClick={onNavigateToTerms}
           style={{
-            color: activeLink === 'terms' ? '#fff' : '#999',
+            color: activeLink === 'terms' ? '#fff' : '#666666',
             textDecoration: "none",
             fontSize: 14,
             cursor: "pointer",
@@ -376,7 +373,7 @@ export default function Navbar({
         <a
           onClick={onNavigateToPrivacy}
           style={{
-            color: activeLink === 'privacy' ? '#fff' : '#999',
+            color: activeLink === 'privacy' ? '#fff' : '#666666',
             textDecoration: "none",
             fontSize: 14,
             cursor: "pointer",
@@ -398,8 +395,8 @@ export default function Navbar({
               border: "1px solid rgba(255,255,255,0.2)",
               color: "#fff",
               padding: "8px 16px",
-              borderRadius: 6,
-              fontSize: 13,
+              borderRadius: 0,
+              fontSize: 14,
               cursor: "pointer",
               fontWeight: 500,
               transition: "all 0.2s",
@@ -425,18 +422,18 @@ export default function Navbar({
           <button
             onClick={onLogout}
             style={{
-              background: "#E94E1B",
+              background: "#FF4B25",
               border: "none",
               color: "#fff",
               padding: "8px 16px",
-              borderRadius: 6,
-              fontSize: 13,
+              borderRadius: 0,
+              fontSize: 14,
               cursor: "pointer",
               fontWeight: 500,
               transition: "all 0.2s",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.background = "#d43d0f")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "#E94E1B")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "#FF4B25")}
           >
             Logout
           </button>
@@ -446,18 +443,18 @@ export default function Navbar({
         <button
           onClick={onLogin}
           style={{
-            background: "#E94E1B",
+            background: "#FF4B25",
             border: "none",
             color: "#fff",
-            padding: "8px 16px",
-            borderRadius: 6,
-            fontSize: 13,
+            padding: "10px 20px",
+            borderRadius: 0,
+            fontSize: 16,
             cursor: "pointer",
-            fontWeight: 500,
+            fontWeight: 700,
             transition: "all 0.2s",
           }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "#d43d0f")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "#E94E1B")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "#FF4B25")}
         >
           Log in
         </button>

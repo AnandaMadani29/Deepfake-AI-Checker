@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import {
   FaShieldAlt,
   FaRobot,
-  FaArrowUp,
   FaPlus,
   FaMinus,
   FaBars,
@@ -27,7 +26,7 @@ function FAQItem({ question, answer }) {
       style={{
         background: "#141414",
         border: "1px solid #2a2a2a",
-        borderRadius: 8,
+        borderRadius: 2,
         overflow: "hidden",
       }}
     >
@@ -148,7 +147,7 @@ export default function Home({
               bottom: 0,
               width: "280px",
               maxWidth: "80vw",
-              background: "#FF5733",
+              background: "#FF4B25",
               zIndex: 99999,
               display: "flex",
               flexDirection: "column",
@@ -414,10 +413,10 @@ export default function Home({
                 <div
                   style={{
                     position: "absolute",
-                    top: -10,
-                    left: -10,
-                    width: 40,
-                    height: 40,
+                    top: 10,
+                    left: 10,
+                    width: 20,
+                    height: 20,
                     borderTop: "2px solid rgba(255,255,255,0.3)",
                     borderLeft: "2px solid rgba(255,255,255,0.3)",
                   }}
@@ -425,10 +424,10 @@ export default function Home({
                 <div
                   style={{
                     position: "absolute",
-                    top: -10,
-                    right: -10,
-                    width: 40,
-                    height: 40,
+                    top: 10,
+                    right: 10,
+                    width: 20,
+                    height: 20,
                     borderTop: "2px solid rgba(255,255,255,0.3)",
                     borderRight: "2px solid rgba(255,255,255,0.3)",
                   }}
@@ -436,10 +435,10 @@ export default function Home({
                 <div
                   style={{
                     position: "absolute",
-                    bottom: -10,
-                    left: -10,
-                    width: 40,
-                    height: 40,
+                    bottom: 10,
+                    left: 10,
+                    width: 20,
+                    height: 20,
                     borderBottom: "2px solid rgba(255,255,255,0.3)",
                     borderLeft: "2px solid rgba(255,255,255,0.3)",
                   }}
@@ -447,10 +446,10 @@ export default function Home({
                 <div
                   style={{
                     position: "absolute",
-                    bottom: -10,
-                    right: -10,
-                    width: 40,
-                    height: 40,
+                    bottom: 10,
+                    right: 10,
+                    width: 20,
+                    height: 20,
                     borderBottom: "2px solid rgba(255,255,255,0.3)",
                     borderRight: "2px solid rgba(255,255,255,0.3)",
                   }}
@@ -461,6 +460,8 @@ export default function Home({
                   style={{
                     width: "100%",
                     height: "100%",
+                    maxWidth: 280,
+                    maxHeight: 280,
                     objectFit: "contain",
                     opacity: 0.9,
                   }}
@@ -474,11 +475,11 @@ export default function Home({
             <button
               onClick={onNavigateToDetection}
               style={{
-                background: "#E94E1B",
+                background: "#FF4B25",
                 color: "#fff",
                 border: "none",
                 padding: isMobile ? "14px 20px" : "18px 40px",
-                borderRadius: 6,
+                borderRadius: 4,
                 fontWeight: 600,
                 cursor: "pointer",
                 fontSize: isMobile ? 14 : 16,
@@ -505,7 +506,7 @@ export default function Home({
                 color: "#fff",
                 border: "2px solid #666",
                 padding: isMobile ? "14px 20px" : "18px 40px",
-                borderRadius: 6,
+                borderRadius: 4,
                 fontWeight: 600,
                 cursor: "pointer",
                 fontSize: isMobile ? 14 : 16,
@@ -514,7 +515,7 @@ export default function Home({
                 flex: isMobile ? 1 : "0 1 auto",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#E94E1B";
+                e.currentTarget.style.borderColor = "#FF4B25";
                 e.currentTarget.style.color = "#FF4B25";
               }}
               onMouseLeave={(e) => {
@@ -613,14 +614,26 @@ export default function Home({
         }}
       >
         <div style={{ maxWidth: 1200, margin: "0 auto", textAlign: "center" }}>
-          <h2
+          <h1
             style={{
               fontSize: isMobile ? 36 : 48,
               fontWeight: 700,
-              margin: "0 0 60px 0",
+              margin: "0 0 16px 0",
             }}
           >
             About <span style={{ color: "#FF4B25" }}>Fact.it</span>
+          </h1>
+          <h2
+            style={{
+              fontSize: isMobile ? 14 : 16,
+              fontWeight: 500,
+              color: "#999",
+              textAlign: "center",
+              maxWidth: 800,
+              margin: isMobile ? "0 auto 60px auto" : "0 auto 60px auto",
+            }}
+          >
+            Learn about our mission, technology, and commitment to protecting digital media authenticity
           </h2>
           <div
             style={{
@@ -633,36 +646,41 @@ export default function Home({
               {
                 icon: <FaShieldAlt size={isMobile ? 30 : 40} color="#fff" />,
                 title: "Our Mission",
+                description: "Fact.it was created to help people identify manipulated and AI-generated images more easily. As deepfake technology becomes increasingly realistic, our mission is to support digital awareness, reduce misinformation, and help users make more informed decisions when consuming visual content online.",
               },
               {
                 icon: <FaRobot size={isMobile ? 30 : 40} color="#fff" />,
-                title: "Our Technology",
+                title: "Detection Technology",
+                description: "Our platform uses Convolutional Neural Network (CNN) technology to analyze visual patterns such as facial structure, lighting consistency, skin texture, and image artifacts. Through AI-powered detection and visual analysis, Fact.it helps users understand whether an image may contain signs of manipulation.",
               },
               {
                 icon: <MdSecurity size={isMobile ? 30 : 40} color="#fff" />,
-                title: "Our Promise",
+                title: "Privacy & Accessibility",
+                description: "Fact.it is designed to be accessible, easy to use, and privacy-conscious. We do not display ads, use tracking analytics, or include payment systems. Uploaded images are processed only for detection purposes, allowing users to securely analyze and download their detection results with confidence.",
               },
             ].map((card) => (
               <div
                 key={card.title}
                 style={{
                   background: "#1a1a1a",
-                  borderRadius: 12,
+                  borderRadius: 2,
                   padding: isMobile ? "40px 30px" : "50px 40px",
                   textAlign: "center",
                   transition: "all 0.3s ease",
-                  cursor: "pointer",
+                  cursor: isMobile ? "default" : "pointer",
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-8px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 12px 24px rgba(233,78,27,0.2)";
-                  e.currentTarget.style.background = "#222";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "none";
-                  e.currentTarget.style.background = "#1a1a1a";
+                {...!isMobile && {
+                  onMouseEnter: (e) => {
+                    e.currentTarget.style.transform = "translateY(-8px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 12px 24px rgba(233,78,27,0.2)";
+                    e.currentTarget.style.background = "#222";
+                  },
+                  onMouseLeave: (e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.background = "#1a1a1a";
+                  }
                 }}
               >
                 <div
@@ -671,7 +689,7 @@ export default function Home({
                     height: isMobile ? 60 : 80,
                     margin: "0 auto 24px auto",
                     borderRadius: "50%",
-                    background: "#E94E1B",
+                    background: "#FF4B25",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -691,16 +709,13 @@ export default function Home({
                 </h3>
                 <p
                   style={{
-                    fontSize: isMobile ? 14 : 15,
+                    fontSize: isMobile ? 12 : 14,
                     color: "#999",
                     lineHeight: 1.8,
                     margin: 0,
                   }}
                 >
-                  We're on a mission to combat misinformation and protect
-                  digital media authenticity. Our AI-powered deepfake detection
-                  technology helps individuals and organizations verify image
-                  authenticity with confidence.
+                  {card.description}
                 </p>
               </div>
             ))}
@@ -721,10 +736,22 @@ export default function Home({
           style={{
             fontSize: isMobile ? 32 : 48,
             fontWeight: 700,
-            margin: isMobile ? "0 0 40px 0" : "0 0 60px 0",
+            margin: isMobile ? "0 0 16px 0" : "0 0 16px 0",
           }}
         >
           How To Use Deepfake Detection
+        </h2>
+        <h2
+          style={{
+            fontSize: isMobile ? 14 : 16,
+            fontWeight: 500,
+            color: "#999",
+            textAlign: "center",
+            maxWidth: 800,
+            margin: isMobile ? "0 auto 40px auto" : "0 auto 60px auto",
+          }}
+        >
+          Detect manipulated or AI-generated images quickly by following these simple steps.
         </h2>
         <div
           style={{
@@ -737,12 +764,12 @@ export default function Home({
         >
           {[
             {
-              icon: <HiUpload size={28} />,
+              icon: <img src="/assets/howToUse/icon1.png" alt="Upload" style={{ width: 28, height: 28 }} />,
               title: "Step 1: Upload Your Image",
               visual: (
                 <div
                   style={{
-                    background: "#2a2a2a",
+                    background: "#1a1a1a",
                     borderRadius: 8,
                     padding: isMobile ? "20px" : "30px",
                     marginBottom: 20,
@@ -768,12 +795,12 @@ export default function Home({
               text: "Start by uploading the image you want to analyze. You can select a file from your device or simply drag and drop it into the upload area. We support JPG, PNG, and other common image formats. No account is required—just upload your image and continue.",
             },
             {
-              icon: <BiAnalyse size={28} />,
+              icon: <img src="/assets/howToUse/icon2.png" alt="Detect" style={{ width: 28, height: 28 }} />,
               title: "Step 2: Detect Image",
               visual: (
                 <div
                   style={{
-                    background: "#2a2a2a",
+                    background: "#1a1a1a",
                     borderRadius: 8,
                     padding: isMobile ? "20px" : "30px",
                     marginBottom: 20,
@@ -799,12 +826,12 @@ export default function Home({
               text: "Once your image is uploaded, our AI system immediately begins analyzing it. The technology examines elements such as lighting, shadows, pixel patterns, and facial details. It then compares these features against a large dataset of real and manipulated images to detect potential deepfake indicators.",
             },
             {
-              icon: <HiDocumentText size={28} />,
+              icon: <img src="/assets/howToUse/icon3.png" alt="Review" style={{ width: 28, height: 28 }} />,
               title: "Step 3: Review the Detection Report",
               visual: (
                 <div
                   style={{
-                    background: "#2a2a2a",
+                    background: "#1a1a1a",
                     borderRadius: 8,
                     padding: isMobile ? "20px" : "30px",
                     marginBottom: 20,
@@ -830,12 +857,12 @@ export default function Home({
               text: "Within seconds, the system generates an authenticity score that indicates the likelihood of the image being real or manipulated. The results are presented in a clear and user-friendly format, combining visual summary with a more detailed report for those who want deeper insights into the analysis.",
             },
             {
-              icon: <HiClock size={28} />,
+              icon: <img src="/assets/howToUse/icon4.png" alt="History" style={{ width: 28, height: 28 }} />,
               title: "Step 4: View History & Download Reports",
               visual: (
                 <div
                   style={{
-                    background: "#2a2a2a",
+                    background: "#1a1a1a",
                     borderRadius: 8,
                     padding: isMobile ? "20px" : "30px",
                     marginBottom: 20,
@@ -864,24 +891,12 @@ export default function Home({
             <div
               key={step.title}
               style={{
-                background: "#1a1a1a",
+                background: "linear-gradient(180deg, rgba(255,75,37,0.05) 0%, rgba(36,36,36,0.05) 100%)",
                 padding: isMobile ? "20px 10px" : "30px",
-                borderRadius: 12,
-                border: "2px solid #333",
+                borderRadius: 0,
+                border: "0.6px solid #292929",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
                 textAlign: "left",
-                transition: "all 0.3s ease",
-                cursor: "pointer",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-5px)";
-                e.currentTarget.style.borderColor = "#E94E1B";
-                e.currentTarget.style.boxShadow =
-                  "0 8px 16px rgba(233,78,27,0.15)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.borderColor = "#333";
-                e.currentTarget.style.boxShadow = "none";
               }}
             >
               {step.visual}
@@ -892,15 +907,28 @@ export default function Home({
                   gap: 12,
                   marginTop: 20,
                   marginBottom: 20,
-                  color: "#E94E1B",
+                  color: "#FF4B25",
                 }}
               >
-                {step.icon}
+                <div
+                  style={{
+                    width: isMobile ? 50 : 60,
+                    height: isMobile ? 50 : 60,
+                    borderRadius: 0,
+                    background: "rgba(255,75,37,0.1)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {step.icon}
+                </div>
                 <h3
                   style={{
                     fontSize: isMobile ? 20 : 24,
                     fontWeight: 700,
                     margin: 0,
+                    color: "#fff",
                   }}
                 >
                   {step.title}
@@ -909,7 +937,7 @@ export default function Home({
               <p
                 style={{
                   fontSize: isMobile ? 13 : 14,
-                  color: "#999",
+                  color: "#fff",
                   lineHeight: 1.6,
                   margin: 0,
                 }}
@@ -930,32 +958,30 @@ export default function Home({
         }}
       >
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <h2
+          <h1
             style={{
               fontSize: isMobile ? 32 : 42,
               fontWeight: 700,
               textAlign: "center",
               marginBottom: 16,
-              background: "linear-gradient(135deg, #E94E1B 0%, #FF7A50 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
+              color: "#ffffff",
             }}
           >
             FAQs
-          </h2>
-          <p
+          </h1>
+          <h2
             style={{
               fontSize: isMobile ? 14 : 16,
+              fontWeight: 500,
               color: "#999",
               textAlign: "center",
-              maxWidth: 600,
+              maxWidth: 800,
               margin: isMobile ? "0 auto 30px auto" : "0 auto 50px auto",
             }}
           >
             Find answers to common questions about our deepfake detection
             service
-          </p>
+          </h2>
           <div style={{ display: "grid", gap: 12 }}>
             {[
               {
@@ -1012,9 +1038,9 @@ export default function Home({
             position: "fixed",
             bottom: 40,
             right: 40,
-            background: "#fff",
-            color: "#1a1a1a",
-            border: "2px solid #e0e0e0",
+            background: "#FF4B25",
+            color: "#ffffff",
+            border: "1px solid #ffffff",
             borderRadius: "50%",
             width: 50,
             height: 50,
@@ -1035,7 +1061,7 @@ export default function Home({
             e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
           }}
         >
-          <FaArrowUp size={20} />
+          <img src="/assets/icons/arrowUp.svg" alt="Back to top" style={{ width: 24, height: 24 }} />
         </button>
       )}
     </div>
