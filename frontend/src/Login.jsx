@@ -226,7 +226,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
         maxWidth: 420,
         width: '100%',
         position: 'relative',
-        zIndex: 2,
+        zIndex: 5,
         padding: isMobile ? '20px' : '0',
         marginTop: isMobile ? '60px' : '0'
       }}>
@@ -420,15 +420,18 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
           </div>
 
           {/* Google Login */}
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: 24, position: 'relative', zIndex: 10 }}>
             {import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
-              <div>
+              <div style={{ pointerEvents: 'auto' }}>
                 <div
                   id="googleSignInButton"
                   style={{
                     width: '100%',
                     display: 'flex',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    position: 'relative',
+                    zIndex: 10,
+                    pointerEvents: 'auto'
                   }}
                 />
                 {googleReady && (

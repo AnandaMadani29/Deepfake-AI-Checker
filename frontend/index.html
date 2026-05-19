@@ -44,6 +44,19 @@
           background-position: 200% 0;
         }
       }
+      
+      /* Google Sign-In Button Fix for Production */
+      #googleSignInButton iframe {
+        position: relative !important;
+        z-index: 999 !important;
+        pointer-events: auto !important;
+      }
+      
+      #googleSignInButton > div {
+        position: relative !important;
+        z-index: 999 !important;
+        pointer-events: auto !important;
+      }
     </style>
   </head>
   <body>
