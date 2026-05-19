@@ -2,7 +2,11 @@
 
 ## 📊 **Database Architecture**
 
-Aplikasi menggunakan **SQLite** untuk menyimpan:
+Aplikasi support **2 database**:
+- **SQLite** - Local development
+- **PostgreSQL** - Production (Railway)
+
+Database menyimpan:
 - User accounts (email, password, nama)
 - Detection history
 - Password reset tokens
@@ -24,33 +28,37 @@ Aplikasi menggunakan **SQLite** untuk menyimpan:
 
 ---
 
-## ✅ **Setup Production Database (Railway)**
+## ✅ **Setup Production Database (Railway PostgreSQL)**
 
-### **Step 1: Create Persistent Volume**
-
-Tanpa volume, database akan **hilang setiap redeploy**!
+### **Step 1: Add PostgreSQL Database**
 
 1. **Buka Railway Dashboard**
-2. **Pilih project backend**
-3. **Settings** → **Volumes**
-4. **Add Volume**:
-   ```
-   Mount Path: /app/data
-   ```
-5. **Save**
+2. **Pilih project backend Anda**
+3. **Klik "+ New"** → **Database** → **Add PostgreSQL**
+4. **Wait** sampai database ready (~30 detik)
 
-### **Step 2: Set Environment Variable**
+### **Step 2: Link Database ke Backend**
 
+Railway akan otomatis set environment variable `DATABASE_URL`.
+
+Verify di **Variables** tab:
 ```bash
-# Railway Dashboard → Variables
-DATABASE_PATH=/app/data/users.db
+DATABASE_URL=postgresql://user:pass@host:port/dbname
 ```
 
-### **Step 3: Redeploy**
+### **Step 3: Redeploy Backend**
 
 ```bash
 git push origin main
-# Railway auto-redeploy
+# Railway auto-redeploy dan migrate ke PostgreSQL
+```
+
+### **Step 4: Verify**
+
+Check logs:
+```bash
+railway logs
+# Should see: "✅ Using PostgreSQL database"
 ```
 
 ---
