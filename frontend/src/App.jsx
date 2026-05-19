@@ -245,10 +245,7 @@ export default function App() {
         }}
         onNavigateToTerms={handleNavigateToTerms}
         onNavigateToPrivacy={handleNavigateToPrivacy}
-        onLogin={() => {
-          setCurrentPage('home')
-          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
-        }}
+        onLogin={() => setCurrentPage('login')}
         user={user}
         detectionResults={detectionResults}
         setDetectionResults={setDetectionResults}
@@ -294,10 +291,7 @@ export default function App() {
         }}
         onNavigateToTerms={handleNavigateToTerms}
         onNavigateToPrivacy={handleNavigateToPrivacy}
-        onLogin={() => {
-          setCurrentPage('home')
-          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
-        }}
+        onLogin={() => setCurrentPage('login')}
         user={user}
         onLogout={handleLogout}
         onNavigateToHistory={() => {
