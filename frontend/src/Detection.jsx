@@ -246,6 +246,7 @@ export default function Detection({
   onNavigateToTerms,
   onNavigateToPrivacy,
   onLogin,
+  onLogout,
   user,
   detectionResults,
   setDetectionResults,
@@ -474,8 +475,8 @@ export default function Detection({
 
       {/* ── NAVBAR ── */}
       <Navbar
-        onNavigateToAbout={() => onNavigateToHome("about")}
-        onNavigateToDetection={() => onNavigateToHome()}
+        onNavigateToAbout={onNavigateToHome}
+        onNavigateToDetection={onNavigateToHome}
         onNavigateToArticles={onNavigateToArticles}
         onNavigateToHistory={onNavigateToHistory}
         onNavigateToTerms={() => (window.location.hash = "terms")}
@@ -483,7 +484,7 @@ export default function Detection({
         onNavigateToHome={onNavigateToHome}
         onLogin={onLogin}
         user={user}
-        onLogout={() => { localStorage.removeItem("access_token"); localStorage.removeItem("user"); onNavigateToHome(); }}
+        onLogout={onLogout}
         isMobile={isMobile}
         activeLink="detection"
       />

@@ -246,6 +246,7 @@ export default function App() {
         onNavigateToTerms={handleNavigateToTerms}
         onNavigateToPrivacy={handleNavigateToPrivacy}
         onLogin={() => setCurrentPage('login')}
+        onLogout={handleLogout}
         user={user}
         detectionResults={detectionResults}
         setDetectionResults={setDetectionResults}
