@@ -148,7 +148,11 @@ def _startup() -> None:
         weights_path = _resolve_weights_path(MODEL_NAME)
         if os.path.exists(weights_path):
             _predictor.load(MODEL_NAME, weights_path)
+            # Get file size for verification
+            file_size = os.path.getsize(weights_path) / (1024 * 1024)  # MB
             print(f"✅ Model loaded: {MODEL_NAME}")
+            print(f"   Weights path: {weights_path}")
+            print(f"   File size: {file_size:.2f} MB")
         else:
             print(f"⚠️  Model weights not found: {weights_path}")
             print("⚠️  API will run without ML model (detection endpoints will fail)")
@@ -159,7 +163,20 @@ def _startup() -> None:
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok", "device": str(DEVICE), "model_name": MODEL_NAME}
+    """Health check endpoint with model info"""
+    model_info = {
+        "status": "ok",
+        "device": str(DEVICE),
+        "model_name": MODEL_NAME,
+        "model_loaded": _predictor._model is not None,
+    }
+    
+    if _predictor._weights_path:
+        model_info["weights_path"] = _predictor._weights_path
+        if os.path.exists(_predictor._weights_path):
+            model_info["weights_size_mb"] = round(os.path.getsize(_predictor._weights_path) / (1024 * 1024), 2)
+    
+    return model_info
 
 
 class GoogleLoginRequest(BaseModel):
