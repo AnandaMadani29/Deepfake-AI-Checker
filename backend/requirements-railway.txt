@@ -25,3 +25,6 @@ reportlab==4.0.7
 # Google authentication
 google-auth==2.25.2
 requests==2.31.0
+
+# Email service (Resend - recommended for production)
+resend==0.8.0
