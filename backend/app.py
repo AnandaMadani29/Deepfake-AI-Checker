@@ -42,21 +42,14 @@ from backend.pdf_generator import generate_history_pdf
 
 
 def _resolve_weights_path(model_name: str) -> str:
+    """Resolve path to model weights file"""
+    # Check environment variable first
     env_path = os.getenv("DEEFAKE_WEIGHTS_PATH")
     if env_path:
         return env_path
     
-    # Try fold4 first, then fall back to simple name
-    fold4_path = f"outputs/models/{model_name}_fold4.pth"
-    simple_path = f"outputs/models/{model_name}.pth"
-    
-    if os.path.exists(fold4_path):
-        return fold4_path
-    elif os.path.exists(simple_path):
-        return simple_path
-    else:
-        # Return simple path as default (more likely to exist)
-        return simple_path
+    # Use simple model name directly
+    return f"outputs/models/{model_name}.pth"
 
 
 class Predictor:
