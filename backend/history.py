@@ -9,7 +9,8 @@ from typing import List, Optional, Dict
 from pydantic import BaseModel
 
 
-DB_PATH = "users.db"
+# Database path - use same path as auth.py
+DB_PATH = os.getenv("DATABASE_PATH", "users.db")
 
 
 class DetectionHistoryCreate(BaseModel):

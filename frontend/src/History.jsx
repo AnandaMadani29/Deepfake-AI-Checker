@@ -422,7 +422,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
               }}
             >
               <HiArrowLeft size={16} />
-              Back to Detection
+              Back
             </button>
           )}
         </div>
