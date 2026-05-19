@@ -15,21 +15,12 @@ try:
 except ImportError:
     init_history_table = None
 
-# Import email service (prioritize Resend, fallback to SMTP)
+# Import email service
 try:
-    # Try Resend first (recommended for production)
-    from backend.email_service_resend import send_reset_email_resend as send_reset_email
-    send_welcome_email = None  # TODO: Add welcome email for Resend
-    print("✅ Using Resend email service")
+    from backend.email_service import send_reset_email, send_welcome_email
 except ImportError:
-    try:
-        # Fallback to SMTP
-        from backend.email_service import send_reset_email, send_welcome_email
-        print("⚠️  Using SMTP email service (fallback)")
-    except ImportError:
-        send_reset_email = None
-        send_welcome_email = None
-        print("❌ No email service available")
+    send_reset_email = None
+    send_welcome_email = None
 
 
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")

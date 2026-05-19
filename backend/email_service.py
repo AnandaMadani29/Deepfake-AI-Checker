@@ -46,9 +46,6 @@ def send_reset_email(to_email: str, reset_token: str, user_name: str = "User") -
     message["Subject"] = "Reset Your Fact.it Password"
     message["From"] = f"Fact.it <{sender_email}>"
     message["To"] = to_email
-    message["Reply-To"] = sender_email
-    message["X-Priority"] = "1"
-    message["X-Mailer"] = "Fact.it Password Reset System"
     
     # Email body (HTML)
     html_body = f"""
