@@ -22,7 +22,6 @@ export default function App() {
   const [detectionResults, setDetectionResults] = useState([])
   const [fromDetection, setFromDetection] = useState(false)
 
-  // Check if user is already logged in on mount
   useEffect(() => {
     const token = localStorage.getItem('access_token')
     const savedUser = localStorage.getItem('user')
@@ -36,12 +35,11 @@ export default function App() {
       }
     }
     
-    // Check URL for reset-password route or hash
     const path = window.location.pathname
     const params = new URLSearchParams(window.location.search)
     const hash = window.location.hash.slice(1)
     
-    console.log('Initial load - hash:', hash) // Debug log
+    console.log('Initial load - hash:', hash)
     
     if (path === '/reset-password' || params.has('token')) {
       setCurrentPage('reset-password')
@@ -55,10 +53,9 @@ export default function App() {
     
     setIsAuthChecked(true)
     
-    // Listen for hash changes after initial load
     const handleHashChange = () => {
       const newHash = window.location.hash.slice(1)
-      console.log('Hash changed to:', newHash) // Debug log
+      console.log('Hash changed to:', newHash)
       if (newHash === 'terms') {
         setCurrentPage('terms')
       } else if (newHash === 'privacy') {
@@ -77,7 +74,6 @@ export default function App() {
   const navigateToHome = (sectionId = null) => {
     setTargetSection(sectionId)
     setCurrentPage('home')
-    // Scroll to top if no section specified
     if (!sectionId) {
       setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
     }
@@ -86,7 +82,6 @@ export default function App() {
   const handleNavigateToHome = (sectionId = null) => {
     setTargetSection(sectionId)
     setCurrentPage('home')
-    // Scroll to top if no section specified
     if (!sectionId) {
       setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
     }
@@ -131,7 +126,6 @@ export default function App() {
     setCurrentPage('home')
   }
 
-  // Wait for auth check to complete
   if (!isAuthChecked) {
     return (
       <div style={{ 
@@ -147,9 +141,8 @@ export default function App() {
     )
   }
 
-  console.log('Current page:', currentPage) // Debug log
+  console.log('Current page:', currentPage)
 
-  // Toaster component for all pages
   const toasterComponent = (
     <Toaster
       position="top-right"
@@ -178,7 +171,6 @@ export default function App() {
     />
   )
 
-  // Route handling
   if (currentPage === 'login') {
     return (
       <>
@@ -294,10 +286,7 @@ export default function App() {
         }}
         onNavigateToTerms={handleNavigateToTerms}
         onNavigateToPrivacy={handleNavigateToPrivacy}
-        onLogin={() => {
-          setCurrentPage('home')
-          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
-        }}
+        onLogin={() => setCurrentPage('login')}
         user={user}
         onLogout={handleLogout}
         onNavigateToHistory={() => {
@@ -310,7 +299,7 @@ export default function App() {
 
   if (currentPage === 'article-detail') {
     return (
-      <ArticleDetail 
+      <ArticleDetail
         articleId={selectedArticleId}
         onNavigateToArticles={() => {
           setCurrentPage('articles')
@@ -321,6 +310,11 @@ export default function App() {
           setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
         }}
         onNavigateToHome={navigateToHome}
+        onNavigateToDetection={() => {
+          setCurrentPage('detection')
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
+        onLogin={() => setCurrentPage('login')}
         user={user}
         onLogout={handleLogout}
         onNavigateToHistory={() => {

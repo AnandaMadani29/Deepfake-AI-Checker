@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { FaClock, FaUser, FaArrowLeft, FaBars, FaTimes, FaShareAlt, FaArrowRight } from 'react-icons/fa'
-import Logo from './components/Logo'
+import React from 'react'
+import { FaClock, FaUser, FaShareAlt, FaArrowRight } from 'react-icons/fa'
 import { HiArrowLeft } from 'react-icons/hi'
 import { getArticleById, getRelatedArticles } from './articlesData'
 import Navbar from './components/Navbar'
@@ -8,7 +7,6 @@ import Footer from './components/Footer'
 
 export default function ArticleDetail({ articleId, onNavigateToArticles, onNavigateToArticleDetail, onNavigateToHome, onNavigateToDetection, onLogin, user, onLogout, onNavigateToHistory }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768)
-  const [menuOpen, setMenuOpen] = React.useState(false)
   const [showBackToTop, setShowBackToTop] = React.useState(false)
 
   React.useEffect(() => {
@@ -101,146 +99,22 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
       color: '#fff',
       position: 'relative'
     }}>
-      {/* ── MOBILE SIDEBAR: overlay + drawer di ROOT level ── */}
-      {isMobile && menuOpen && (
-        <>
-          <div
-            onClick={() => setMenuOpen(false)}
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'rgba(0,0,0,0.5)',
-              zIndex: 99998,
-              animation: 'fadeIn 0.3s ease-in-out'
-            }}
-          />
-          <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              right: 0,
-              bottom: 0,
-              width: '280px',
-              maxWidth: '80vw',
-              background: '#FF4B25',
-              zIndex: 99999,
-              display: 'flex',
-              flexDirection: 'column',
-              padding: '20px',
-              boxShadow: '-4px 0 24px rgba(0,0,0,0.3)',
-              animation: 'slideInRight 0.3s ease-in-out'
-            }}
-          >
-            <button
-              onClick={() => setMenuOpen(false)}
-              style={{
-                position: 'absolute',
-                top: 30,
-                right: 30,
-                background: 'transparent',
-                border: 'none',
-                color: '#fff',
-                fontSize: 28,
-                cursor: 'pointer',
-                padding: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <FaTimes />
-            </button>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 32,
-                marginTop: 80
-              }}
-            >
-              <a
-                onClick={() => {
-                  onNavigateToHome('about');
-                  setMenuOpen(false);
-                }}
-                style={{
-                  color: '#fff',
-                  textDecoration: 'none',
-                  fontSize: 20,
-                  fontWeight: 600,
-                  cursor: 'pointer'
-                }}
-              >
-                About Us
-              </a>
-              <a
-                onClick={() => {
-                  onNavigateToHome();
-                  setMenuOpen(false);
-                }}
-                style={{
-                  color: '#fff',
-                  textDecoration: 'none',
-                  fontSize: 20,
-                  fontWeight: 600,
-                  cursor: 'pointer'
-                }}
-              >
-                Service
-              </a>
-              <a
-                onClick={() => {
-                  onNavigateToArticles();
-                  setMenuOpen(false);
-                }}
-                style={{
-                  color: '#fff',
-                  textDecoration: 'none',
-                  fontSize: 20,
-                  fontWeight: 600,
-                  cursor: 'pointer'
-                }}
-              >
-                Resources
-              </a>
-            </div>
-            <div style={{ marginTop: 'auto', paddingBottom: 40 }}>
-              <button
-                onClick={() => {
-                  onNavigateToHome();
-                  setMenuOpen(false);
-                }}
-                style={{
-                  background: '#1a1a1a',
-                  color: '#fff',
-                  border: 'none',
-                  padding: '18px',
-                  borderRadius: 4,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  fontSize: 18,
-                  width: '100%'
-                }}
-              >
-                Home
-              </button>
-            </div>
-          </div>
-        </>
-      )}
 
-      {/* ── NAVBAR ── */}
-      <Navbar 
-        onNavigateToAbout={() => onNavigateToHome("about")}
-        onNavigateToDetection={onNavigateToDetection}
-        onNavigateToArticles={() => {}}
-        onNavigateToHistory={user ? onNavigateToHistory : null}
-        onNavigateToTerms={() => window.location.hash = 'terms'}
-        onNavigateToPrivacy={() => window.location.hash = 'privacy'}
+      {/* ── NAVBAR — sidebar dihandle sepenuhnya oleh Navbar.jsx ── */}
+      <Navbar
         onNavigateToHome={onNavigateToHome}
+        onNavigateToAbout={() => onNavigateToHome('about')}
+        onNavigateToDetection={onNavigateToDetection}
+        onNavigateToArticles={onNavigateToArticles}
+        onNavigateToHistory={onNavigateToHistory}
+        onNavigateToTerms={() => {
+          window.location.hash = 'terms'
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
+        onNavigateToPrivacy={() => {
+          window.location.hash = 'privacy'
+          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+        }}
         onLogin={onLogin}
         user={user}
         onLogout={onLogout}
@@ -319,7 +193,7 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
             {article.readTime}
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <FaUser size={13} />
+            <FaClock size={13} />
             {article.author}
           </span>
           <span>{article.date}</span>
@@ -483,7 +357,7 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
 
       <Footer 
         onNavigateToHome={onNavigateToHome}
-        onNavigateToDetection={() => onNavigateToHome()}
+        onNavigateToDetection={onNavigateToDetection}
         onNavigateToArticles={onNavigateToArticles}
         onNavigateToTerms={() => window.location.hash = 'terms'}
         onNavigateToPrivacy={() => window.location.hash = 'privacy'}

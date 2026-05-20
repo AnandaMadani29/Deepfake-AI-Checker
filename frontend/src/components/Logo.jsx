@@ -39,18 +39,12 @@ export default function Logo({
       style={combinedStyle}
       onMouseEnter={(e) => {
         if (onClick && !isMobile) {
-          e.currentTarget.style.color = '#E94E1B'
-          if (variant === 'header') {
-            e.currentTarget.style.transform = 'scale(1.05)'
-          }
+          e.currentTarget.style.transform = 'scale(1.05)'
         }
       }}
       onMouseLeave={(e) => {
         if (onClick) {
-          e.currentTarget.style.color = '#fff'
-          if (variant === 'header') {
-            e.currentTarget.style.transform = 'scale(1)'
-          }
+          e.currentTarget.style.transform = 'scale(1)'
         }
       }}
     >
