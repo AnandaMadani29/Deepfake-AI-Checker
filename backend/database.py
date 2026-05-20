@@ -151,6 +151,7 @@ def init_database():
                     image_data TEXT,
                     detailed_analysis TEXT,
                     explanation TEXT,
+                    ai_detection TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
                 )
@@ -170,6 +171,7 @@ def init_database():
                     image_data TEXT,
                     detailed_analysis TEXT,
                     explanation TEXT,
+                    ai_detection TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (user_id) REFERENCES users (id)
                 )

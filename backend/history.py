@@ -81,8 +81,8 @@ def save_detection_history(
                 INSERT INTO detection_history (
                     user_id, image_name, result_label, prob_fake, model_name,
                     model_selection_reason, image_size, complexity_level, image_data,
-                    detailed_analysis, explanation
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    detailed_analysis, explanation, ai_detection
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 RETURNING id
             """, (
                 user_id,
@@ -95,7 +95,8 @@ def save_detection_history(
                 detection_data.complexity_level,
                 detection_data.image_data,
                 json.dumps(detection_data.detailed_analysis) if detection_data.detailed_analysis else None,
-                json.dumps(detection_data.explanation) if detection_data.explanation else None
+                json.dumps(detection_data.explanation) if detection_data.explanation else None,
+                json.dumps(detection_data.ai_detection) if detection_data.ai_detection else None
             ))
             history_id = cursor.fetchone()[0]
         else:
@@ -104,8 +105,8 @@ def save_detection_history(
                 INSERT INTO detection_history (
                     user_id, image_name, result_label, prob_fake, model_name,
                     model_selection_reason, image_size, complexity_level, image_data,
-                    detailed_analysis, explanation
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    detailed_analysis, explanation, ai_detection
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 user_id,
                 detection_data.image_name,
@@ -117,7 +118,8 @@ def save_detection_history(
                 detection_data.complexity_level,
                 detection_data.image_data,
                 json.dumps(detection_data.detailed_analysis) if detection_data.detailed_analysis else None,
-                json.dumps(detection_data.explanation) if detection_data.explanation else None
+                json.dumps(detection_data.explanation) if detection_data.explanation else None,
+                json.dumps(detection_data.ai_detection) if detection_data.ai_detection else None
             ))
             history_id = cursor.lastrowid
         
@@ -154,7 +156,7 @@ def get_user_history(
             SELECT 
                 id, user_id, image_name, result_label, prob_fake, model_name,
                 model_selection_reason, image_size, complexity_level, image_data,
-                detailed_analysis, explanation, created_at
+                detailed_analysis, explanation, ai_detection, created_at
             FROM detection_history
             WHERE user_id = {placeholder}
             ORDER BY created_at DESC
@@ -178,6 +180,12 @@ def get_user_history(
             if record.get('explanation'):
                 try:
                     record['explanation'] = json.loads(record['explanation'])
+                except:
+                    pass
+            
+            if record.get('ai_detection'):
+                try:
+                    record['ai_detection'] = json.loads(record['ai_detection'])
                 except:
                     pass
             
