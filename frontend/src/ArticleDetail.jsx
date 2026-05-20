@@ -8,6 +8,24 @@ import Footer from './components/Footer'
 export default function ArticleDetail({ articleId, onNavigateToArticles, onNavigateToArticleDetail, onNavigateToHome, onNavigateToDetection, onLogin, user, onLogout, onNavigateToHistory }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768)
   const [showBackToTop, setShowBackToTop] = React.useState(false)
+  const [copySuccess, setCopySuccess] = React.useState(false)
+
+  const handleShare = async (article) => {
+    const url = window.location.href
+    const title = article?.title || 'Check out this article'
+    const text = article?.excerpt || ''
+    if (navigator.share) {
+      try { await navigator.share({ title, text, url }) } catch (err) {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(url)
+        setCopySuccess(true)
+        setTimeout(() => setCopySuccess(false), 2500)
+      } catch (err) {
+        window.prompt('Copy this link:', url)
+      }
+    }
+  }
 
   React.useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768)
@@ -101,6 +119,7 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
     }}>
 
       {/* ── NAVBAR — sidebar dihandle sepenuhnya oleh Navbar.jsx ── */}
+      {/* NOTE: Pastikan App.jsx pass onLogin & onNavigateToDetection ke ArticleDetail */}
       <Navbar
         onNavigateToHome={onNavigateToHome}
         onNavigateToAbout={() => onNavigateToHome('about')}
@@ -245,10 +264,32 @@ export default function ArticleDetail({ articleId, onNavigateToArticles, onNavig
           <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>Found this helpful?</h3>
           <p style={{ fontSize: 14, color: '#999', marginBottom: 20 }}>Share this article with others who might benefit from it</p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 12 }}>
-            <button style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', color: '#fff', padding: '10px 20px', borderRadius: 6, cursor: 'pointer', fontSize: 14 }}>
-              Share
+            <button
+              onClick={() => handleShare(article)}
+              style={{
+                background: copySuccess ? '#1a4a1a' : '#1a1a1a',
+                border: copySuccess ? '1px solid #4ade80' : '1px solid #2a2a2a',
+                color: copySuccess ? '#4ade80' : '#fff',
+                padding: '10px 24px',
+                borderRadius: 6,
+                cursor: 'pointer',
+                fontSize: 14,
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                transition: 'all 0.3s',
+              }}
+            >
+              <FaShareAlt size={14} />
+              {copySuccess ? 'Link Copied!' : 'Share'}
             </button>
           </div>
+          {copySuccess && (
+            <p style={{ marginTop: 12, fontSize: 12, color: '#4ade80' }}>
+              Article link copied to clipboard!
+            </p>
+          )}
         </div>
       </article>
 

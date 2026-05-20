@@ -770,7 +770,7 @@ export default function Home({
                 <div
                   style={{
                     background: "#1a1a1a",
-                    borderRadius: 8,
+                    borderRadius: 2,
                     padding: isMobile ? "20px" : "30px",
                     marginBottom: 20,
                     minHeight: isMobile ? 120 : 150,
@@ -801,7 +801,7 @@ export default function Home({
                 <div
                   style={{
                     background: "#1a1a1a",
-                    borderRadius: 8,
+                    borderRadius: 2,
                     padding: isMobile ? "20px" : "30px",
                     marginBottom: 20,
                     minHeight: isMobile ? 120 : 150,
@@ -832,7 +832,7 @@ export default function Home({
                 <div
                   style={{
                     background: "#1a1a1a",
-                    borderRadius: 8,
+                    borderRadius: 2,
                     padding: isMobile ? "20px" : "30px",
                     marginBottom: 20,
                     minHeight: isMobile ? 120 : 150,
@@ -863,7 +863,7 @@ export default function Home({
                 <div
                   style={{
                     background: "#1a1a1a",
-                    borderRadius: 8,
+                    borderRadius: 2,
                     padding: isMobile ? "20px" : "30px",
                     marginBottom: 20,
                     minHeight: isMobile ? 120 : 150,
@@ -892,7 +892,7 @@ export default function Home({
               key={step.title}
               style={{
                 background: "linear-gradient(180deg, rgba(255,75,37,0.05) 0%, rgba(36,36,36,0.05) 100%)",
-                padding: isMobile ? "20px 10px" : "30px",
+                padding: isMobile ? "20px 20px" : "30px",
                 borderRadius: 0,
                 border: "0.6px solid #292929",
                 boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
@@ -904,7 +904,7 @@ export default function Home({
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 12,
+                  gap: 10,
                   marginTop: 20,
                   marginBottom: 20,
                   color: "#FF4B25",
@@ -915,7 +915,7 @@ export default function Home({
                     width: isMobile ? 50 : 60,
                     height: isMobile ? 50 : 60,
                     borderRadius: 0,
-                    background: "rgba(255,75,37,0.1)",
+                    // background: "rgba(255,75,37,0.1)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",

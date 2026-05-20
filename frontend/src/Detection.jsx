@@ -497,7 +497,7 @@ export default function Detection({
         <div style={{ maxWidth: isMobile ? 1100 : 1400, margin: "0 auto 30px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 20, flexDirection: isMobile ? "column" : "row", padding: isMobile ? "0" : "0 20px" }}>
           <div style={{ flex: 1, textAlign: "left", padding: isMobile ? "16px" : "20px", background: "#0d0d0d", border: "1px solid #2a2a2a", borderRadius: 2}}>
             <h2 style={{ fontSize: isMobile ? 16 : 18, fontWeight: 700, margin: "0 0 8px 0", color: "#fff" }}>Disclaimer:</h2>
-            <p style={{ fontSize: isMobile ? 12 : 14, color: "#999", lineHeight: 1.6, margin: 0 }}>AI model ini berfokus hanya pada muka. Noise pada gambar akan mempengaruhi hasil dari deteksi.</p>
+            <p style={{ fontSize: isMobile ? 12 : 14, color: "#999", lineHeight: 1.6, margin: 0 }}>Detection results may be affected by image quality. This AI model primarily analyzes facial regions, and visual noise or distortions can reduce accuracy.</p>
           </div>
           {user && (
             <button onClick={onNavigateToHistory} style={{ background: "transparent", color: "#fff", border: "1px solid #fff", padding: isMobile ? "12px 24px" : "14px 32px", borderRadius: 4, fontWeight: 600, cursor: "pointer", fontSize: isMobile ? 14 : 15, transition: "all 0.2s", whiteSpace: "nowrap", flexShrink: 0, width: isMobile ? "100%" : "auto" }} onMouseEnter={(e) => { e.currentTarget.style.background = "#fff"; e.currentTarget.style.color = "#000"; }} onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#fff"; }}>
