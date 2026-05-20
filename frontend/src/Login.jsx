@@ -184,7 +184,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
       {/* Logo */}
       <div style={{
         position: 'absolute',
-        top: isMobile ? 20 : 40,
+        top: isMobile ? 24 : 40,
         left: isMobile ? 20 : 40,
         zIndex: 3
       }}>
@@ -241,7 +241,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
           Login
         </h2>
         <p style={{ 
-          fontSize: isMobile ? 16 : 15, 
+          fontSize: isMobile ? 14 : 16, 
           color: '#ccc', 
           margin: '0 0 40px 0', 
           textAlign: isMobile ? 'left' : 'center',
@@ -256,7 +256,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
             <label style={{ 
               display: 'block', 
               marginBottom: 8, 
-              fontSize: 13, 
+              fontSize: 14, 
               fontWeight: 500, 
               color: '#ccc' 
             }}>
@@ -271,12 +271,12 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
               className="transition-colors"
               style={{
                 width: '100%',
-                padding: '14px 16px',
+                padding: "12px",
                 background: 'transparent',
                 border: '1px solid #444',
                 borderRadius: 4,
                 color: '#fff',
-                fontSize: 14,
+                fontSize: 12,
                 outline: 'none',
                 boxSizing: 'border-box'
               }}
@@ -286,11 +286,11 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
           </div>
 
           {/* Password Field */}
-          <div style={{ marginBottom: 12 }}>
+          <div style={{ marginBottom: 10 }}>
             <label style={{ 
               display: 'block', 
               marginBottom: 8, 
-              fontSize: 13, 
+              fontSize: 14, 
               fontWeight: 500, 
               color: '#ccc' 
             }}>
@@ -306,13 +306,13 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
                 className="transition-colors"
                 style={{
                   width: '100%',
-                  padding: '14px 16px',
+                  padding: '12px',
                   paddingRight: '45px',
                   background: 'transparent',
                   border: '1px solid #444',
                   borderRadius: 4,
                   color: '#fff',
-                  fontSize: 14,
+                  fontSize: 12,
                   outline: 'none',
                   boxSizing: 'border-box'
                 }}
@@ -337,12 +337,12 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
                 }}
               >
                 {showPassword ? (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
                     <line x1="1" y1="1" x2="23" y2="23"/>
                   </svg>
                 ) : (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                     <circle cx="12" cy="12" r="3"/>
                   </svg>
@@ -358,7 +358,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
               className="transition-colors"
               style={{
                 color: '#FF4B25',
-                fontSize: 13,
+                fontSize: 12,
                 cursor: 'pointer',
                 textDecoration: 'none'
               }}
@@ -380,15 +380,21 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
               background: loading ? '#999' : '#FF4B25',
               color: '#fff',
               border: 'none',
-              borderRadius: 4,
-              fontSize: 18,
+              borderRadius: 2,
+              fontSize: 14,
               fontWeight: 700,
-              cursor: loading ? 'not-allowed' : 'pointer',
-              marginBottom: 20,
-              transform: 'scale(1)'
+              cursor: loading ? 'not-allowed' : 'pointer'
             }}
-            onMouseEnter={(e) => !loading && (e.currentTarget.style.transform = 'scale(1.02)')}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+            onMouseEnter={(e) => {
+              if (!isMobile && !loading) {
+                e.target.style.background = '#d43d0f'
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isMobile && !loading) {
+                e.target.style.background = '#FF4B25'
+              }
+            }}
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
@@ -420,7 +426,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
           </div>
 
           {/* Google Login */}
-          <div style={{ marginBottom: 24, position: 'relative', zIndex: 10 }}>
+          <div style={{ marginBottom: 20, position: 'relative', zIndex: 10 }}>
             {import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
               <div style={{ pointerEvents: 'auto' }}>
                 <div
@@ -435,7 +441,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
                   }}
                 />
                 {googleReady && (
-                  <div style={{ marginTop: 8, fontSize: 11, color: '#999', textAlign: 'center' }}>
+                  <div style={{ marginTop: 10, fontSize: 11, color: '#999', textAlign: 'center' }}>
                     Login or create account with Google
                   </div>
                 )}
@@ -450,9 +456,9 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
                   background: 'transparent',
                   color: '#fff',
                   border: '1px solid #555',
-                  borderRadius: 4,
+                  borderRadius: 2,
                   fontSize: 14,
-                  fontWeight: 600,
+                  fontWeight: 700,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -478,7 +484,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
           </div>
 
           {/* Register Link */}
-          <div style={{ textAlign: 'center', fontSize: 15, color: '#ccc' }}>
+          <div style={{ textAlign: 'center', fontSize: 12, color: '#ccc' }}>
             Don't you have an account?{' '}
             <a
               onClick={onNavigateToRegister}
