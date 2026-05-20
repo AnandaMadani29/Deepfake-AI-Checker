@@ -61,9 +61,7 @@ export default function Articles({
         position: "relative",
       }}
     >
-      {/* ── MOBILE SIDEBAR: overlay + drawer di ROOT level ──
-          Sama dengan Home.jsx — berada di luar nav agar overlay
-          (zIndex 99998) bisa menutupi logo tanpa hambatan stacking context */}
+      {/* ── MOBILE SIDEBAR ── */}
       {isMobile && menuOpen && (
         <>
           <div
@@ -191,18 +189,18 @@ export default function Articles({
       )}
 
       {/* ── NAVBAR ── */}
-      <Navbar 
+      <Navbar
         onNavigateToAbout={() => onNavigateToHome("about")}
         onNavigateToDetection={onNavigateToDetection}
         onNavigateToArticles={() => {}}
         onNavigateToHistory={user ? onNavigateToHistory : null}
         onNavigateToTerms={() => {
-          window.location.hash = 'terms'
-          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+          window.location.hash = "terms";
+          setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 100);
         }}
         onNavigateToPrivacy={() => {
-          window.location.hash = 'privacy'
-          setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100)
+          window.location.hash = "privacy";
+          setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 100);
         }}
         onNavigateToHome={onNavigateToHome}
         onLogin={onLogin}
@@ -532,6 +530,8 @@ export default function Articles({
                     border: "1px solid #2a2a2a",
                     transition: "transform 0.3s, border-color 0.3s",
                     animationDelay: `${idx * 0.1}s`,
+                    display: "flex",
+                    flexDirection: "column",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-4px)";
@@ -542,12 +542,14 @@ export default function Articles({
                     e.currentTarget.style.borderColor = "#2a2a2a";
                   }}
                 >
+                  {/* Thumbnail */}
                   <div
                     style={{
                       background: "#2a2a2a",
                       height: 200,
                       overflow: "hidden",
                       position: "relative",
+                      flexShrink: 0,
                     }}
                   >
                     <img
@@ -565,7 +567,16 @@ export default function Articles({
                       }}
                     />
                   </div>
-                  <div style={{ padding: 24 }}>
+
+                  {/* Card Content — category + title + excerpt + metadata */}
+                  <div
+                    style={{
+                      padding: "24px 24px 0 24px",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    {/* Category badge */}
                     <div
                       style={{
                         display: "inline-block",
@@ -575,53 +586,89 @@ export default function Articles({
                         borderRadius: 4,
                         fontSize: 10,
                         fontWeight: 600,
-                        marginBottom: 12,
+                        marginBottom: 10,
                         textTransform: "uppercase",
+                        alignSelf: "flex-start",
+                        flexShrink: 0,
                       }}
                     >
                       {article.category}
                     </div>
+
+                    {/* Title — no line clamp */}
                     <h3
                       style={{
                         fontSize: 18,
                         fontWeight: 700,
-                        margin: "0 0 12px 0",
+                        margin: "0 0 8px 0",
                         lineHeight: 1.4,
+                        flexShrink: 0,
                       }}
                     >
                       {article.title}
                     </h3>
+
+                    {/* Excerpt — 2 line clamp */}
                     <p
                       style={{
                         fontSize: 13,
                         color: "#999",
                         lineHeight: 1.6,
-                        marginBottom: 16,
+                        margin: "0 0 12px 0",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        flexShrink: 0,
                       }}
                     >
                       {article.excerpt}
                     </p>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: 16,
-                        fontSize: 11,
-                        color: "#666",
-                        marginBottom: 16,
-                      }}
-                    >
-                      <span
+
+                    {/* Metadata */}
+                    <div>
+                      <div
                         style={{
                           display: "flex",
-                          alignItems: "center",
-                          gap: 4,
+                          gap: 16,
+                          fontSize: 11,
+                          color: "#666",
                         }}
                       >
-                        <FaClock size={10} />
-                        {article.readTime}
-                      </span>
-                      <span>{article.date}</span>
+                        <span
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 4,
+                          }}
+                        >
+                          <FaClock size={10} />
+                          {article.readTime}
+                        </span>
+                        <span
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 4,
+                          }}
+                        >
+                          <FaUser size={10} />
+                          {article.author}
+                        </span>
+                        <span>{article.date}</span>
+                      </div>
                     </div>
+                  </div>
+
+                  {/* Spacer — gap kosong selalu di antara konten dan Read More */}
+                  <div style={{ flexGrow: 1 }} />
+
+                  {/* Read More — di luar fixed div, selalu sejajar antar card */}
+                  <div
+                    style={{
+                      padding: "16px 24px 24px 24px",
+                    }}
+                  >
                     <div
                       style={{
                         display: "inline-flex",
@@ -642,7 +689,7 @@ export default function Articles({
         </div>
       </section>
 
-      <Footer 
+      <Footer
         onNavigateToHome={onNavigateToHome}
         onNavigateToDetection={onNavigateToDetection}
         onNavigateToArticles={() => {}}
@@ -683,7 +730,11 @@ export default function Articles({
             e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
           }}
         >
-          <img src="/assets/icons/arrowUp.svg" alt="Back to top" style={{ width: 24, height: 24 }} />
+          <img
+            src="/assets/icons/arrowUp.svg"
+            alt="Back to top"
+            style={{ width: 24, height: 24 }}
+          />
         </button>
       )}
     </div>
