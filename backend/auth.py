@@ -60,39 +60,17 @@ class TokenResponse(BaseModel):
 
 
 def init_db():
-    """Initialize SQLite database with users table"""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+    """Initialize database tables - now handled by database.py"""
+    # This function is deprecated - tables are now created in database.py
+    # Kept for backward compatibility
+    print("ℹ️  init_db() called - tables already initialized by database.py")
     
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE NOT NULL,
-            password_hash TEXT NOT NULL,
-            full_name TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            is_active BOOLEAN DEFAULT 1
-        )
-    """)
-    
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS reset_tokens (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            token TEXT UNIQUE NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            expires_at TIMESTAMP NOT NULL,
-            used BOOLEAN DEFAULT 0,
-            FOREIGN KEY (user_id) REFERENCES users (id)
-        )
-    """)
-    
-    conn.commit()
-    conn.close()
-    
-    # Initialize detection history table
+    # Initialize detection history table (if needed)
     if init_history_table:
-        init_history_table()
+        try:
+            init_history_table()
+        except Exception as e:
+            print(f"⚠️  History table initialization: {e}")
 
 
 def hash_password(password: str) -> str:

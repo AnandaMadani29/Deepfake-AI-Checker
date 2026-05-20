@@ -4,13 +4,15 @@ Handles saving, retrieving, and deleting detection history
 """
 
 import os
-import sqlite3
 from datetime import datetime
 from typing import List, Optional, Dict
 from pydantic import BaseModel
 
+# Import database helper
+from backend.database import get_db_connection
 
-# Database path - use same path as auth.py
+
+# Database path - use same path as auth.py (for backward compatibility)
 DB_PATH = os.getenv("DATABASE_PATH", "users.db")
 
 
@@ -49,8 +51,9 @@ class DetectionHistory(BaseModel):
 
 def init_history_table():
     """Initialize detection_history table"""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+    # This function is deprecated - tables are now created in database.py
+    # Kept for backward compatibility
+    pass
     
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS detection_history (
