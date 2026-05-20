@@ -100,7 +100,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             height: '100%',
             zIndex: 1
           }}
-          viewBox="0 0 1440 900"
+          viewBox="0 0 1440 880"
           preserveAspectRatio="none"
         >
           <path
@@ -123,7 +123,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
       {/* Logo */}
       <div style={{
         position: 'absolute',
-        top: isMobile ? 20 : 40,
+        top: isMobile ? 24 : 40,
         left: isMobile ? 20 : 40,
         zIndex: 3
       }}>
@@ -144,7 +144,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             border: '1px solid rgba(255,255,255,0.3)',
             color: '#fff',
             padding: '12px',
-            borderRadius: 8,
+            borderRadius: 2,
             cursor: onNavigateToHome ? 'pointer' : 'not-allowed',
             display: 'flex',
             alignItems: 'center',
@@ -180,7 +180,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
           Register
         </h2>
         <p style={{ 
-          fontSize: isMobile ? 16 : 15, 
+          fontSize: isMobile ? 14 : 16, 
           color: '#ccc', 
           margin: '0 0 40px 0', 
           textAlign: isMobile ? 'left' : 'center',
@@ -195,7 +195,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             <label style={{ 
               display: 'block', 
               marginBottom: 8, 
-              fontSize: 13, 
+              fontSize: 14, 
               fontWeight: 500, 
               color: '#ccc' 
             }}>
@@ -210,12 +210,12 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
               placeholder="Name"
               style={{
                 width: '100%',
-                padding: '14px 16px',
+                padding: '12px',
                 background: 'transparent',
                 border: '1px solid #444',
-                borderRadius: 4,
+                borderRadius: 2,
                 color: '#fff',
-                fontSize: 14,
+                fontSize: 12,
                 outline: 'none',
                 boxSizing: 'border-box'
               }}
@@ -229,7 +229,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             <label style={{ 
               display: 'block', 
               marginBottom: 8, 
-              fontSize: 13, 
+              fontSize: 14, 
               fontWeight: 500, 
               color: '#ccc' 
             }}>
@@ -244,12 +244,12 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
               placeholder="Email Address"
               style={{
                 width: '100%',
-                padding: '14px 16px',
+                padding: '12px',
                 background: 'transparent',
                 border: '1px solid #444',
-                borderRadius: 4,
+                borderRadius: 2,
                 color: '#fff',
-                fontSize: 14,
+                fontSize: 12,
                 outline: 'none',
                 boxSizing: 'border-box'
               }}
@@ -263,7 +263,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             <label style={{ 
               display: 'block', 
               marginBottom: 8, 
-              fontSize: 13, 
+              fontSize: 14, 
               fontWeight: 500, 
               color: '#ccc' 
             }}>
@@ -279,13 +279,13 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
                 placeholder="Password"
                 style={{
                   width: '100%',
-                  padding: '14px 16px',
+                  padding: '12px',
                   paddingRight: '45px',
                   background: 'transparent',
                   border: '1px solid #444',
-                  borderRadius: 4,
+                  borderRadius: 2,
                   color: '#fff',
-                  fontSize: 14,
+                  fontSize: 12,
                   outline: 'none',
                   boxSizing: 'border-box'
                 }}
@@ -310,12 +310,12 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
                 }}
               >
                 {showPassword ? (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
                     <line x1="1" y1="1" x2="23" y2="23"/>
                   </svg>
                 ) : (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                     <circle cx="12" cy="12" r="3"/>
                   </svg>
@@ -332,7 +332,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             <label style={{ 
               display: 'block', 
               marginBottom: 8, 
-              fontSize: 13, 
+              fontSize: 14, 
               fontWeight: 500, 
               color: '#ccc' 
             }}>
@@ -348,13 +348,13 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
                 placeholder="Confirm Password"
                 style={{
                   width: '100%',
-                  padding: '14px 16px',
+                  padding: '12px',
                   paddingRight: '45px',
                   background: 'transparent',
                   border: '1px solid #444',
-                  borderRadius: 4,
+                  borderRadius: 2,
                   color: '#fff',
-                  fontSize: 14,
+                  fontSize: 12,
                   outline: 'none',
                   boxSizing: 'border-box'
                 }}
@@ -379,12 +379,12 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
                 }}
               >
                 {showConfirmPassword ? (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
                     <line x1="1" y1="1" x2="23" y2="23"/>
                   </svg>
                 ) : (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                     <circle cx="12" cy="12" r="3"/>
                   </svg>
@@ -405,7 +405,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
                 cursor: 'pointer'
               }}
             />
-            <label style={{ fontSize: 13, color: '#999', cursor: 'pointer' }} onClick={() => setAgreedToTerms(!agreedToTerms)}>
+            <label style={{ fontSize: 12, color: '#999', cursor: 'pointer' }} onClick={() => setAgreedToTerms(!agreedToTerms)}>
               I agree to all the{' '}
               <span style={{ color: '#FF4B25' }}>Terms</span>
               {' '}and{' '}
@@ -424,15 +424,14 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
               background: loading ? '#999' : '#FF4B25',
               color: '#fff',
               border: 'none',
-              borderRadius: 4,
+              borderRadius: 2,
               fontSize: 16,
               fontWeight: 700,
               cursor: loading ? 'not-allowed' : 'pointer',
-              marginBottom: 20,
               transform: 'scale(1)'
             }}
-            onMouseEnter={(e) => !loading && (e.currentTarget.style.transform = 'scale(1.02)')}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+            onMouseEnter={(e) => !loading && (e.target.style.background = '#d43d0f')}
+            onMouseLeave={(e) => (e.target.style.background = '#FF4B25')}
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
@@ -440,7 +439,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
           {/* OR Divider */}
           <div style={{ 
             textAlign: 'center', 
-            fontSize: 13, 
+            fontSize: 12, 
             color: '#666', 
             margin: '20px 0', 
             fontWeight: 500 
@@ -458,11 +457,11 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
               background: 'transparent',
               color: '#fff',
               border: '1px solid #555',
-              borderRadius: 4,
+              borderRadius: 2,
               fontSize: 14,
-              fontWeight: 600,
+              fontWeight: 700,
               cursor: 'pointer',
-              marginBottom: 24,
+              marginBottom: 20,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -479,7 +478,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
           </button>
 
           {/* Login Link */}
-          <div style={{ textAlign: 'center', fontSize: 14, color: '#999', marginBottom: 16 }}>
+          <div style={{ textAlign: 'center', fontSize: 12, color: '#999', marginBottom: 40 }}>
             Don't you have an account?{' '}
             <a
               onClick={onNavigateToLogin}

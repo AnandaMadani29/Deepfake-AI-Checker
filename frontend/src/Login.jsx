@@ -161,7 +161,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
             height: '100%',
             zIndex: 1
           }}
-          viewBox="0 0 1440 900"
+          viewBox="0 0 1440 880"
           preserveAspectRatio="none"
         >
           <path
@@ -205,7 +205,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
             border: '1px solid rgba(255,255,255,0.3)',
             color: '#fff',
             padding: '12px',
-            borderRadius: 8,
+            borderRadius: 2,
             cursor: onNavigateToHome ? 'pointer' : 'not-allowed',
             display: 'flex',
             alignItems: 'center',
@@ -274,7 +274,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
                 padding: "12px",
                 background: 'transparent',
                 border: '1px solid #444',
-                borderRadius: 4,
+                borderRadius: 2,
                 color: '#fff',
                 fontSize: 12,
                 outline: 'none',
@@ -310,7 +310,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
                   paddingRight: '45px',
                   background: 'transparent',
                   border: '1px solid #444',
-                  borderRadius: 4,
+                  borderRadius: 2,
                   color: '#fff',
                   fontSize: 12,
                   outline: 'none',
@@ -331,7 +331,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
                   border: 'none',
                   color: '#999',
                   cursor: 'pointer',
-                  padding: 4,
+                  padding: 2,
                   display: 'flex',
                   alignItems: 'center'
                 }}
@@ -385,16 +385,8 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
               fontWeight: 700,
               cursor: loading ? 'not-allowed' : 'pointer'
             }}
-            onMouseEnter={(e) => {
-              if (!isMobile && !loading) {
-                e.target.style.background = '#d43d0f'
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isMobile && !loading) {
-                e.target.style.background = '#FF4B25'
-              }
-            }}
+            onMouseEnter={(e) => !loading && (e.target.style.background = '#d43d0f')}
+            onMouseLeave={(e) => (e.target.style.background = '#FF4B25')}
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
@@ -407,8 +399,8 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
               border: '1px solid rgba(255,87,51,0.5)',
               background: 'rgba(255,87,51,0.08)',
               color: '#ffd2c8',
-              borderRadius: 6,
-              fontSize: 13
+              borderRadius: 2,
+              fontSize: 14
             }}>
               {submitError}
             </div>
@@ -417,7 +409,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
           {/* OR Divider */}
           <div style={{ 
             textAlign: 'center', 
-            fontSize: 13, 
+            fontSize: 12, 
             color: '#666', 
             margin: '20px 0', 
             fontWeight: 500 
@@ -441,7 +433,7 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
                   }}
                 />
                 {googleReady && (
-                  <div style={{ marginTop: 10, fontSize: 11, color: '#999', textAlign: 'center' }}>
+                  <div style={{ marginTop: 10, fontSize: 12, color: '#999', textAlign: 'center' }}>
                     Login or create account with Google
                   </div>
                 )}
