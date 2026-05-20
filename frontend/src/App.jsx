@@ -119,9 +119,9 @@ export default function App() {
     setCurrentPage('home')
   }
 
-  const handleRegisterSuccess = (userData) => {
-    setUser(userData)
-    setCurrentPage('home')
+  const handleRegisterSuccess = () => {
+    // After successful registration, redirect to login page
+    setCurrentPage('login')
   }
 
   const handleLogout = () => {
