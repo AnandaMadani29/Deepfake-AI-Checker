@@ -358,7 +358,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
                   outline: 'none',
                   boxSizing: 'border-box'
                 }}
-                onFocus={(e) => e.target.style.borderColor = '#FF5733'}
+                onFocus={(e) => e.target.style.borderColor = '#FF4B25'}
                 onBlur={(e) => e.target.style.borderColor = '#444'}
               />
               <button

@@ -116,7 +116,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
               height: '100%',
               zIndex: 1
             }}
-            viewBox="0 0 1440 900"
+            viewBox="0 0 1440 880"
             preserveAspectRatio="none"
           >
             <path
@@ -139,7 +139,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
         {/* Logo */}
         <div style={{
           position: 'absolute',
-          top: isMobile ? 20 : 40,
+          top: isMobile ? 24 : 40,
           left: isMobile ? 20 : 40,
           zIndex: 3
         }}>
@@ -190,7 +190,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
             <p style={{ 
               color: '#999', 
               marginBottom: 32, 
-              fontSize: isMobile ? 14 : 15,
+              fontSize: isMobile ? 14 : 16,
               lineHeight: 1.5 
             }}>
               Get started with an account on Fact.it
@@ -204,7 +204,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
                 background: '#FF4B25',
                 color: '#fff',
                 border: 'none',
-                borderRadius: 6,
+                borderRadius: 2,
                 fontSize: 16,
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -244,7 +244,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
             height: '100%',
             zIndex: 1
           }}
-          viewBox="0 0 1440 900"
+          viewBox="0 0 1440 880"
           preserveAspectRatio="none"
         >
           <path
@@ -267,7 +267,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
       {/* Logo */}
       <div style={{
         position: 'absolute',
-        top: isMobile ? 20 : 40,
+        top: isMobile ? 24 : 40,
         left: isMobile ? 20 : 40,
         zIndex: 3
       }}>
@@ -314,7 +314,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
         <div style={{
           background: isMobile ? 'rgba(26, 26, 26, 0.95)' : '#1a1a1a',
           padding: isMobile ? '32px 24px' : '48px 40px',
-          borderRadius: 12
+          borderRadius: 2
         }}>
           <h2 style={{ 
             fontSize: isMobile ? 28 : 32, 
@@ -329,7 +329,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
           <p style={{ 
             color: '#999', 
             marginBottom: 32, 
-            fontSize: isMobile ? 14 : 15,
+            fontSize: isMobile ? 14 : 16,
             textAlign: 'center',
             lineHeight: 1.5 
           }}>
@@ -342,7 +342,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
                 display: 'block', 
                 marginBottom: 8, 
                 color: '#fff',
-                fontSize: 13,
+                fontSize: 14,
                 fontWeight: 400
               }}>
                 Password
@@ -360,9 +360,9 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
                     padding: '14px 45px 14px 16px',
                     background: 'transparent',
                     border: '1px solid #444',
-                    borderRadius: 6,
+                    borderRadius: 2,
                     color: '#fff',
-                    fontSize: 14,
+                    fontSize: 12,
                     outline: 'none',
                     transition: 'border-color 0.2s'
                   }}
@@ -407,7 +407,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
                 display: 'block', 
                 marginBottom: 8, 
                 color: '#fff',
-                fontSize: 13,
+                fontSize: 14,
                 fontWeight: 400
               }}>
                 Confirm Password
@@ -425,9 +425,9 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
                     padding: '14px 45px 14px 16px',
                     background: 'transparent',
                     border: '1px solid #444',
-                    borderRadius: 6,
+                    borderRadius: 2,
                     color: '#fff',
-                    fontSize: 14,
+                    fontSize: 12,
                     outline: 'none',
                     transition: 'border-color 0.2s'
                   }}
@@ -477,14 +477,14 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
                 color: '#fff',
                 border: 'none',
                 borderRadius: 6,
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: 600,
                 cursor: loading ? 'not-allowed' : 'pointer',
                 transition: 'background 0.2s',
                 marginBottom: 16
               }}
               onMouseEnter={(e) => {
-                if (!loading) e.currentTarget.style.background = '#E94E1B'
+                if (!loading) e.currentTarget.style.background = '#d43d0f'
               }}
               onMouseLeave={(e) => {
                 if (!loading) e.currentTarget.style.background = '#FF4B25'

@@ -126,7 +126,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
             height: '100%',
             zIndex: 1
           }}
-          viewBox="0 0 1440 900"
+          viewBox="0 0 1440 880"
           preserveAspectRatio="none"
         >
           <path
@@ -149,7 +149,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
       {/* Logo */}
       <div style={{
         position: 'absolute',
-        top: isMobile ? 20 : 40,
+        top: isMobile ? 24 : 40,
         left: isMobile ? 20 : 40,
         zIndex: 3
       }}>
@@ -170,7 +170,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
             border: '1px solid rgba(255,255,255,0.3)',
             color: '#fff',
             padding: '12px',
-            borderRadius: 8,
+            borderRadius: 2,
             cursor: onNavigateToHome ? 'pointer' : 'not-allowed',
             display: 'flex',
             alignItems: 'center',
@@ -206,7 +206,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
               Forgot Password
             </h2>
             <p style={{ 
-              fontSize: isMobile ? 16 : 15, 
+              fontSize: isMobile ? 14 : 16, 
               color: '#ccc', 
               margin: '0 0 40px 0', 
               textAlign: isMobile ? 'left' : 'center',
