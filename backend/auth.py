@@ -221,17 +221,24 @@ def create_reset_token(email: str) -> str:
     token = create_access_token(token_data, expires_delta=timedelta(hours=1))
     
     # Store token in database
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    expires_at = datetime.utcnow() + timedelta(hours=1)
-    cursor.execute(
-        "INSERT INTO reset_tokens (user_id, token, expires_at) VALUES (?, ?, ?)",
-        (user["id"], token, expires_at)
-    )
-    
-    conn.commit()
-    conn.close()
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        
+        expires_at = datetime.utcnow() + timedelta(hours=1)
+        is_postgres = hasattr(conn, 'server_version')
+        
+        if is_postgres:
+            cursor.execute(
+                "INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES (%s, %s, %s)",
+                (user["id"], token, expires_at)
+            )
+        else:
+            cursor.execute(
+                "INSERT INTO reset_tokens (user_id, token, expires_at) VALUES (?, ?, ?)",
+                (user["id"], token, expires_at)
+            )
+        
+        conn.commit()
     
     # Send reset email
     try:
@@ -267,40 +274,39 @@ def reset_password_with_token(token: str, new_password: str) -> bool:
             detail="Invalid or expired token"
         )
     
-    # Check if token has been used
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    cursor.execute(
-        "SELECT * FROM reset_tokens WHERE token = ? AND used = 0",
-        (token,)
-    )
-    
-    token_record = cursor.fetchone()
-    
-    if not token_record:
-        conn.close()
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Token has already been used or is invalid"
-        )
-    
-    # Update password
-    password_hash = hash_password(new_password)
-    
-    cursor.execute(
-        "UPDATE users SET password_hash = ? WHERE id = ?",
-        (password_hash, user_id)
-    )
-    
-    # Mark token as used
-    cursor.execute(
-        "UPDATE reset_tokens SET used = 1 WHERE token = ?",
-        (token,)
-    )
-    
-    conn.commit()
-    conn.close()
+    # Check if token has been used and update password
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        is_postgres = hasattr(conn, 'server_version')
+        placeholder = '%s' if is_postgres else '?'
+        table_name = 'password_reset_tokens' if is_postgres else 'reset_tokens'
+        
+        cursor.execute(f"""
+            SELECT * FROM {table_name} 
+            WHERE token = {placeholder} AND used = {placeholder}
+        """, (token, False if is_postgres else 0))
+        
+        token_record = cursor.fetchone()
+        
+        if not token_record:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Token has already been used or is invalid"
+            )
+        
+        # Update password
+        password_hash = hash_password(new_password)
+        
+        cursor.execute(f"""
+            UPDATE users SET password_hash = {placeholder} WHERE id = {placeholder}
+        """, (password_hash, user_id))
+        
+        # Mark token as used
+        cursor.execute(f"""
+            UPDATE {table_name} SET used = {placeholder} WHERE token = {placeholder}
+        """, (True if is_postgres else 1, token))
+        
+        conn.commit()
     
     return True
 

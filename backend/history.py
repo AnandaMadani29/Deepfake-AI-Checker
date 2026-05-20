@@ -1,19 +1,17 @@
 """
 Detection History Management
 Handles saving, retrieving, and deleting detection history
+Now with full PostgreSQL support via database.py
 """
 
 import os
+import json
 from datetime import datetime
 from typing import List, Optional, Dict
 from pydantic import BaseModel
 
 # Import database helper
 from backend.database import get_db_connection
-
-
-# Database path - use same path as auth.py (for backward compatibility)
-DB_PATH = os.getenv("DATABASE_PATH", "users.db")
 
 
 class DetectionHistoryCreate(BaseModel):
@@ -50,62 +48,9 @@ class DetectionHistory(BaseModel):
 
 
 def init_history_table():
-    """Initialize detection_history table"""
-    # This function is deprecated - tables are now created in database.py
-    # Kept for backward compatibility
+    """Initialize detection_history table - deprecated, kept for compatibility"""
+    print("ℹ️  init_history_table() called - tables already initialized by database.py")
     pass
-    
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS detection_history (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            image_name TEXT NOT NULL,
-            result_label TEXT NOT NULL,
-            prob_fake REAL NOT NULL,
-            model_name TEXT NOT NULL,
-            model_selection_reason TEXT,
-            image_size TEXT,
-            complexity_level TEXT,
-            image_data TEXT,
-            detailed_analysis TEXT,
-            explanation TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
-        )
-    """)
-    
-    # Migration: Add new columns if they don't exist
-    try:
-        cursor.execute("PRAGMA table_info(detection_history)")
-        columns = [row[1] for row in cursor.fetchall()]
-        
-        if 'detailed_analysis' not in columns:
-            cursor.execute("ALTER TABLE detection_history ADD COLUMN detailed_analysis TEXT")
-            print("✅ Added column: detailed_analysis")
-        
-        if 'explanation' not in columns:
-            cursor.execute("ALTER TABLE detection_history ADD COLUMN explanation TEXT")
-            print("✅ Added column: explanation")
-        
-        if 'ai_detection' not in columns:
-            cursor.execute("ALTER TABLE detection_history ADD COLUMN ai_detection TEXT")
-            print("✅ Added column: ai_detection")
-    except Exception as e:
-        print(f"⚠️  Migration error: {e}")
-    
-    # Create index for faster queries
-    cursor.execute("""
-        CREATE INDEX IF NOT EXISTS idx_detection_history_user_id 
-        ON detection_history(user_id)
-    """)
-    
-    cursor.execute("""
-        CREATE INDEX IF NOT EXISTS idx_detection_history_created_at 
-        ON detection_history(created_at DESC)
-    """)
-    
-    conn.commit()
-    conn.close()
 
 
 def save_detection_history(
@@ -122,35 +67,62 @@ def save_detection_history(
     Returns:
         ID of created history record
     """
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+    print(f"🔍 Saving detection history for user {user_id}")
     
-    import json
-    
-    cursor.execute("""
-        INSERT INTO detection_history (
-            user_id, image_name, result_label, prob_fake, model_name,
-            model_selection_reason, image_size, complexity_level, image_data,
-            detailed_analysis, explanation, ai_detection
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        user_id,
-        detection_data.image_name,
-        detection_data.result_label,
-        detection_data.prob_fake,
-        detection_data.model_name,
-        detection_data.model_selection_reason,
-        detection_data.image_size,
-        detection_data.complexity_level,
-        detection_data.image_data,
-        json.dumps(detection_data.detailed_analysis) if detection_data.detailed_analysis else None,
-        json.dumps(detection_data.explanation) if detection_data.explanation else None,
-        json.dumps(detection_data.ai_detection) if detection_data.ai_detection else None
-    ))
-    
-    history_id = cursor.lastrowid
-    conn.commit()
-    conn.close()
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        
+        # Check if PostgreSQL or SQLite
+        is_postgres = hasattr(conn, 'server_version')
+        
+        if is_postgres:
+            # PostgreSQL query
+            cursor.execute("""
+                INSERT INTO detection_history (
+                    user_id, image_name, result_label, prob_fake, model_name,
+                    model_selection_reason, image_size, complexity_level, image_data,
+                    detailed_analysis, explanation
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING id
+            """, (
+                user_id,
+                detection_data.image_name,
+                detection_data.result_label,
+                detection_data.prob_fake,
+                detection_data.model_name,
+                detection_data.model_selection_reason,
+                detection_data.image_size,
+                detection_data.complexity_level,
+                detection_data.image_data,
+                json.dumps(detection_data.detailed_analysis) if detection_data.detailed_analysis else None,
+                json.dumps(detection_data.explanation) if detection_data.explanation else None
+            ))
+            history_id = cursor.fetchone()[0]
+        else:
+            # SQLite query
+            cursor.execute("""
+                INSERT INTO detection_history (
+                    user_id, image_name, result_label, prob_fake, model_name,
+                    model_selection_reason, image_size, complexity_level, image_data,
+                    detailed_analysis, explanation
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                user_id,
+                detection_data.image_name,
+                detection_data.result_label,
+                detection_data.prob_fake,
+                detection_data.model_name,
+                detection_data.model_selection_reason,
+                detection_data.image_size,
+                detection_data.complexity_level,
+                detection_data.image_data,
+                json.dumps(detection_data.detailed_analysis) if detection_data.detailed_analysis else None,
+                json.dumps(detection_data.explanation) if detection_data.explanation else None
+            ))
+            history_id = cursor.lastrowid
+        
+        conn.commit()
+        print(f"✅ Detection history saved with ID: {history_id}")
     
     return history_id
 
@@ -171,53 +143,59 @@ def get_user_history(
     Returns:
         List of detection history records
     """
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    
-    cursor.execute("""
-        SELECT 
-            id, user_id, image_name, result_label, prob_fake, model_name,
-            model_selection_reason, image_size, complexity_level, image_data,
-            detailed_analysis, explanation, ai_detection,
-            datetime(created_at, 'localtime') as created_at
-        FROM detection_history
-        WHERE user_id = ?
-        ORDER BY created_at DESC
-        LIMIT ? OFFSET ?
-    """, (user_id, limit, offset))
-    
-    rows = cursor.fetchall()
-    conn.close()
-    
-    import json
-    results = []
-    for row in rows:
-        row_dict = dict(row)
-        # Parse JSON fields
-        if row_dict.get('detailed_analysis'):
-            try:
-                row_dict['detailed_analysis'] = json.loads(row_dict['detailed_analysis'])
-            except:
-                row_dict['detailed_analysis'] = None
-        if row_dict.get('explanation'):
-            try:
-                row_dict['explanation'] = json.loads(row_dict['explanation'])
-            except:
-                row_dict['explanation'] = None
-        if row_dict.get('ai_detection'):
-            try:
-                row_dict['ai_detection'] = json.loads(row_dict['ai_detection'])
-            except:
-                row_dict['ai_detection'] = None
-        results.append(row_dict)
-    
-    return results
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        
+        # Check if PostgreSQL or SQLite
+        is_postgres = hasattr(conn, 'server_version')
+        placeholder = '%s' if is_postgres else '?'
+        
+        cursor.execute(f"""
+            SELECT 
+                id, user_id, image_name, result_label, prob_fake, model_name,
+                model_selection_reason, image_size, complexity_level, image_data,
+                detailed_analysis, explanation, created_at
+            FROM detection_history
+            WHERE user_id = {placeholder}
+            ORDER BY created_at DESC
+            LIMIT {placeholder} OFFSET {placeholder}
+        """, (user_id, limit, offset))
+        
+        rows = cursor.fetchall()
+        columns = [desc[0] for desc in cursor.description]
+        
+        results = []
+        for row in rows:
+            record = dict(zip(columns, row))
+            
+            # Parse JSON fields
+            if record.get('detailed_analysis'):
+                try:
+                    record['detailed_analysis'] = json.loads(record['detailed_analysis'])
+                except:
+                    pass
+            
+            if record.get('explanation'):
+                try:
+                    record['explanation'] = json.loads(record['explanation'])
+                except:
+                    pass
+            
+            # Convert datetime to string
+            if record.get('created_at'):
+                if isinstance(record['created_at'], datetime):
+                    record['created_at'] = record['created_at'].isoformat()
+                else:
+                    record['created_at'] = str(record['created_at'])
+            
+            results.append(record)
+        
+        return results
 
 
 def get_history_count(user_id: int) -> int:
     """
-    Get total count of detection history for a user
+    Get total count of history records for a user
     
     Args:
         user_id: ID of the user
@@ -225,18 +203,20 @@ def get_history_count(user_id: int) -> int:
     Returns:
         Total count of history records
     """
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    cursor.execute("""
-        SELECT COUNT(*) FROM detection_history
-        WHERE user_id = ?
-    """, (user_id,))
-    
-    count = cursor.fetchone()[0]
-    conn.close()
-    
-    return count
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        
+        # Check if PostgreSQL or SQLite
+        is_postgres = hasattr(conn, 'server_version')
+        placeholder = '%s' if is_postgres else '?'
+        
+        cursor.execute(f"""
+            SELECT COUNT(*) FROM detection_history
+            WHERE user_id = {placeholder}
+        """, (user_id,))
+        
+        count = cursor.fetchone()[0]
+        return count
 
 
 def delete_history_record(history_id: int, user_id: int) -> bool:
@@ -250,20 +230,24 @@ def delete_history_record(history_id: int, user_id: int) -> bool:
     Returns:
         True if deleted, False if not found or unauthorized
     """
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    # Delete only if belongs to user
-    cursor.execute("""
-        DELETE FROM detection_history
-        WHERE id = ? AND user_id = ?
-    """, (history_id, user_id))
-    
-    deleted = cursor.rowcount > 0
-    conn.commit()
-    conn.close()
-    
-    return deleted
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        
+        # Check if PostgreSQL or SQLite
+        is_postgres = hasattr(conn, 'server_version')
+        placeholder = '%s' if is_postgres else '?'
+        
+        # Delete only if belongs to user
+        cursor.execute(f"""
+            DELETE FROM detection_history
+            WHERE id = {placeholder} AND user_id = {placeholder}
+        """, (history_id, user_id))
+        
+        conn.commit()
+        
+        # Check if any row was deleted
+        deleted = cursor.rowcount > 0
+        return deleted
 
 
 def delete_all_user_history(user_id: int) -> int:
@@ -276,19 +260,22 @@ def delete_all_user_history(user_id: int) -> int:
     Returns:
         Number of records deleted
     """
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    cursor.execute("""
-        DELETE FROM detection_history
-        WHERE user_id = ?
-    """, (user_id,))
-    
-    deleted_count = cursor.rowcount
-    conn.commit()
-    conn.close()
-    
-    return deleted_count
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        
+        # Check if PostgreSQL or SQLite
+        is_postgres = hasattr(conn, 'server_version')
+        placeholder = '%s' if is_postgres else '?'
+        
+        cursor.execute(f"""
+            DELETE FROM detection_history
+            WHERE user_id = {placeholder}
+        """, (user_id,))
+        
+        conn.commit()
+        
+        deleted_count = cursor.rowcount
+        return deleted_count
 
 
 def get_history_stats(user_id: int) -> Dict:
@@ -301,25 +288,26 @@ def get_history_stats(user_id: int) -> Dict:
     Returns:
         Dictionary with statistics
     """
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    cursor.execute("""
-        SELECT 
-            COUNT(*) as total_detections,
-            SUM(CASE WHEN result_label = 'Fake' THEN 1 ELSE 0 END) as fake_count,
-            SUM(CASE WHEN result_label = 'Real' THEN 1 ELSE 0 END) as real_count,
-            AVG(prob_fake) as avg_fake_probability
-        FROM detection_history
-        WHERE user_id = ?
-    """, (user_id,))
-    
-    row = cursor.fetchone()
-    conn.close()
-    
-    return {
-        "total_detections": row[0] or 0,
-        "fake_count": row[1] or 0,
-        "real_count": row[2] or 0,
-        "avg_fake_probability": round(row[3], 4) if row[3] else 0.0
-    }
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        
+        # Check if PostgreSQL or SQLite
+        is_postgres = hasattr(conn, 'server_version')
+        placeholder = '%s' if is_postgres else '?'
+        
+        cursor.execute(f"""
+            SELECT 
+                COUNT(*) as total_scans,
+                SUM(CASE WHEN result_label = 'Fake' THEN 1 ELSE 0 END) as fake_detected,
+                SUM(CASE WHEN result_label = 'Real' THEN 1 ELSE 0 END) as real_detected
+            FROM detection_history
+            WHERE user_id = {placeholder}
+        """, (user_id,))
+        
+        row = cursor.fetchone()
+        
+        return {
+            'total_scans': row[0] or 0,
+            'fake_detected': row[1] or 0,
+            'real_detected': row[2] or 0
+        }
