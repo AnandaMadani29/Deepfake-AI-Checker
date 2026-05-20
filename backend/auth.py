@@ -1,5 +1,4 @@
 import os
-import sqlite3
 from datetime import datetime, timedelta
 from typing import Optional
 import secrets
@@ -8,6 +7,9 @@ import bcrypt
 import jwt
 from fastapi import HTTPException, status
 from pydantic import BaseModel, EmailStr
+
+# Import database helper
+from backend.database import get_db_connection, execute_query
 
 # Import history table initialization
 try:
@@ -137,21 +139,21 @@ def decode_token(token: str) -> dict:
 
 def get_user_by_email(email: str) -> Optional[dict]:
     """Get user from database by email"""
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    
-    cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
-    row = cursor.fetchone()
-    conn.close()
-    
-    if row:
-        return dict(row)
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE email = %s" if hasattr(conn, 'server_version') else "SELECT * FROM users WHERE email = ?", (email,))
+        row = cursor.fetchone()
+        
+        if row:
+            columns = [desc[0] for desc in cursor.description]
+            return dict(zip(columns, row))
     return None
 
 
 def create_user(email: str, password: str, full_name: str) -> dict:
     """Create new user in database"""
+    print(f"🔍 Creating user: {email}")
+    
     # Check if user already exists
     if get_user_by_email(email):
         raise HTTPException(
@@ -163,17 +165,26 @@ def create_user(email: str, password: str, full_name: str) -> dict:
     password_hash = hash_password(password)
     
     # Insert user
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    cursor.execute(
-        "INSERT INTO users (email, password_hash, full_name) VALUES (?, ?, ?)",
-        (email, password_hash, full_name)
-    )
-    
-    user_id = cursor.lastrowid
-    conn.commit()
-    conn.close()
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        
+        # Use %s for PostgreSQL, ? for SQLite
+        is_postgres = hasattr(conn, 'server_version')
+        if is_postgres:
+            cursor.execute(
+                "INSERT INTO users (email, password_hash, full_name) VALUES (%s, %s, %s) RETURNING id",
+                (email, password_hash, full_name)
+            )
+            user_id = cursor.fetchone()[0]
+        else:
+            cursor.execute(
+                "INSERT INTO users (email, password_hash, full_name) VALUES (?, ?, ?)",
+                (email, password_hash, full_name)
+            )
+            user_id = cursor.lastrowid
+        
+        conn.commit()
+        print(f"✅ User created with ID: {user_id}")
     
     return {
         "id": user_id,
