@@ -144,12 +144,13 @@ def init_database():
                     image_name TEXT NOT NULL,
                     result_label VARCHAR(50) NOT NULL,
                     prob_fake REAL NOT NULL,
-                    prob_real REAL,
                     model_name VARCHAR(100) NOT NULL,
                     model_selection_reason TEXT,
                     image_size VARCHAR(50),
-                    processing_time REAL,
+                    complexity_level VARCHAR(50),
+                    image_data TEXT,
                     detailed_analysis TEXT,
+                    explanation TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
                 )
@@ -162,12 +163,13 @@ def init_database():
                     image_name TEXT NOT NULL,
                     result_label TEXT NOT NULL,
                     prob_fake REAL NOT NULL,
-                    prob_real REAL,
                     model_name TEXT NOT NULL,
                     model_selection_reason TEXT,
                     image_size TEXT,
-                    processing_time REAL,
+                    complexity_level TEXT,
+                    image_data TEXT,
                     detailed_analysis TEXT,
+                    explanation TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (user_id) REFERENCES users (id)
                 )
