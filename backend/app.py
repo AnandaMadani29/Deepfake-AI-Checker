@@ -156,7 +156,9 @@ def _startup() -> None:
 
 @app.get("/health")
 def health() -> dict:
-    """Health check endpoint with model info"""
+    """Health check endpoint with model and database info"""
+    from backend.database import USE_POSTGRES, DATABASE_URL, SQLITE_PATH
+    
     model_info = {
         "status": "ok",
         "device": str(DEVICE),
@@ -168,6 +170,17 @@ def health() -> dict:
         model_info["weights_path"] = _predictor._weights_path
         if os.path.exists(_predictor._weights_path):
             model_info["weights_size_mb"] = round(os.path.getsize(_predictor._weights_path) / (1024 * 1024), 2)
+    
+    # Add database info
+    model_info["database"] = {
+        "type": "PostgreSQL" if USE_POSTGRES else "SQLite",
+        "connected": USE_POSTGRES,
+        "url_configured": DATABASE_URL is not None,
+    }
+    
+    if not USE_POSTGRES:
+        model_info["database"]["sqlite_path"] = SQLITE_PATH
+        model_info["database"]["warning"] = "Using SQLite - data will be lost on redeploy"
     
     return model_info
 

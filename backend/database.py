@@ -11,6 +11,10 @@ from contextlib import contextmanager
 DATABASE_URL = os.getenv("DATABASE_URL")
 USE_POSTGRES = DATABASE_URL is not None
 
+print(f"🔍 DATABASE_URL exists: {USE_POSTGRES}")
+if USE_POSTGRES:
+    print(f"🔍 DATABASE_URL (masked): {DATABASE_URL[:20]}...{DATABASE_URL[-20:]}")
+
 if USE_POSTGRES:
     try:
         from sqlalchemy import create_engine, text
@@ -19,6 +23,7 @@ if USE_POSTGRES:
         # Fix Railway PostgreSQL URL (postgres:// -> postgresql://)
         if DATABASE_URL.startswith("postgres://"):
             DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+            print("🔧 Fixed DATABASE_URL format (postgres:// -> postgresql://)")
         
         # Create engine with connection pooling
         engine = create_engine(
@@ -26,9 +31,20 @@ if USE_POSTGRES:
             poolclass=NullPool,  # Disable pooling for serverless
             echo=False
         )
+        
+        # Test connection
+        with engine.connect() as conn:
+            result = conn.execute(text("SELECT 1"))
+            print("✅ PostgreSQL connection test successful")
+        
         print("✅ Using PostgreSQL database")
-    except ImportError:
-        print("⚠️  PostgreSQL libraries not installed, falling back to SQLite")
+    except ImportError as e:
+        print(f"⚠️  PostgreSQL libraries not installed: {e}")
+        print("⚠️  Falling back to SQLite")
+        USE_POSTGRES = False
+    except Exception as e:
+        print(f"❌ PostgreSQL connection failed: {e}")
+        print("⚠️  Falling back to SQLite")
         USE_POSTGRES = False
 
 # SQLite path for local development
