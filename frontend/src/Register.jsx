@@ -171,7 +171,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
       }}>
         {/* Title */}
         <h2 style={{ 
-          fontSize: isMobile ? 48 : 48, 
+          fontSize: isMobile ? 36 : 48, 
           fontWeight: 700, 
           margin: '0 0 12px 0', 
           color: '#fff', 

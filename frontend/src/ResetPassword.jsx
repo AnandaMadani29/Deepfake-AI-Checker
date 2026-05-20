@@ -317,7 +317,7 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
           borderRadius: 2
         }}>
           <h2 style={{ 
-            fontSize: isMobile ? 28 : 32, 
+            fontSize: isMobile ? 36 : 48, 
             fontWeight: 700, 
             marginBottom: 12,
             color: '#fff',

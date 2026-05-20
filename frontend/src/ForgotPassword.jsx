@@ -197,7 +197,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
         {step === 'request' && (
           <>
             <h2 style={{ 
-              fontSize: isMobile ? 48 : 48, 
+              fontSize: isMobile ? 36 : 48, 
               fontWeight: 700, 
               margin: '0 0 12px 0', 
               color: '#fff', 
@@ -220,7 +220,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                 <label style={{ 
                   display: 'block', 
                   marginBottom: 8, 
-                  fontSize: 13, 
+                  fontSize: 14, 
                   fontWeight: 500, 
                   color: '#ccc' 
                 }}>
@@ -234,12 +234,12 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                   placeholder="Email Address"
                   style={{
                     width: '100%',
-                    padding: '14px 16px',
+                    padding: '12px',
                     background: 'transparent',
                     border: '1px solid #444',
-                    borderRadius: 4,
+                    borderRadius: 2,
                     color: '#fff',
-                    fontSize: 14,
+                    fontSize: 12,
                     outline: 'none',
                     boxSizing: 'border-box'
                   }}
@@ -257,8 +257,8 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                   background: loading ? '#999' : '#FF4B25',
                   color: '#fff',
                   border: 'none',
-                  borderRadius: 4,
-                  fontSize: 18,
+                  borderRadius: 2,
+                  fontSize: 14,
                   fontWeight: 700,
                   cursor: loading ? 'not-allowed' : 'pointer',
                   marginBottom: 20
@@ -267,7 +267,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                 {loading ? 'Sending...' : 'Send Reset Link'}
               </button>
 
-              <div style={{ textAlign: 'center', fontSize: 15, color: '#ccc' }}>
+              <div style={{ textAlign: 'center', fontSize: 12, color: '#ccc' }}>
                 Remember Password?{' '}
                 <a
                   onClick={onNavigateToLogin}
@@ -303,7 +303,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
               />
             </div>
             <h2 style={{ 
-              fontSize: isMobile ? 48  : 48, 
+              fontSize: isMobile ? 36 : 48, 
               fontWeight: 700, 
               margin: '0 0 12px 0', 
               color: '#fff', 
@@ -330,8 +330,8 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                 background: '#FF4B25',
                 color: '#fff',
                 border: 'none',
-                borderRadius: 4,
-                fontSize: 16,
+                borderRadius: 2,
+                fontSize: 14,
                 fontWeight: 700,
                 cursor: 'pointer',
                 marginBottom: 20
@@ -352,7 +352,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                 background: 'transparent',
                 color: '#fff',
                 border: '1px solid #555',
-                borderRadius: 4,
+                borderRadius: 2,
                 fontSize: 14,
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -362,7 +362,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
               I have the reset token
             </button>
 
-            <div style={{ textAlign: 'center', fontSize: 15, color: '#ccc' }}>
+            <div style={{ textAlign: 'center', fontSize: 12, color: '#ccc' }}>
               Didn't receive email?{' '}
               <a
                 onClick={() => setStep('request')}
@@ -405,7 +405,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                 <label style={{ 
                   display: 'block', 
                   marginBottom: 8, 
-                  fontSize: 13, 
+                  fontSize: 14, 
                   fontWeight: 500, 
                   color: '#ccc' 
                 }}>
@@ -419,10 +419,10 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                   placeholder="Paste reset token"
                   style={{
                     width: '100%',
-                    padding: '14px 16px',
+                    padding: '12px',
                     background: 'transparent',
                     border: '1px solid #444',
-                    borderRadius: 4,
+                    borderRadius: 2,
                     color: '#fff',
                     fontSize: 12,
                     outline: 'none',
@@ -438,7 +438,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                 <label style={{ 
                   display: 'block', 
                   marginBottom: 8, 
-                  fontSize: 13, 
+                  fontSize: 14, 
                   fontWeight: 500, 
                   color: '#ccc' 
                 }}>
@@ -453,13 +453,13 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                     placeholder="Password"
                     style={{
                       width: '100%',
-                      padding: '14px 16px',
+                      padding: '12px',
                       paddingRight: '45px',
                       background: 'transparent',
                       border: '1px solid #444',
-                      borderRadius: 4,
+                      borderRadius: 2,
                       color: '#fff',
-                      fontSize: 14,
+                      fontSize: 12,
                       outline: 'none',
                       boxSizing: 'border-box'
                     }}
@@ -491,7 +491,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                 <label style={{ 
                   display: 'block', 
                   marginBottom: 8, 
-                  fontSize: 13, 
+                  fontSize: 14, 
                   fontWeight: 500, 
                   color: '#ccc' 
                 }}>
@@ -506,13 +506,13 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                     placeholder="Confirm Password"
                     style={{
                       width: '100%',
-                      padding: '14px 16px',
+                      padding: '12px',
                       paddingRight: '45px',
                       background: 'transparent',
                       border: '1px solid #444',
-                      borderRadius: 4,
+                      borderRadius: 2,
                       color: '#fff',
-                      fontSize: 14,
+                      fontSize: 12,
                       outline: 'none',
                       boxSizing: 'border-box'
                     }}
