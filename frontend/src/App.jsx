@@ -114,9 +114,9 @@ export default function App() {
     setCurrentPage('home')
   }
 
-  const handleRegisterSuccess = (userData) => {
-    setUser(userData)
-    setCurrentPage('home')
+  const handleRegisterSuccess = () => {
+    // After successful registration, redirect to login page
+    setCurrentPage('login')
   }
 
   const handleLogout = () => {
@@ -238,6 +238,7 @@ export default function App() {
         onNavigateToTerms={handleNavigateToTerms}
         onNavigateToPrivacy={handleNavigateToPrivacy}
         onLogin={() => setCurrentPage('login')}
+        onLogout={handleLogout}
         user={user}
         detectionResults={detectionResults}
         setDetectionResults={setDetectionResults}

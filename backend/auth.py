@@ -1,5 +1,4 @@
 import os
-import sqlite3
 from datetime import datetime, timedelta
 from typing import Optional
 import secrets
@@ -8,6 +7,9 @@ import bcrypt
 import jwt
 from fastapi import HTTPException, status
 from pydantic import BaseModel, EmailStr
+
+# Import database helper
+from backend.database import get_db_connection, execute_query
 
 # Import history table initialization
 try:
@@ -58,39 +60,17 @@ class TokenResponse(BaseModel):
 
 
 def init_db():
-    """Initialize SQLite database with users table"""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+    """Initialize database tables - now handled by database.py"""
+    # This function is deprecated - tables are now created in database.py
+    # Kept for backward compatibility
+    print("ℹ️  init_db() called - tables already initialized by database.py")
     
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE NOT NULL,
-            password_hash TEXT NOT NULL,
-            full_name TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            is_active BOOLEAN DEFAULT 1
-        )
-    """)
-    
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS reset_tokens (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            token TEXT UNIQUE NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            expires_at TIMESTAMP NOT NULL,
-            used BOOLEAN DEFAULT 0,
-            FOREIGN KEY (user_id) REFERENCES users (id)
-        )
-    """)
-    
-    conn.commit()
-    conn.close()
-    
-    # Initialize detection history table
+    # Initialize detection history table (if needed)
     if init_history_table:
-        init_history_table()
+        try:
+            init_history_table()
+        except Exception as e:
+            print(f"⚠️  History table initialization: {e}")
 
 
 def hash_password(password: str) -> str:
@@ -137,21 +117,21 @@ def decode_token(token: str) -> dict:
 
 def get_user_by_email(email: str) -> Optional[dict]:
     """Get user from database by email"""
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    
-    cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
-    row = cursor.fetchone()
-    conn.close()
-    
-    if row:
-        return dict(row)
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE email = %s" if hasattr(conn, 'server_version') else "SELECT * FROM users WHERE email = ?", (email,))
+        row = cursor.fetchone()
+        
+        if row:
+            columns = [desc[0] for desc in cursor.description]
+            return dict(zip(columns, row))
     return None
 
 
 def create_user(email: str, password: str, full_name: str) -> dict:
     """Create new user in database"""
+    print(f"🔍 Creating user: {email}")
+    
     # Check if user already exists
     if get_user_by_email(email):
         raise HTTPException(
@@ -163,17 +143,26 @@ def create_user(email: str, password: str, full_name: str) -> dict:
     password_hash = hash_password(password)
     
     # Insert user
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    cursor.execute(
-        "INSERT INTO users (email, password_hash, full_name) VALUES (?, ?, ?)",
-        (email, password_hash, full_name)
-    )
-    
-    user_id = cursor.lastrowid
-    conn.commit()
-    conn.close()
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        
+        # Use %s for PostgreSQL, ? for SQLite
+        is_postgres = hasattr(conn, 'server_version')
+        if is_postgres:
+            cursor.execute(
+                "INSERT INTO users (email, password_hash, full_name) VALUES (%s, %s, %s) RETURNING id",
+                (email, password_hash, full_name)
+            )
+            user_id = cursor.fetchone()[0]
+        else:
+            cursor.execute(
+                "INSERT INTO users (email, password_hash, full_name) VALUES (?, ?, ?)",
+                (email, password_hash, full_name)
+            )
+            user_id = cursor.lastrowid
+        
+        conn.commit()
+        print(f"✅ User created with ID: {user_id}")
     
     return {
         "id": user_id,
@@ -232,17 +221,24 @@ def create_reset_token(email: str) -> str:
     token = create_access_token(token_data, expires_delta=timedelta(hours=1))
     
     # Store token in database
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    expires_at = datetime.utcnow() + timedelta(hours=1)
-    cursor.execute(
-        "INSERT INTO reset_tokens (user_id, token, expires_at) VALUES (?, ?, ?)",
-        (user["id"], token, expires_at)
-    )
-    
-    conn.commit()
-    conn.close()
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        
+        expires_at = datetime.utcnow() + timedelta(hours=1)
+        is_postgres = hasattr(conn, 'server_version')
+        
+        if is_postgres:
+            cursor.execute(
+                "INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES (%s, %s, %s)",
+                (user["id"], token, expires_at)
+            )
+        else:
+            cursor.execute(
+                "INSERT INTO reset_tokens (user_id, token, expires_at) VALUES (?, ?, ?)",
+                (user["id"], token, expires_at)
+            )
+        
+        conn.commit()
     
     # Send reset email
     try:
@@ -278,40 +274,39 @@ def reset_password_with_token(token: str, new_password: str) -> bool:
             detail="Invalid or expired token"
         )
     
-    # Check if token has been used
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    cursor.execute(
-        "SELECT * FROM reset_tokens WHERE token = ? AND used = 0",
-        (token,)
-    )
-    
-    token_record = cursor.fetchone()
-    
-    if not token_record:
-        conn.close()
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Token has already been used or is invalid"
-        )
-    
-    # Update password
-    password_hash = hash_password(new_password)
-    
-    cursor.execute(
-        "UPDATE users SET password_hash = ? WHERE id = ?",
-        (password_hash, user_id)
-    )
-    
-    # Mark token as used
-    cursor.execute(
-        "UPDATE reset_tokens SET used = 1 WHERE token = ?",
-        (token,)
-    )
-    
-    conn.commit()
-    conn.close()
+    # Check if token has been used and update password
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        is_postgres = hasattr(conn, 'server_version')
+        placeholder = '%s' if is_postgres else '?'
+        table_name = 'password_reset_tokens' if is_postgres else 'reset_tokens'
+        
+        cursor.execute(f"""
+            SELECT * FROM {table_name} 
+            WHERE token = {placeholder} AND used = {placeholder}
+        """, (token, False if is_postgres else 0))
+        
+        token_record = cursor.fetchone()
+        
+        if not token_record:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Token has already been used or is invalid"
+            )
+        
+        # Update password
+        password_hash = hash_password(new_password)
+        
+        cursor.execute(f"""
+            UPDATE users SET password_hash = {placeholder} WHERE id = {placeholder}
+        """, (password_hash, user_id))
+        
+        # Mark token as used
+        cursor.execute(f"""
+            UPDATE {table_name} SET used = {placeholder} WHERE token = {placeholder}
+        """, (True if is_postgres else 1, token))
+        
+        conn.commit()
     
     return True
 

@@ -42,21 +42,14 @@ from backend.pdf_generator import generate_history_pdf
 
 
 def _resolve_weights_path(model_name: str) -> str:
+    """Resolve path to model weights file"""
+    # Check environment variable first
     env_path = os.getenv("DEEFAKE_WEIGHTS_PATH")
     if env_path:
         return env_path
     
-    # Try fold4 first, then fall back to simple name
-    fold4_path = f"outputs/models/{model_name}_fold4.pth"
-    simple_path = f"outputs/models/{model_name}.pth"
-    
-    if os.path.exists(fold4_path):
-        return fold4_path
-    elif os.path.exists(simple_path):
-        return simple_path
-    else:
-        # Return simple path as default (more likely to exist)
-        return simple_path
+    # Use simple model name directly
+    return f"outputs/models/{model_name}.pth"
 
 
 class Predictor:
@@ -163,7 +156,9 @@ def _startup() -> None:
 
 @app.get("/health")
 def health() -> dict:
-    """Health check endpoint with model info"""
+    """Health check endpoint with model and database info"""
+    from backend.database import USE_POSTGRES, DATABASE_URL, SQLITE_PATH
+    
     model_info = {
         "status": "ok",
         "device": str(DEVICE),
@@ -175,6 +170,17 @@ def health() -> dict:
         model_info["weights_path"] = _predictor._weights_path
         if os.path.exists(_predictor._weights_path):
             model_info["weights_size_mb"] = round(os.path.getsize(_predictor._weights_path) / (1024 * 1024), 2)
+    
+    # Add database info
+    model_info["database"] = {
+        "type": "PostgreSQL" if USE_POSTGRES else "SQLite",
+        "connected": USE_POSTGRES,
+        "url_configured": DATABASE_URL is not None,
+    }
+    
+    if not USE_POSTGRES:
+        model_info["database"]["sqlite_path"] = SQLITE_PATH
+        model_info["database"]["warning"] = "Using SQLite - data will be lost on redeploy"
     
     return model_info
 
@@ -704,8 +710,11 @@ async def predict(
                 result["history_id"] = history_id
             except Exception as e:
                 # Don't fail detection if history save fails
-                print(f"Failed to save history: {e}")
+                import traceback
+                print(f"❌ Failed to save history: {e}")
+                print(f"❌ Traceback: {traceback.format_exc()}")
                 result["saved_to_history"] = False
+                result["history_error"] = str(e)
         
         return result
     except Exception as e:

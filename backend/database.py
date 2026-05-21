@@ -11,6 +11,10 @@ from contextlib import contextmanager
 DATABASE_URL = os.getenv("DATABASE_URL")
 USE_POSTGRES = DATABASE_URL is not None
 
+print(f"🔍 DATABASE_URL exists: {USE_POSTGRES}")
+if USE_POSTGRES:
+    print(f"🔍 DATABASE_URL (masked): {DATABASE_URL[:20]}...{DATABASE_URL[-20:]}")
+
 if USE_POSTGRES:
     try:
         from sqlalchemy import create_engine, text
@@ -19,6 +23,7 @@ if USE_POSTGRES:
         # Fix Railway PostgreSQL URL (postgres:// -> postgresql://)
         if DATABASE_URL.startswith("postgres://"):
             DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+            print("🔧 Fixed DATABASE_URL format (postgres:// -> postgresql://)")
         
         # Create engine with connection pooling
         engine = create_engine(
@@ -26,9 +31,20 @@ if USE_POSTGRES:
             poolclass=NullPool,  # Disable pooling for serverless
             echo=False
         )
+        
+        # Test connection
+        with engine.connect() as conn:
+            result = conn.execute(text("SELECT 1"))
+            print("✅ PostgreSQL connection test successful")
+        
         print("✅ Using PostgreSQL database")
-    except ImportError:
-        print("⚠️  PostgreSQL libraries not installed, falling back to SQLite")
+    except ImportError as e:
+        print(f"⚠️  PostgreSQL libraries not installed: {e}")
+        print("⚠️  Falling back to SQLite")
+        USE_POSTGRES = False
+    except Exception as e:
+        print(f"❌ PostgreSQL connection failed: {e}")
+        print("⚠️  Falling back to SQLite")
         USE_POSTGRES = False
 
 # SQLite path for local development
@@ -128,12 +144,14 @@ def init_database():
                     image_name TEXT NOT NULL,
                     result_label VARCHAR(50) NOT NULL,
                     prob_fake REAL NOT NULL,
-                    prob_real REAL,
                     model_name VARCHAR(100) NOT NULL,
                     model_selection_reason TEXT,
                     image_size VARCHAR(50),
-                    processing_time REAL,
+                    complexity_level VARCHAR(50),
+                    image_data TEXT,
                     detailed_analysis TEXT,
+                    explanation TEXT,
+                    ai_detection TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
                 )
@@ -146,12 +164,14 @@ def init_database():
                     image_name TEXT NOT NULL,
                     result_label TEXT NOT NULL,
                     prob_fake REAL NOT NULL,
-                    prob_real REAL,
                     model_name TEXT NOT NULL,
                     model_selection_reason TEXT,
                     image_size TEXT,
-                    processing_time REAL,
+                    complexity_level TEXT,
+                    image_data TEXT,
                     detailed_analysis TEXT,
+                    explanation TEXT,
+                    ai_detection TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (user_id) REFERENCES users (id)
                 )
