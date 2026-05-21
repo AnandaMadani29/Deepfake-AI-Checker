@@ -6,45 +6,15 @@ Now with full PostgreSQL support via database.py
 
 import os
 import json
-from datetime import datetime
-from typing import List, Optional, Dict
-from pydantic import BaseModel
+from datetime import datetime, timezone, timedelta
+from typing import List, Dict, Optional
+from contextlib import contextmanager
 
-# Import database helper
 from backend.database import get_db_connection
+from backend.models import DetectionHistoryCreate
 
-
-class DetectionHistoryCreate(BaseModel):
-    """Schema for creating detection history"""
-    image_name: str
-    result_label: str
-    prob_fake: float
-    model_name: str
-    model_selection_reason: Optional[str] = None
-    image_size: Optional[str] = None
-    complexity_level: Optional[str] = None
-    image_data: Optional[str] = None
-    detailed_analysis: Optional[dict] = None
-    explanation: Optional[dict] = None
-    ai_detection: Optional[dict] = None
-
-
-class DetectionHistory(BaseModel):
-    """Schema for detection history response"""
-    id: int
-    user_id: int
-    image_name: str
-    result_label: str
-    prob_fake: float
-    model_name: str
-    model_selection_reason: Optional[str] = None
-    image_size: Optional[str] = None
-    complexity_level: Optional[str] = None
-    image_data: Optional[str] = None
-    detailed_analysis: Optional[dict] = None
-    explanation: Optional[dict] = None
-    ai_detection: Optional[dict] = None
-    created_at: str
+# Jakarta timezone (UTC+7)
+JAKARTA_TZ = timezone(timedelta(hours=7))
 
 
 def init_history_table():
@@ -190,10 +160,17 @@ def get_user_history(
                 except:
                     pass
             
-            # Convert datetime to string
+            # Convert datetime to Jakarta timezone (WIB/UTC+7)
             if record.get('created_at'):
                 if isinstance(record['created_at'], datetime):
-                    record['created_at'] = record['created_at'].isoformat()
+                    # If datetime is naive (no timezone), assume it's UTC
+                    if record['created_at'].tzinfo is None:
+                        utc_time = record['created_at'].replace(tzinfo=timezone.utc)
+                    else:
+                        utc_time = record['created_at']
+                    # Convert to Jakarta timezone
+                    jakarta_time = utc_time.astimezone(JAKARTA_TZ)
+                    record['created_at'] = jakarta_time.isoformat()
                 else:
                     record['created_at'] = str(record['created_at'])
             
