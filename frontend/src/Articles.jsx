@@ -310,7 +310,7 @@ export default function Articles({
         </div>
       </section>
 
-      {/* Featured Article */}
+      {/* Latest Post */}
       <section
         style={{
           padding: isMobile ? "40px 20px" : "60px 60px",
@@ -332,7 +332,7 @@ export default function Articles({
             style={{
               display: "grid",
               gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-              gap: 40,
+              gap: isMobile ? 6 : 40,
               background: "#0d0d0d",
               borderRadius: 2,
               overflow: "hidden",
