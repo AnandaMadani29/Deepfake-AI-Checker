@@ -710,8 +710,11 @@ async def predict(
                 result["history_id"] = history_id
             except Exception as e:
                 # Don't fail detection if history save fails
-                print(f"Failed to save history: {e}")
+                import traceback
+                print(f"❌ Failed to save history: {e}")
+                print(f"❌ Traceback: {traceback.format_exc()}")
                 result["saved_to_history"] = False
+                result["history_error"] = str(e)
         
         return result
     except Exception as e:

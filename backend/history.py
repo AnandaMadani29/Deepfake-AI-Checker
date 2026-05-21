@@ -74,6 +74,7 @@ def save_detection_history(
         
         # Check if PostgreSQL or SQLite
         is_postgres = hasattr(conn, 'server_version')
+        print(f"📊 Database type: {'PostgreSQL' if is_postgres else 'SQLite'}")
         
         if is_postgres:
             # PostgreSQL query
