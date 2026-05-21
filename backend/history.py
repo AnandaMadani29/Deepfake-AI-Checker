@@ -9,12 +9,27 @@ import json
 from datetime import datetime, timezone, timedelta
 from typing import List, Dict, Optional
 from contextlib import contextmanager
+from pydantic import BaseModel
 
 from backend.database import get_db_connection
-from backend.models import DetectionHistoryCreate
 
 # Jakarta timezone (UTC+7)
 JAKARTA_TZ = timezone(timedelta(hours=7))
+
+
+class DetectionHistoryCreate(BaseModel):
+    """Schema for creating detection history"""
+    image_name: str
+    result_label: str
+    prob_fake: float
+    model_name: str
+    model_selection_reason: Optional[str] = None
+    image_size: Optional[str] = None
+    complexity_level: Optional[str] = None
+    image_data: Optional[str] = None
+    detailed_analysis: Optional[dict] = None
+    explanation: Optional[dict] = None
+    ai_detection: Optional[dict] = None
 
 
 def init_history_table():
