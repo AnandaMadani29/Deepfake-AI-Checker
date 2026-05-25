@@ -885,116 +885,40 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
 
         {/* Pagination */}
         {!loading && filteredHistory.length > 0 && (
-          <div style={{ 
+          <div style={{
             marginTop: 40,
             display: 'flex',
-            flexDirection: 'column',
             alignItems: 'center',
-            gap: 16
+            gap: 12,
+            flexWrap: 'wrap',
+            justifyContent: 'center'
           }}>
-            {/* Rows per page + page info row */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 13, color: '#999', whiteSpace: 'nowrap' }}>Rows per page:</span>
-                <div style={{ position: 'relative' }}>
-                  <button
-                    onClick={() => setItemsPerPageDropdownOpen(!itemsPerPageDropdownOpen)}
-                    style={{
-                      padding: '6px 12px',
-                      background: '#1a1a1a',
-                      color: '#fff',
-                      border: '1px solid #2a2a2a',
-                      borderRadius: 4,
-                      cursor: 'pointer',
-                      fontSize: 13,
-                      fontWeight: 600,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 6,
-                      minWidth: 70,
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    {itemsPerPage}
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" style={{ transform: itemsPerPageDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
-                      <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </button>
-                  {itemsPerPageDropdownOpen && (
-                    <div style={{
-                      position: 'absolute',
-                      bottom: '100%',
-                      left: 0,
-                      marginBottom: 4,
-                      background: '#0d0d0d',
-                      border: '1px solid #2a2a2a',
-                      borderRadius: 4,
-                      overflow: 'hidden',
-                      zIndex: 10,
-                      minWidth: 70
-                    }}>
-                      {[5, 10, 20, 50, 100].map(num => (
-                        <button
-                          key={num}
-                          onClick={() => {
-                            setItemsPerPage(num)
-                            setItemsPerPageDropdownOpen(false)
-                            setCurrentPage(1)
-                          }}
-                          onMouseEnter={e => { if (itemsPerPage !== num) e.currentTarget.style.background = '#2a2a2a' }}
-                          onMouseLeave={e => { if (itemsPerPage !== num) e.currentTarget.style.background = 'transparent' }}
-                          style={{
-                            width: '100%',
-                            padding: '8px 14px',
-                            background: itemsPerPage === num ? '#E94E1B' : 'transparent',
-                            color: '#fff',
-                            border: 'none',
-                            cursor: 'pointer',
-                            fontSize: 13,
-                            fontWeight: itemsPerPage === num ? 700 : 400,
-                            textAlign: 'center'
-                          }}
-                        >
-                          {num}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <span style={{ fontSize: 13, color: '#666' }}>|</span>
-              <span style={{ fontSize: 13, color: '#999', whiteSpace: 'nowrap' }}>
-                Showing {Math.min((currentPage - 1) * itemsPerPage + 1, filteredHistory.length)}–{Math.min(currentPage * itemsPerPage, filteredHistory.length)} of {filteredHistory.length} results
-              </span>
-            </div>
-
-            {/* Prev / Page buttons / Next row */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
+            {/* Previous */}
             <button
               onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
               disabled={currentPage === 1}
               style={{
-                background: currentPage === 1 ? '#1a1a1a' : '#FF4B25',
+                background: currentPage === 1 ? '#1a1a1a' : '#2a2a2a',
                 color: currentPage === 1 ? '#666' : '#fff',
                 border: 'none',
-                padding: '10px 20px',
-                borderRadius: 6,
+                padding: '10px 16px',
+                borderRadius: 4,
                 cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: 600,
-                opacity: currentPage === 1 ? 0.5 : 1
+                opacity: currentPage === 1 ? 0.5 : 1,
+                whiteSpace: 'nowrap'
               }}
             >
               Previous
             </button>
 
+            {/* Page number buttons */}
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => {
-                // Show first page, last page, current page, and pages around current
-                const showPage = page === 1 || 
-                                page === totalPages || 
+                const showPage = page === 1 ||
+                                page === totalPages ||
                                 (page >= currentPage - 1 && page <= currentPage + 1)
-                
                 if (!showPage && page === currentPage - 2) {
                   return <span key={page} style={{ color: '#666' }}>...</span>
                 }
@@ -1002,19 +926,18 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                   return <span key={page} style={{ color: '#666' }}>...</span>
                 }
                 if (!showPage) return null
-
                 return (
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
                     style={{
-                      background: currentPage === page ? '#FF4B25' : '#1a1a1a',
+                      background: currentPage === page ? '#E94E1B' : '#2a2a2a',
                       color: '#fff',
-                      border: currentPage === page ? 'none' : '1px solid #2a2a2a',
-                      padding: '8px 14px',
-                      borderRadius: 6,
+                      border: 'none',
+                      padding: '10px 14px',
+                      borderRadius: 4,
                       cursor: 'pointer',
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: currentPage === page ? 600 : 400,
                       minWidth: 40
                     }}
@@ -1025,25 +948,96 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
               })}
             </div>
 
+            {/* Next */}
             <button
               onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
               disabled={currentPage === totalPages}
               style={{
-                background: currentPage === totalPages ? '#1a1a1a' : '#FF4B25',
+                background: currentPage === totalPages ? '#1a1a1a' : '#2a2a2a',
                 color: currentPage === totalPages ? '#666' : '#fff',
                 border: 'none',
-                padding: '10px 20px',
-                borderRadius: 6,
+                padding: '10px 16px',
+                borderRadius: 4,
                 cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: 600,
-                opacity: currentPage === totalPages ? 0.5 : 1
+                opacity: currentPage === totalPages ? 0.5 : 1,
+                whiteSpace: 'nowrap'
               }}
             >
               Next
             </button>
 
+            {/* Items per page dropdown */}
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setItemsPerPageDropdownOpen(!itemsPerPageDropdownOpen)}
+                style={{
+                  padding: '10px 16px',
+                  background: '#2a2a2a',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 4,
+                  cursor: 'pointer',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                {itemsPerPage}
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" style={{ transform: itemsPerPageDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
+                  <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              {itemsPerPageDropdownOpen && (
+                <div style={{
+                  position: 'absolute',
+                  bottom: '100%',
+                  left: 0,
+                  marginBottom: 4,
+                  background: '#0d0d0d',
+                  border: '1px solid #2a2a2a',
+                  borderRadius: 4,
+                  overflow: 'hidden',
+                  zIndex: 10,
+                  minWidth: 70
+                }}>
+                  {[5, 10, 20, 50, 100].map(num => (
+                    <button
+                      key={num}
+                      onClick={() => {
+                        setItemsPerPage(num)
+                        setItemsPerPageDropdownOpen(false)
+                        setCurrentPage(1)
+                      }}
+                      onMouseEnter={e => { if (itemsPerPage !== num) e.currentTarget.style.background = '#2a2a2a' }}
+                      onMouseLeave={e => { if (itemsPerPage !== num) e.currentTarget.style.background = 'transparent' }}
+                      style={{
+                        width: '100%',
+                        padding: '8px 14px',
+                        background: itemsPerPage === num ? '#E94E1B' : 'transparent',
+                        color: '#fff',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontSize: 13,
+                        fontWeight: itemsPerPage === num ? 700 : 400,
+                        textAlign: 'center'
+                      }}
+                    >
+                      {num}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
+
+            {/* Showing X–Y of Z */}
+            <span style={{ fontSize: 13, color: '#999', whiteSpace: 'nowrap' }}>
+              Showing {Math.min((currentPage - 1) * itemsPerPage + 1, filteredHistory.length)}–{Math.min(currentPage * itemsPerPage, filteredHistory.length)} of {filteredHistory.length} results
+            </span>
           </div>
         )}
       </div>

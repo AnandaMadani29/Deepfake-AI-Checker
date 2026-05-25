@@ -234,7 +234,7 @@ def create_reset_token(email: str) -> str:
             )
         else:
             cursor.execute(
-                "INSERT INTO reset_tokens (user_id, token, expires_at) VALUES (?, ?, ?)",
+                "INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES (?, ?, ?)",
                 (user["id"], token, expires_at)
             )
         
@@ -279,7 +279,7 @@ def reset_password_with_token(token: str, new_password: str) -> bool:
         cursor = conn.cursor()
         is_postgres = hasattr(conn, 'server_version')
         placeholder = '%s' if is_postgres else '?'
-        table_name = 'password_reset_tokens' if is_postgres else 'reset_tokens'
+        table_name = 'password_reset_tokens'
         
         cursor.execute(f"""
             SELECT * FROM {table_name} 
