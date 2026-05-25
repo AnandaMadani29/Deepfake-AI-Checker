@@ -451,7 +451,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
               border: '1px solid #2a2a2a' 
             }}>
               <div style={{ fontSize: isMobile ? 12 : 14, color: '#999', marginBottom: 8 }}>Fake Detected</div>
-              <div style={{ fontSize: isMobile ? 24 : 32, fontWeight: 700, color: '#f87171' }}>{stats.fake_detected}</div>
+              <div style={{ fontSize: isMobile ? 24 : 32, fontWeight: 700, color: '#FF4141' }}>{stats.fake_detected}</div>
             </div>
             <div style={{ 
               background: '#0d0d0d', 
@@ -460,7 +460,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
               border: '1px solid #2a2a2a' 
             }}>
               <div style={{ fontSize: isMobile ? 12 : 14, color: '#999', marginBottom: 8 }}>Real Detected</div>
-              <div style={{ fontSize: isMobile ? 24 : 32, fontWeight: 700, color: '#4ade80' }}>{stats.real_detected}</div>
+              <div style={{ fontSize: isMobile ? 24 : 32, fontWeight: 700, color: '#76FF5E' }}>{stats.real_detected}</div>
             </div>
           </div>
         )}
@@ -898,7 +898,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
               onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
               disabled={currentPage === 1}
               style={{
-                background: currentPage === 1 ? '#1a1a1a' : '#2a2a2a',
+                background: currentPage === 1 ? '#1a1a1a' : '#E94E1B',
                 color: currentPage === 1 ? '#666' : '#fff',
                 border: 'none',
                 padding: '10px 16px',
@@ -931,9 +931,9 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                     key={page}
                     onClick={() => setCurrentPage(page)}
                     style={{
-                      background: currentPage === page ? '#E94E1B' : '#2a2a2a',
+                      background: currentPage === page ? '#E94E1B' : 'transparent',
                       color: '#fff',
-                      border: 'none',
+                      border: currentPage === page ? 'none' : '1px solid #2a2a2a',
                       padding: '10px 14px',
                       borderRadius: 4,
                       cursor: 'pointer',
@@ -953,7 +953,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
               onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
               disabled={currentPage === totalPages}
               style={{
-                background: currentPage === totalPages ? '#1a1a1a' : '#2a2a2a',
+                background: currentPage === totalPages ? '#1a1a1a' : '#E94E1B',
                 color: currentPage === totalPages ? '#666' : '#fff',
                 border: 'none',
                 padding: '10px 16px',
