@@ -322,9 +322,12 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
                 )}
               </button>
             </div>
-            <div style={{ marginTop: 8, fontSize: 12, color: '#999' }}>
-              Password must be at least 8 characters.
-            </div>
+            {/* Password hint - only shows when typing and less than 8 chars */}
+            {formData.password.length > 0 && formData.password.length < 8 && (
+              <div style={{ marginTop: 8, fontSize: 12, color: '#FF4141' }}>
+                Password must be at least 8 characters.
+              </div>
+            )}
           </div>
 
           {/* Confirm Password Field */}
@@ -394,7 +397,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
           </div>
 
           {/* Terms Checkbox */}
-          <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
             <input
               type="checkbox"
               checked={agreedToTerms}
@@ -426,6 +429,7 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
               border: 'none',
               borderRadius: 2,
               fontSize: 16,
+              marginBottom: 20,
               fontWeight: 700,
               cursor: loading ? 'not-allowed' : 'pointer',
               transform: 'scale(1)'
@@ -498,7 +502,6 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             By creating an account, you agree to our{' '}
             <a
               onClick={() => {
-                // Navigate to terms page
                 window.location.hash = '#terms'
                 window.location.reload()
               }}
@@ -513,7 +516,6 @@ export default function Register({ onNavigateToHome, onNavigateToLogin, onRegist
             {' '}and{' '}
             <a
               onClick={() => {
-                // Navigate to privacy page
                 window.location.hash = '#privacy'
                 window.location.reload()
               }}

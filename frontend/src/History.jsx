@@ -368,7 +368,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
         <div style={{ textAlign: 'center' }}>
           <h2 style={{ fontSize: 32, marginBottom: 16 }}>Please Login</h2>
           <p style={{ color: '#999', marginBottom: 24 }}>You need to be logged in to view detection history</p>
-          <button onClick={onNavigateToHome} style={{ background: '#E94E1B', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: 4, cursor: 'pointer', fontSize: 16 }}>
+          <button onClick={onNavigateToHome} style={{ background: '#FF4B25', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: 4, cursor: 'pointer', fontSize: 16 }}>
             Go to Home
           </button>
         </div>
@@ -553,7 +553,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                     style={{
                       width: '100%',
                       padding: '10px 16px',
-                      background: filterResult === 'all' ? '#E94E1B' : 'transparent',
+                      background: filterResult === 'all' ? '#FF4B25' : 'transparent',
                       color: '#fff',
                       border: 'none',
                       cursor: 'pointer',
@@ -572,7 +572,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                     style={{
                       width: '100%',
                       padding: '10px 16px',
-                      background: filterResult === 'fake' ? '#f87171' : 'transparent',
+                      background: filterResult === 'fake' ? '#FF4141' : 'transparent',
                       color: '#fff',
                       border: 'none',
                       cursor: 'pointer',
@@ -591,7 +591,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                     style={{
                       width: '100%',
                       padding: '10px 16px',
-                      background: filterResult === 'real' ? '#4ade80' : 'transparent',
+                      background: filterResult === 'real' ? '#76FF5E' : 'transparent',
                       color: '#fff',
                       border: 'none',
                       cursor: 'pointer',
@@ -633,7 +633,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
               <button 
                 onClick={handleDownloadHistory}
                 style={{ 
-                  background: '#E94E1B', 
+                  background: '#FF4B25', 
                   color: '#fff', 
                   border: 'none', 
                   padding: '10px 20px', 
@@ -728,12 +728,12 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
           </div>
         ) : error ? (
           <div style={{ textAlign: 'center', padding: 60 }}>
-            <div style={{ fontSize: 18, color: '#f87171' }}>{error}</div>
+            <div style={{ fontSize: 18, color: '#FF4141' }}>{error}</div>
           </div>
         ) : filteredHistory.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 60, background: '#0d0d0d', borderRadius: 8, border: '1px solid #2a2a2a' }}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
-              <HiClock size={64} color="#E94E1B" />
+              <HiClock size={64} color="#FF4B25" />
             </div>
             <div style={{ fontSize: 24, fontWeight: 600, marginBottom: 8 }}>
               {history.length === 0 ? 'No History Yet' : 'No Results Found'}
@@ -742,7 +742,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
               {history.length === 0 ? 'Start detecting images to build your history' : 'Try adjusting your search or filter'}
             </div>
             {history.length === 0 && (
-              <button onClick={onNavigateToDetection} style={{ background: '#E94E1B', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: 4, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
+              <button onClick={onNavigateToDetection} style={{ background: '#FF4B25', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: 4, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
                 Start Detection
               </button>
             )}
@@ -790,7 +790,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                         width: 20,
                         height: 20,
                         cursor: 'pointer',
-                        accentColor: '#E94E1B',
+                        accentColor: '#FF4B25',
                         opacity: 0.5
                       }}
                     />
@@ -829,7 +829,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                     fontSize: 12, 
                     fontWeight: 600,
                     background: item.result_label === 'Fake' ? '#dc262620' : '#4ade8020',
-                    color: item.result_label === 'Fake' ? '#f87171' : '#4ade80'
+                    color: item.result_label === 'Fake' ? '#FF4141' : '#76FF5E'
                   }}>
                     {item.result_label}
                   </div>
@@ -847,11 +847,11 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                       <span style={{ color: '#666' }}>Real:</span>
-                      <span style={{ color: '#4ade80', fontWeight: 600 }}>{((1 - item.prob_fake) * 100).toFixed(1)}%</span>
+                      <span style={{ color: '#76FF5E', fontWeight: 600 }}>{((1 - item.prob_fake) * 100).toFixed(1)}%</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                       <span style={{ color: '#666' }}>Fake:</span>
-                      <span style={{ color: '#f87171', fontWeight: 600 }}>{(item.prob_fake * 100).toFixed(1)}%</span>
+                      <span style={{ color: '#FF4141', fontWeight: 600 }}>{(item.prob_fake * 100).toFixed(1)}%</span>
                     </div>
                   </div>
                   
@@ -975,7 +975,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
               onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
               disabled={currentPage === 1}
               style={{
-                background: currentPage === 1 ? '#1a1a1a' : '#E94E1B',
+                background: currentPage === 1 ? '#1a1a1a' : '#FF4B25',
                 color: currentPage === 1 ? '#666' : '#fff',
                 border: 'none',
                 padding: '10px 20px',
@@ -1009,7 +1009,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                     key={page}
                     onClick={() => setCurrentPage(page)}
                     style={{
-                      background: currentPage === page ? '#E94E1B' : '#1a1a1a',
+                      background: currentPage === page ? '#FF4B25' : '#1a1a1a',
                       color: '#fff',
                       border: currentPage === page ? 'none' : '1px solid #2a2a2a',
                       padding: '8px 14px',
@@ -1030,7 +1030,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
               onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
               disabled={currentPage === totalPages}
               style={{
-                background: currentPage === totalPages ? '#1a1a1a' : '#E94E1B',
+                background: currentPage === totalPages ? '#1a1a1a' : '#FF4B25',
                 color: currentPage === totalPages ? '#666' : '#fff',
                 border: 'none',
                 padding: '10px 20px',
