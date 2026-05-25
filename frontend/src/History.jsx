@@ -790,8 +790,7 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
                         width: 20,
                         height: 20,
                         cursor: 'pointer',
-                        accentColor: '#FF4B25',
-                        opacity: 0.5
+                        accentColor: '#E94E1B'
                       }}
                     />
                   </div>
