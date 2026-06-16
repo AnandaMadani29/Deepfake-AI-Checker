@@ -734,14 +734,14 @@ export default function Detection({
                 </div>
               </div>
               <div className="animate-fade-in-up" style={{ flex: 1, animationDelay: "0.2s" }}>
-                <div className="animate-fade-in-up" style={{ background: "#2a1120", border: "1px solid #5b1a2e", borderRadius: 2, padding: 20, marginBottom: 16, animationDelay: "0.3s" }}>
-                  <h3 style={{ margin: "0 0 12px 0", fontSize: 18, fontWeight: 700, color: "#f87171" }}>Detection Error</h3>
-                  <p style={{ fontSize: 13, lineHeight: 1.6, color: "#fecaca", margin: "0 0 16px 0", textAlign: "justify" }}>
+                <div className="animate-fade-in-up" style={{ background: "#2a1111", border: "1px solid #FF4141", borderRadius: 2, padding: 20, marginBottom: 16, animationDelay: "0.3s" }}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: 18, fontWeight: 700, color: "#FF4141" }}>Detection Error</h3>
+                  <p style={{ fontSize: 13, lineHeight: 1.6, color: "#ffffff", margin: "0 0 16px 0", textAlign: "justify" }}>
                     We encountered an error while analyzing this image. This could be due to various reasons such as server issues, invalid image format, or network problems. Please try uploading the image again or contact support if the issue persists.
                   </p>
                   <div style={{ marginBottom: 16 }}>
                     <div style={{ background: "#1a1a1a", borderRadius: 2, padding: 12, border: "1px solid #3a1a2e" }}>
-                      <div style={{ fontSize: 13, color: "#f87171", wordBreak: "break-word" }}>{results[0].error}</div>
+                      <div style={{ fontSize: 13, color: "#FF4141", wordBreak: "break-word" }}>{results[0].error}</div>
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 12, justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
