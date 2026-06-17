@@ -1,21 +1,6 @@
 import React, { useMemo, useState, useRef } from "react";
 import toast from "react-hot-toast";
-import {
-  FaUpload,
-  FaCheckCircle,
-  FaTimesCircle,
-  FaRobot,
-  FaExclamationTriangle,
-  FaInfoCircle,
-  FaChevronDown,
-  FaChevronUp,
-  FaDownload,
-  FaBars,
-  FaTimes,
-} from "react-icons/fa";
-import { HiPhotograph, HiLightningBolt } from "react-icons/hi";
-import { MdDelete, MdWarning, MdInfo } from "react-icons/md";
-import { BiAnalyse } from "react-icons/bi";
+import { FaTimes } from "react-icons/fa";
 import Logo from "./components/Logo";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";

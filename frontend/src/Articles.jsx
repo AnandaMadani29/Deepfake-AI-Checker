@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { FaArrowRight, FaClock, FaUser, FaBars, FaTimes } from "react-icons/fa";
+import { useState, useEffect, useRef } from "react";
+import { FaArrowRight, FaClock, FaUser, FaTimes } from "react-icons/fa";
 import { HiSearch } from "react-icons/hi";
 import Logo from "./components/Logo";
 import { articles, categories, getArticlesByCategory } from "./articlesData";

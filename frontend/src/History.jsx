@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
-import { HiClock, HiTrash, HiChartBar, HiDownload, HiSearch, HiArrowLeft } from 'react-icons/hi'
+import { HiClock, HiDownload, HiSearch, HiArrowLeft } from 'react-icons/hi'
 import Logo from './components/Logo'
 import { MdDelete, MdHistory } from 'react-icons/md'
-import { FaCheckCircle, FaTimesCircle, FaBars, FaTimes } from 'react-icons/fa'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 

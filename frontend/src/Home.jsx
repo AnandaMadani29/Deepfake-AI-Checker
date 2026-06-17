@@ -4,16 +4,9 @@ import {
   FaRobot,
   FaPlus,
   FaMinus,
-  FaBars,
   FaTimes,
 } from "react-icons/fa";
-import {
-  HiUpload,
-  HiPhotograph,
-  HiDocumentText,
-  HiClock,
-} from "react-icons/hi";
-import { BiAnalyse } from "react-icons/bi";
+
 import { MdSecurity } from "react-icons/md";
 import Logo from "./components/Logo";
 import Footer from "./components/Footer";

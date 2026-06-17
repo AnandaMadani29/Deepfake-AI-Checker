@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaClock, FaUser, FaShareAlt, FaArrowRight } from 'react-icons/fa'
+import { FaClock, FaShareAlt, FaArrowRight } from 'react-icons/fa'
 import { HiArrowLeft } from 'react-icons/hi'
 import { getArticleById, getRelatedArticles } from './articlesData'
 import Navbar from './components/Navbar'
