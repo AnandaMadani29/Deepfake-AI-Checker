@@ -1,379 +1,194 @@
 # Fact.it - AI-Powered Deepfake Image Detection
 
 ![Fact.it Banner](https://img.shields.io/badge/AI-Deepfake%20Detection-orange?style=for-the-badge)
-![Python](https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python)
+![Python](https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python)
 ![React](https://img.shields.io/badge/React-18+-61DAFB?style=for-the-badge&logo=react)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=for-the-badge&logo=fastapi)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?style=for-the-badge&logo=pytorch)
 
-**Fact.it** is an advanced AI-powered web application designed to detect deepfake images using state-of-the-art deep learning models. With an intuitive interface and powerful backend, users can upload up to 10 images simultaneously and receive detailed authenticity analysis.
+**Fact.it** is an AI-powered web application for detecting deepfake images using Convolutional Neural Network (CNN) deep learning models. Users can upload images and receive detailed authenticity analysis including classification label, confidence score, and a breakdown of 7 visual manipulation indicators.
 
 ---
 
 ## 🌟 Features
 
-### Core Functionality
-- ✅ **AI-Powered Detection** - Uses EfficientNet-B0 deep learning model for accurate deepfake detection
-- ✅ **Batch Processing** - Upload and analyze up to 10 images simultaneously
-- ✅ **Real-time Results** - Get instant feedback with confidence scores
-- ✅ **Detailed Analytics** - View comprehensive results including:
-  - Classification (Real/Fake)
-  - Confidence scores for both categories
-  - Model information
-  - Decision threshold
-  - Processing timestamp
-
-### User Experience
-- 🎨 **Modern UI** - Dark theme with orange accent (#E94E1B)
-- 📱 **Responsive Design** - Works seamlessly across devices
-- 🖱️ **Drag & Drop** - Easy file upload with drag-and-drop support
-- 📊 **Summary Statistics** - Batch results overview with visual statistics
-- 🔄 **Smooth Navigation** - Seamless routing between Home and Detection pages
-- ℹ️ **User Education** - Built-in explanations for technical concepts
+- ✅ **AI-Powered Detection** — ResNet-50 model (96.67% accuracy, 100% recall on fake images)
+- ✅ **Batch Processing** — Upload and analyze multiple images simultaneously
+- ✅ **Detailed Breakdown** — 7 visual indicators (Skin Texture, Eye Reflection, Edge Sharpness, Color Distribution, Lighting Consistency, Hair Detail, AI Pattern) with severity labels: Normal / Warning / Critical
+- ✅ **Confidence Score** — Probability of fake with natural language explanation
+- ✅ **PDF Export** — Download detection report as PDF
+- ✅ **Detection History** — Saved per-user with search, filter, and delete
+- ✅ **Authentication** — Email/password + Google OAuth + password reset via email
+- ✅ **Articles** — Educational content about deepfakes and digital literacy
+- 📱 **Responsive Design** — Works on desktop, tablet, and mobile
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-Deepfake AI Checker/
-├── backend/                 # FastAPI backend
-│   ├── app.py              # Main API application
-│   ├── requirements.txt    # Backend dependencies
-│   └── run.sh             # Backend startup script
-├── frontend/               # React frontend
-│   ├── src/
-│   │   ├── App.jsx        # Main app with routing
-│   │   ├── Home.jsx       # Homepage component
-│   │   ├── Detection.jsx  # Detection page component
-│   │   └── main.jsx       # React entry point
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.js
-├── src/                    # ML model source
-│   ├── model.py           # Model architecture
-│   ├── dataset.py         # Data preprocessing
-│   ├── train.py           # Training pipeline
-│   ├── evaluate.py        # Evaluation utilities
-│   └── config.py          # Configuration
+Deepfake-AI-Checker/
+├── backend/                      # FastAPI backend
+│   ├── app.py                   # Main API & endpoints
+│   ├── auth.py                  # Authentication & JWT
+│   ├── database.py              # PostgreSQL/SQLite handler
+│   ├── history.py               # Detection history CRUD
+│   ├── face_validator.py        # OpenCV face validation
+│   ├── email_service.py         # SMTP email service
+│   ├── pdf_generator.py         # PDF export
+│   ├── explanation_generator.py # Natural language explanation
+│   ├── metadata_analyzer.py     # EXIF metadata analysis
+│   ├── ai_generated_detector.py # AI pattern detection
+│   ├── real_breakdown_analyzer.py # 7-indicator breakdown
+│   ├── adaptive_selector.py     # Adaptive model selection
+│   ├── requirements-railway.txt # Production dependencies
+│   └── .env.example             # Environment variable template
+├── frontend/                     # React.js frontend (Vite)
+├── src/                          # ML training source
+│   ├── model.py                 # CNN architecture definitions
+│   ├── dataset.py               # Dataset & augmentation
+│   ├── train.py                 # Training pipeline
+│   ├── evaluate.py              # Evaluation utilities
+│   └── config.py                # Training configuration
 ├── outputs/
-│   └── models/            # Trained model weights
-│       └── best_efficientnet_b0.pth
-└── requirements.txt       # Main dependencies
+│   └── models/                  # Trained model weights (.pth)
+├── Dockerfile                    # Railway deployment
+├── start.py                      # Startup script (Railway)
+├── Procfile                      # Process definition
+├── main_train_kfold.py           # K-Fold training script
+└── requirements.txt              # Root dependencies
 ```
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Local Development
 
 ### Prerequisites
 
-- **Python** 3.8 or higher
-- **Node.js** 16 or higher
-- **npm** or **yarn**
-- **pip3** for Python package management
+- **Python** 3.9+
+- **Node.js** 16+
+- **npm**
 
-### Installation
+### 1. Clone & Install
 
-#### 1. Clone the Repository
 ```bash
 git clone https://github.com/yourusername/deepfake-ai-checker.git
 cd deepfake-ai-checker
-```
 
-#### 2. Install Python Dependencies
-```bash
-# Install main dependencies
-pip3 install -r requirements.txt
-
-# Install backend dependencies
-cd backend
-pip3 install -r requirements.txt
-cd ..
-```
-
-#### 3. Install Frontend Dependencies
-```bash
-cd frontend
-npm install
-cd ..
-```
-
-### Running the Application
-
-#### Option 1: Run Both Services Separately
-
-**Terminal 1 - Backend:**
-```bash
-cd backend
-chmod +x run.sh
-./run.sh
-```
-Backend will run on `http://localhost:8000`
-
-**Terminal 2 - Frontend:**
-```bash
-cd frontend
-npm run dev
-```
-Frontend will run on `http://localhost:5173`
-
-#### Option 2: Using Python Virtual Environment (Recommended)
-
-**Backend:**
-```bash
-cd backend
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Install Python dependencies
 pip install -r requirements.txt
-uvicorn app:app --reload --host 0.0.0.0 --port 8000
+pip install -r backend/requirements.txt
+
+# Install frontend dependencies
+cd frontend && npm install && cd ..
 ```
 
-**Frontend:**
+### 2. Configure Environment
+
+```bash
+cp backend/.env.example backend/.env
+# Edit backend/.env and fill in the required values
+```
+
+Required variables in `backend/.env`:
+```env
+SECRET_KEY=your-secret-key
+DATABASE_URL=              # Leave empty to use SQLite locally
+GOOGLE_CLIENT_ID=          # For Google OAuth
+SMTP_EMAIL=                # Gmail address
+SMTP_PASSWORD=             # Gmail App Password (16-digit)
+FRONTEND_URL=http://localhost:5173
+```
+
+### 3. Run the Application
+
+**Terminal 1 — Backend:**
+```bash
+# From project root
+PYTHONPATH=$(pwd) uvicorn backend.app:app --reload --host 0.0.0.0 --port 8000
+```
+
+**Terminal 2 — Frontend:**
 ```bash
 cd frontend
 npm run dev
 ```
 
----
-
-## 📖 Usage Guide
-
-### 1. **Homepage**
-- Navigate through sections: About Us, Services, How To Use
-- Click "Get Started" to go to Detection page
-- Smooth scrolling navigation
-
-### 2. **Detection Page**
-- **Upload Images**: 
-  - Click the upload area or drag & drop images
-  - Supports PNG, JPG formats (up to 10MB each)
-  - Maximum 10 images per batch
-  
-- **Review Selection**:
-  - View thumbnails of selected images
-  - Remove individual images with × button
-  - Clear all images with "Clear All" button
-
-- **Detect**:
-  - Click "Detect Now" (single image) or "Detect All (N)" (multiple images)
-  - Watch real-time processing progress
-  - View processing status for each image
-
-- **View Results**:
-  - **Summary Statistics**: Overview of Fake/Real/Failed detections
-  - **Individual Results**: Detailed card for each image showing:
-    - Image preview with label overlay
-    - Classification (Real/Fake)
-    - Confidence scores
-    - AI Model used
-    - Decision threshold (50%)
-    - Processing timestamp
-
-### 3. **Understanding Results**
-
-**How Detection Works:**
-- The AI analyzes each image and provides a confidence score
-- If Fake confidence > 50%, the image is classified as **Fake**
-- If Fake confidence ≤ 50%, the image is classified as **Real**
-
-**Example:**
-- Confidence (Fake): 65.23% → Classification: **Fake**
-- Confidence (Real): 34.77%
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:8000`
+- API Docs: `http://localhost:8000/docs`
 
 ---
 
 ## 🧠 Model Information
 
-### Default Model: EfficientNet-B0
+| Model | Accuracy | Recall Fake | ROC-AUC | Parameters |
+|---|---|---|---|---|
+| **ResNet-50** *(deployed)* | **96.67%** | **100%** | 0.9917 | ~24M |
+| EfficientNet-B0 | 95.00% | — | 0.9931 | ~4.3M |
+| XceptionNet | 91.67% | — | 0.9944 | ~22M |
 
-- **Architecture**: EfficientNet-B0 (pretrained on ImageNet)
-- **Task**: Binary Classification (Real vs Fake)
-- **Input Size**: 224x224 pixels
-- **Preprocessing**: 
-  - Resize to 224x224
-  - Normalize with ImageNet mean/std
-- **Decision Threshold**: 0.5 (50%)
-
-### Model Training
-
-The model is trained using a two-phase approach:
-1. **Phase 1**: Freeze backbone, train only classification head
-2. **Phase 2**: Unfreeze backbone, fine-tune entire network
-
-Training configuration can be found in `src/config.py`.
+**Training strategy:**
+- Transfer learning from ImageNet pretrained weights
+- Two-phase training: backbone frozen (Phase 1) → full fine-tune with LR 1×10⁻⁵ (Phase 2)
+- Stratified 5-Fold Cross-Validation on 1,200 images
+- Domain-specific augmentation: `ImageCompression`, `GaussNoise`, `CoarseDropout`, etc.
 
 ---
 
-## 🔧 Configuration
+## � API Reference
 
-### Backend Configuration (`src/config.py`)
+See [API.md](API.md) for full endpoint documentation.
 
-```python
-MODEL_NAME = "efficientnet_b0"
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-IMAGE_SIZE = 224
-MODEL_SAVE_PATH = f"outputs/models/best_{MODEL_NAME}.pth"
-```
+Key endpoints:
 
-### Frontend Configuration
-
-- **API Base URL**: `http://localhost:8000` (defined in `Detection.jsx`)
-- **Max Files**: 10 images (defined in `Detection.jsx`)
-- **Theme Colors**:
-  - Primary: `#E94E1B` (Orange)
-  - Background: `#1a1a1a` (Dark)
-  - Accent: `#0d0d0d` (Darker)
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/health` | Health check |
+| `POST` | `/predict` | Detect deepfake in uploaded image |
+| `POST` | `/auth/register` | Register new user |
+| `POST` | `/auth/login` | Login |
+| `GET` | `/history` | Get detection history |
+| `GET` | `/history/{id}/pdf` | Export detection as PDF |
 
 ---
 
-## 📡 API Documentation
+## � Deployment
 
-### Endpoints
+The application is deployed using:
 
-#### `GET /health`
-Check API health status
+| Component | Platform |
+|---|---|
+| Frontend (React.js) | Vercel |
+| Backend (FastAPI) | Railway (Docker) |
+| Database (PostgreSQL) | Railway Managed DB |
 
-**Response:**
-```json
-{
-  "status": "ok",
-  "device": "cpu",
-  "model_name": "efficientnet_b0"
-}
-```
-
-#### `POST /predict`
-Detect deepfake in uploaded image
-
-**Request:**
-- Method: `POST`
-- Content-Type: `multipart/form-data`
-- Body: `file` (image file)
-
-**Response:**
-```json
-{
-  "label": "Fake",
-  "prob_fake": 0.6523,
-  "threshold": 0.5,
-  "model_name": "efficientnet_b0"
-}
-```
-
-**Error Response:**
-```json
-{
-  "detail": "Error message"
-}
-```
-
----
-
-## 🛠️ Development
-
-### Project Structure
-
-- **Backend**: FastAPI with PyTorch for model inference
-- **Frontend**: React with Vite for fast development
-- **Styling**: Inline styles with dark theme
-- **State Management**: React hooks (useState, useEffect, useMemo)
-- **Routing**: Client-side routing with state-based navigation
-
-### Key Technologies
-
-**Backend:**
-- FastAPI - Modern web framework
-- PyTorch - Deep learning framework
-- timm - Pre-trained models
-- albumentations - Image augmentation
-- Pillow - Image processing
-
-**Frontend:**
-- React 18 - UI library
-- Vite - Build tool
-- JavaScript (ES6+)
-
----
-
-## 🧪 Testing
-
-### Backend Testing
-```bash
-cd backend
-# Test health endpoint
-curl http://localhost:8000/health
-
-# Test prediction endpoint
-curl -X POST -F "file=@test_image.jpg" http://localhost:8000/predict
-```
-
-### Frontend Testing
-1. Open browser at `http://localhost:5173`
-2. Test navigation between Home and Detection pages
-3. Test image upload (single and multiple)
-4. Test detection with various images
-5. Verify results display correctly
-
----
-
-## 📝 TODO / Future Enhancements
-
-- [ ] Add user authentication
-- [ ] Implement result history/database
-- [ ] Add export results (CSV/PDF)
-- [ ] Support video deepfake detection
-- [ ] Add model comparison feature
-- [ ] Implement API rate limiting
-- [ ] Add unit tests and integration tests
-- [ ] Deploy to cloud (AWS/GCP/Azure)
-- [ ] Add Docker support
-- [ ] Implement CI/CD pipeline
+Railway reads the `Dockerfile` automatically on push. See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed steps.
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ---
 
 ## 👥 Authors
 
-- **Your Name** - *Initial work*
+- **Ananda Madani** — Backend, ML Integration
+- **Guntur Listyo Prabowo** — Frontend, UI/UX
+- **Yosef Ezekiel Gandhi Sogemaking** — ML Training, Evaluation
 
----
-
-## 🙏 Acknowledgments
-
-- EfficientNet model from [timm](https://github.com/rwightman/pytorch-image-models)
-- FastAPI framework
-- React and Vite teams
-- Open-source community
-
----
-
-## 📞 Contact
-
-For questions or support, please open an issue on GitHub.
+Universitas Bina Nusantara — Computer Science, 2026
 
 ---
 
 ## ⚠️ Disclaimer
 
-This tool is designed for educational and research purposes. While it uses state-of-the-art AI models, no deepfake detection system is 100% accurate. Always verify important information through multiple sources.
-
----
-
-**Made with ❤️ and AI**
+This tool is designed for educational and research purposes. No deepfake detection system is 100% accurate. Always verify important information through multiple sources.
