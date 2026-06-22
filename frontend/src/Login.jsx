@@ -69,48 +69,51 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
       if (!window.google?.accounts?.id) return
 
       try {
+        const handleCredential = async (resp) => {
+          const idToken = resp?.credential
+          if (!idToken) {
+            toast.error('Google sign-in failed')
+            return
+          }
+
+          const loadingToast = toast.loading('Signing in with Google...')
+          try {
+            const response = await fetch(`${DEFAULT_API_BASE}/auth/google`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ id_token: idToken })
+            })
+
+            const rawText = await response.text()
+            let data = {}
+            try {
+              data = rawText ? JSON.parse(rawText) : {}
+            } catch {
+              data = {}
+            }
+
+            if (!response.ok) {
+              throw new Error(data?.detail || 'Google login failed')
+            }
+
+            localStorage.setItem('access_token', data.access_token)
+            localStorage.setItem('user', JSON.stringify(data.user))
+            toast.success('Login successful! Welcome back.', { id: loadingToast })
+
+            if (onLoginSuccess) {
+              onLoginSuccess(data.user)
+            }
+          } catch (err) {
+            toast.error(err.message || 'Google login failed', { id: loadingToast })
+          }
+        }
+
         window.google.accounts.id.initialize({
           client_id: clientId,
-          callback: async (resp) => {
-            const idToken = resp?.credential
-            if (!idToken) {
-              toast.error('Google sign-in failed')
-              return
-            }
-
-            const loadingToast = toast.loading('Signing in with Google...')
-            try {
-              const response = await fetch(`${DEFAULT_API_BASE}/auth/google`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id_token: idToken })
-              })
-
-              const rawText = await response.text()
-              let data = {}
-              try {
-                data = rawText ? JSON.parse(rawText) : {}
-              } catch {
-                data = {}
-              }
-
-              if (!response.ok) {
-                throw new Error(data?.detail || 'Google login failed')
-              }
-
-              localStorage.setItem('access_token', data.access_token)
-              localStorage.setItem('user', JSON.stringify(data.user))
-              toast.success('Login successful! Welcome back.', { id: loadingToast })
-
-              if (onLoginSuccess) {
-                onLoginSuccess(data.user)
-              }
-            } catch (err) {
-              toast.error(err.message || 'Google login failed', { id: loadingToast })
-            }
-          }
+          callback: handleCredential,
+          ux_mode: 'popup'
         })
 
         setGoogleReady(true)
@@ -129,6 +132,21 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
 
     return () => window.clearInterval(interval)
   }, [onLoginSuccess])
+
+  useEffect(() => {
+    if (!googleReady) return
+    const container = document.getElementById('google-signin-container')
+    if (container && window.google?.accounts?.id) {
+      window.google.accounts.id.renderButton(container, {
+        type: 'standard',
+        shape: 'rectangular',
+        theme: 'outline',
+        text: 'signin_with',
+        size: 'large',
+        width: container.offsetWidth || 340
+      })
+    }
+  }, [googleReady])
 
   return (
     <div style={{ 
@@ -410,40 +428,35 @@ export default function Login({ onNavigateToHome, onNavigateToRegister, onNaviga
 
           {/* Google Login */}
           <div style={{ marginBottom: 20 }}>
-            <button
-              type="button"
-              onClick={() => {
-                if (!googleReady) {
-                  toast.error('Google sign-in is not configured')
-                  return
-                }
-                window.google.accounts.id.prompt()
-              }}
-              style={{
-                width: '100%',
-                padding: '14px',
-                background: '#fff',
-                color: '#3c4043',
-                border: '1px solid #dadce0',
-                borderRadius: 4,
-                fontSize: 14,
-                fontWeight: 500,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 10,
-                boxSizing: 'border-box'
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
-                <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/>
-                <path d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707 0-.593.102-1.17.282-1.709V4.958H.957C.347 6.173 0 7.548 0 9c0 1.452.348 2.827.957 4.042l3.007-2.335z" fill="#FBBC05"/>
-                <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-              </svg>
-              Sign in with Google
-            </button>
+            {googleReady ? (
+              <div
+                id="google-signin-container"
+                style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+              />
+            ) : (
+              <button
+                type="button"
+                disabled
+                style={{
+                  width: '100%',
+                  padding: '14px',
+                  background: '#f5f5f5',
+                  color: '#aaa',
+                  border: '1px solid #dadce0',
+                  borderRadius: 4,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  cursor: 'not-allowed',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 10,
+                  boxSizing: 'border-box'
+                }}
+              >
+                Login with Google
+              </button>
+            )}
           </div>
 
           {/* Register Link */}
