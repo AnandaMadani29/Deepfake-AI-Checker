@@ -325,7 +325,22 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
             </p>
 
             <button
-              onClick={() => window.open('https://mail.google.com', '_blank')}
+              onClick={() => {
+                const domain = email.split('@')[1]?.toLowerCase()
+                const mailUrls = {
+                  'gmail.com': 'https://mail.google.com',
+                  'yahoo.com': 'https://mail.yahoo.com',
+                  'yahoo.co.id': 'https://mail.yahoo.com',
+                  'outlook.com': 'https://outlook.live.com',
+                  'hotmail.com': 'https://outlook.live.com',
+                  'live.com': 'https://outlook.live.com',
+                  'icloud.com': 'https://www.icloud.com/mail',
+                  'binus.ac.id': 'https://outlook.live.com',
+                  'binus.edu': 'https://outlook.live.com',
+                }
+                const url = mailUrls[domain] || `https://${domain}`
+                window.open(url, '_blank')
+              }}
               style={{
                 width: '100%',
                 padding: '18px',
@@ -339,7 +354,21 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
                 marginBottom: 20
               }}
             >
-              Open Your Gmail
+              {(() => {
+                const domain = email.split('@')[1]?.toLowerCase()
+                const labels = {
+                  'gmail.com': 'Open Your Gmail',
+                  'yahoo.com': 'Open Your Yahoo Mail',
+                  'yahoo.co.id': 'Open Your Yahoo Mail',
+                  'outlook.com': 'Open Your Outlook',
+                  'hotmail.com': 'Open Your Outlook',
+                  'live.com': 'Open Your Outlook',
+                  'icloud.com': 'Open Your iCloud Mail',
+                  'binus.ac.id': 'Open Your Binus Mail',
+                  'binus.edu': 'Open Your Binus Mail',
+                }
+                return labels[domain] || 'Open Your Email'
+              })()}
             </button>
 
             <div style={{ textAlign: 'center', fontSize: 12, color: '#ccc', marginTop: 8 }}>

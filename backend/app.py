@@ -3,6 +3,9 @@ import os
 from typing import Optional, List
 from datetime import datetime
 
+from dotenv import load_dotenv
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
+
 import numpy as np
 import torch
 from fastapi import FastAPI, File, HTTPException, UploadFile, Header
@@ -295,9 +298,10 @@ async def login(credentials: UserLogin) -> TokenResponse:
 @app.post("/auth/forgot-password")
 async def forgot_password(data: ForgotPassword) -> dict:
     """Request password reset token and send email"""
-    create_reset_token(data.email)
-    
-    # Always return success message (don't reveal if email exists)
+    import threading
+    threading.Thread(target=create_reset_token, args=(data.email,), daemon=True).start()
+
+    # Always return success message immediately (don't block on SMTP)
     return {
         "message": "If your email is registered, you will receive a password reset link shortly. Please check your inbox and spam folder."
     }
