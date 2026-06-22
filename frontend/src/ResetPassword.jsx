@@ -52,8 +52,6 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
     setLoading(true)
 
     try {
-      console.log('Sending reset password request with token:', token)
-      
       const response = await fetch(`${DEFAULT_API_BASE}/auth/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -63,16 +61,11 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
         })
       })
 
-      console.log('Response status:', response.status)
-      
       const data = await response.json()
-      console.log('Response data:', data)
 
       if (response.ok) {
-        console.log('Password reset successful!')
         setResetSuccess(true)
       } else {
-        console.error('Reset failed:', data)
         const errorMessage = data.detail || 'Internal Server Error'
         
         // Show specific error messages
@@ -85,7 +78,6 @@ export default function ResetPassword({ onNavigateToLogin, onNavigateToHome }) {
         }
       }
     } catch (error) {
-      console.error('Reset password error:', error)
       toast.error('Internal Server Error')
     } finally {
       setLoading(false)

@@ -3,7 +3,6 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 
 export default function Terms({ onNavigateToHome, onNavigateToDetection, onNavigateToArticles, user, onLogout, onLogin }) {
-  console.log('Terms component rendered', { user, onNavigateToHome, onNavigateToDetection, onNavigateToArticles })
   
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768)
 

@@ -39,8 +39,6 @@ export default function App() {
     const params = new URLSearchParams(window.location.search)
     const hash = window.location.hash.slice(1)
     
-    console.log('Initial load - hash:', hash)
-    
     if (path === '/reset-password' || params.has('token')) {
       setCurrentPage('reset-password')
     } else if (hash === 'terms') {
@@ -55,7 +53,6 @@ export default function App() {
     
     const handleHashChange = () => {
       const newHash = window.location.hash.slice(1)
-      console.log('Hash changed to:', newHash)
       if (newHash === 'terms') {
         setCurrentPage('terms')
       } else if (newHash === 'privacy') {
@@ -140,8 +137,6 @@ export default function App() {
       </div>
     )
   }
-
-  console.log('Current page:', currentPage)
 
   const toasterComponent = (
     <Toaster

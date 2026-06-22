@@ -44,8 +44,6 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
     
     try {
       const token = localStorage.getItem('access_token')
-      console.log('Fetching history with token:', token ? 'Token exists' : 'No token')
-      
       if (!token) {
         throw new Error('No authentication token found. Please login again.')
       }
@@ -56,8 +54,6 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
         }
       })
 
-      console.log('History response status:', response.status)
-
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
         console.error('History fetch error:', errorData)
@@ -65,7 +61,6 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
       }
 
       const data = await response.json()
-      console.log('History data received:', data)
       setHistory(data.history || [])
     } catch (err) {
       console.error('History fetch error:', err)
@@ -80,7 +75,6 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
       const token = localStorage.getItem('access_token')
       
       if (!token) {
-        console.log('No token for stats fetch')
         return
       }
       
@@ -90,14 +84,10 @@ export default function History({ onNavigateToHome, onNavigateToDetection, onNav
         }
       })
 
-      console.log('Stats response status:', response.status)
-
       if (response.ok) {
         const data = await response.json()
-        console.log('Stats data received:', data)
         setStats(data)
       } else {
-        console.error('Stats fetch failed:', response.status)
       }
     } catch (err) {
       console.error('Failed to fetch stats:', err)

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
 import Logo from './components/Logo'
 
@@ -13,6 +13,15 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const token = params.get('token')
+    if (token) {
+      setResetToken(token)
+      setStep('reset')
+    }
+  }, [])
 
   const handleRequestReset = async (e) => {
     e.preventDefault()
@@ -40,15 +49,8 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
         throw new Error(data.detail || 'Request failed')
       }
 
-      // In development, we get the token in response
-      if (data.reset_token) {
-        setResetToken(data.reset_token)
-        setStep('check-email')
-        toast.success('Reset token generated. Check your email!')
-      } else {
-        setStep('check-email')
-        toast.success('If your email exists, you will receive a reset link.')
-      }
+      setStep('check-email')
+      toast.success('If your email exists, you will receive a reset link.')
     } catch (err) {
       if (err.name === 'AbortError') {
         toast.error('Request timeout. Email server may be slow. Please try again or contact support.')
@@ -340,29 +342,7 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
               Open Your Gmail
             </button>
 
-            <div style={{ textAlign: 'center', fontSize: 14, color: '#999', marginBottom: 20 }}>
-              or
-            </div>
-
-            <button
-              onClick={() => setStep('reset')}
-              style={{
-                width: '100%',
-                padding: '14px',
-                background: 'transparent',
-                color: '#fff',
-                border: '1px solid #555',
-                borderRadius: 2,
-                fontSize: 14,
-                fontWeight: 600,
-                cursor: 'pointer',
-                marginBottom: 24
-              }}
-            >
-              I have the reset token
-            </button>
-
-            <div style={{ textAlign: 'center', fontSize: 12, color: '#ccc' }}>
+            <div style={{ textAlign: 'center', fontSize: 12, color: '#ccc', marginTop: 8 }}>
               Didn't receive email?{' '}
               <a
                 onClick={() => setStep('request')}
@@ -401,39 +381,6 @@ export default function ForgotPassword({ onNavigateToHome, onNavigateToLogin }) 
             </p>
 
             <form onSubmit={handleResetPassword}>
-              <div style={{ marginBottom: 20 }}>
-                <label style={{ 
-                  display: 'block', 
-                  marginBottom: 8, 
-                  fontSize: 14, 
-                  fontWeight: 500, 
-                  color: '#ccc' 
-                }}>
-                  Reset Token
-                </label>
-                <input
-                  type="text"
-                  value={resetToken}
-                  onChange={(e) => setResetToken(e.target.value)}
-                  required
-                  placeholder="Paste reset token"
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    background: 'transparent',
-                    border: '1px solid #444',
-                    borderRadius: 2,
-                    color: '#fff',
-                    fontSize: 12,
-                    outline: 'none',
-                    boxSizing: 'border-box',
-                    fontFamily: 'monospace'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = '#FF4B25'}
-                  onBlur={(e) => e.target.style.borderColor = '#444'}
-                />
-              </div>
-
               <div style={{ marginBottom: 20 }}>
                 <label style={{ 
                   display: 'block', 
