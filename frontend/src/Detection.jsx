@@ -549,13 +549,13 @@ export default function Detection({
           <div style={{ flex: 1, width: "100%", position: "relative", borderRadius: 2, overflow: "hidden", border: "2px solid #2a2a2a", order: isMobile ? 1 : 2 }}>
             <div style={{ display: "flex" }}>
               <div style={{ flex: 1, position: "relative", minHeight: isMobile ? 200 : 380 }}>
-                <img src="/assets/detection/real.png" alt="Real Example" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <img src="/assets/detection/real.webp" alt="Real Example" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 <div style={{ position: "absolute", bottom: 8, left: 8, background: "rgba(0, 0, 0, 0.8)", padding: isMobile ? "4px 8px" : "8px 16px", borderRadius: 2, backdropFilter: "blur(8px)" }}>
                   <div style={{ fontSize: isMobile ? 10 : 14, fontWeight: 600, color: "#76FF5E" }}>Real</div>
                 </div>
               </div>
               <div style={{ flex: 1, position: "relative", minHeight: isMobile ? 200 : 380 }}>
-                <img src="/assets/detection/fake.png" alt="Fake Example" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <img src="/assets/detection/fake.webp" alt="Fake Example" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 <div style={{ position: "absolute", bottom: 8, left: 8, background: "rgba(0, 0, 0, 0.8)", padding: isMobile ? "4px 8px" : "8px 16px", borderRadius: 2, backdropFilter: "blur(8px)" }}>
                   <div style={{ fontSize: isMobile ? 10 : 14, fontWeight: 600, color: "#FF4141" }}>Fake</div>
                 </div>
