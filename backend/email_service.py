@@ -1,15 +1,53 @@
 import os
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from typing import Optional
+import json
+import urllib.request
+import urllib.error
 from pathlib import Path
 from dotenv import load_dotenv
+
+try:
+    import requests as _requests
+    _HAS_REQUESTS = True
+except ImportError:
+    _HAS_REQUESTS = False
 
 # Load environment variables from backend/.env file
 backend_dir = Path(__file__).parent
 dotenv_path = backend_dir / '.env'
 load_dotenv(dotenv_path)
+
+
+def _send_via_resend(to_email: str, subject: str, html_body: str) -> bool:
+    """Send email via Resend API"""
+    api_key = os.getenv("RESEND_API_KEY")
+    if not api_key:
+        return False
+
+    payload = {
+        "from": "Fact.it <onboarding@resend.dev>",
+        "to": [to_email],
+        "subject": subject,
+        "html": html_body
+    }
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        if _HAS_REQUESTS:
+            resp = _requests.post("https://api.resend.com/emails", json=payload, headers=headers, timeout=10)
+            print(f"Resend API response: {resp.status_code}")
+            return resp.status_code in (200, 201)
+        else:
+            data = json.dumps(payload).encode("utf-8")
+            req = urllib.request.Request("https://api.resend.com/emails", data=data, headers=headers, method="POST")
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                print(f"Resend API response: {resp.status}")
+                return resp.status in (200, 201)
+    except Exception as e:
+        print(f"Resend API error: {e}")
+        return False
 
 
 def send_reset_email(to_email: str, reset_token: str, user_name: str = "User") -> bool:
@@ -24,30 +62,11 @@ def send_reset_email(to_email: str, reset_token: str, user_name: str = "User") -
     Returns:
         bool: True if email sent successfully, False otherwise
     """
-    
-    # Email configuration from environment variables
-    smtp_server = os.getenv("SMTP_SERVER", "smtp.gmail.com")
-    smtp_port = int(os.getenv("SMTP_PORT", "587"))
-    sender_email = os.getenv("SMTP_EMAIL")
-    sender_password = os.getenv("SMTP_PASSWORD")
     frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
-    
-    # Check if email credentials are configured
-    if not sender_email or not sender_password:
-        print("Warning: SMTP credentials not configured. Email not sent.")
-        print(f"Reset token for {to_email}: {reset_token}")
-        return False
     
     # Create reset link
     reset_link = f"{frontend_url}/reset-password?token={reset_token}"
-    
-    # Create email message
-    message = MIMEMultipart("alternative")
-    message["Subject"] = "Reset Your Fact.it Password"
-    message["From"] = f"Fact.it <{sender_email}>"
-    message["To"] = to_email
-    
-    # Email body (HTML)
+
     html_body = f"""
     <!DOCTYPE html>
     <html>
@@ -157,45 +176,13 @@ def send_reset_email(to_email: str, reset_token: str, user_name: str = "User") -
     </html>
     """
     
-    # Plain text version (fallback)
-    text_body = f"""
-    Reset Your Fact.it Password
-    
-    Hi {user_name},
-    
-    We received a request to reset your password for your Fact.it account.
-    
-    Click this link to reset your password:
-    {reset_link}
-    
-    This link will expire in 1 hour.
-    
-    If you didn't request a password reset, you can safely ignore this email.
-    
-    ---
-    Fact.it - Deepfake Detection System
-    """
-    
-    # Attach both HTML and plain text versions
-    part1 = MIMEText(text_body, "plain")
-    part2 = MIMEText(html_body, "html")
-    message.attach(part1)
-    message.attach(part2)
-    
-    # Send email
-    try:
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls()  # Secure the connection
-            server.login(sender_email, sender_password)
-            server.sendmail(sender_email, to_email, message.as_string())
-        
+    result = _send_via_resend(to_email, "Reset Your Fact.it Password", html_body)
+    if result:
         print(f"Password reset email sent successfully to {to_email}")
-        return True
-        
-    except Exception as e:
-        print(f"Failed to send email to {to_email}: {str(e)}")
+    else:
+        print(f"Failed to send email to {to_email}")
         print(f"Reset token (for development): {reset_token}")
-        return False
+    return result
 
 
 def send_welcome_email(to_email: str, user_name: str) -> bool:
@@ -209,20 +196,7 @@ def send_welcome_email(to_email: str, user_name: str) -> bool:
     Returns:
         bool: True if email sent successfully, False otherwise
     """
-    
-    smtp_server = os.getenv("SMTP_SERVER", "smtp.gmail.com")
-    smtp_port = int(os.getenv("SMTP_PORT", "587"))
-    sender_email = os.getenv("SMTP_EMAIL")
-    sender_password = os.getenv("SMTP_PASSWORD")
     frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
-    
-    if not sender_email or not sender_password:
-        return False
-    
-    message = MIMEMultipart("alternative")
-    message["Subject"] = "Welcome to Fact.it!"
-    message["From"] = f"Fact.it <{sender_email}>"
-    message["To"] = to_email
     
     html_body = f"""
     <!DOCTYPE html>
@@ -295,15 +269,4 @@ def send_welcome_email(to_email: str, user_name: str) -> bool:
     </html>
     """
     
-    part = MIMEText(html_body, "html")
-    message.attach(part)
-    
-    try:
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls()
-            server.login(sender_email, sender_password)
-            server.sendmail(sender_email, to_email, message.as_string())
-        return True
-    except Exception as e:
-        print(f"Failed to send welcome email: {str(e)}")
-        return False
+    return _send_via_resend(to_email, "Welcome to Fact.it!", html_body)
