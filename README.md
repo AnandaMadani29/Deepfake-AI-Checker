@@ -181,9 +181,9 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ## 👥 Authors
 
-- **Ananda Madani** — Backend, ML Integration
+- **Ananda Madani** — Backend, Model Integration, Deployment
 - **Guntur Listyo Prabowo** — Frontend, UI/UX
-- **Yosef Ezekiel Gandhi Sogemaking** — ML Training, Evaluation
+- **Yosef Ezekiel Gandhi Sogemaking** — Model Training, Model Evaluation
 
 Universitas Bina Nusantara — Computer Science, 2026
 
