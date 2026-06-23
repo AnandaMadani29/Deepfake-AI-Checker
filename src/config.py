@@ -35,6 +35,9 @@ BATCH_SIZE = 32
 EPOCHS     = 40
 LR         = 5e-4
 
+USE_FACE_CROP = False
+FACE_MARGIN   = 0.2
+
 DATA_DIR        = "Dataset"
 MODEL_SAVE_PATH = os.getenv("DEEFAKE_WEIGHTS_PATH", "outputs/models/resnet50.pth")
 RESULTS_PATH    = f"outputs/results/{MODEL_NAME}_results.json"
