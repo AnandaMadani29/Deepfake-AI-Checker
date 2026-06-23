@@ -173,12 +173,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
 ---
 
-## 📄 License
-
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
-
----
-
 ## 👥 Authors
 
 - **Ananda Madani** — Backend, Model Integration, Deployment
