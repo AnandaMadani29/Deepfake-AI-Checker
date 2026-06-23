@@ -5,25 +5,6 @@ from src.model import unfreeze_backbone
 
 
 def train_model(model, train_loader, val_loader, device, epochs, lr, save_path):
-    """
-    Training model dengan 2-phase strategy dan early stopping.
-    
-    Phase 1 (Epoch 1-10): Freeze backbone, hanya train classifier head
-    Phase 2 (Epoch 11+): Unfreeze backbone, fine-tune seluruh jaringan
-    
-    Args:
-        model: Model PyTorch
-        train_loader: DataLoader untuk training
-        val_loader: DataLoader untuk validation
-        device: CPU atau CUDA
-        epochs: Total epochs
-        lr: Learning rate awal
-        save_path: Path untuk menyimpan model terbaik
-    
-    Returns:
-        best_val_loss: Validation loss terbaik
-        best_val_acc: Validation accuracy terbaik
-    """
 
     criterion = nn.BCEWithLogitsLoss()
 

@@ -15,25 +15,13 @@ from torch.utils.data import DataLoader, Subset, ConcatDataset
 from sklearn.model_selection import StratifiedKFold
 
 from src.config import (set_seed, SEED, DEVICE, BATCH_SIZE, EPOCHS,
-                         LR, DATA_DIR, MODEL_SAVE_PATH, RESULTS_PATH, MODEL_NAME, USE_FACE_CROP, FACE_MARGIN)
+                         LR, DATA_DIR, MODEL_SAVE_PATH, RESULTS_PATH, MODEL_NAME)
 from src.dataset import DeepfakeDataset
 from src.model import get_model
 from src.train import train_model
 
 
 def main():
-    """
-    Fungsi utama untuk training model dengan K-Fold Cross-Validation.
-    
-    Proses:
-    1. Load dataset Train + Validation sebagai pool
-    2. Split data menjadi 5 fold dengan StratifiedKFold
-    3. Untuk setiap fold: train model, simpan hasil
-    4. Hitung mean dan std dari semua fold
-    5. Simpan model terbaik (fold dengan loss terendah)
-    
-    Command: python main_train_kfold.py
-    """
     set_seed(SEED)
     os.makedirs("outputs/models",   exist_ok=True)
     os.makedirs("outputs/results",  exist_ok=True)
@@ -43,8 +31,8 @@ def main():
     print(f"{'='*60}")
 
     # ── Dataset pool ──────────────────────────────────────────────────────────
-    ds_train = DeepfakeDataset(f"{DATA_DIR}/Train",      train=True, use_face_crop=USE_FACE_CROP, face_margin=FACE_MARGIN)
-    ds_val   = DeepfakeDataset(f"{DATA_DIR}/Validation", train=False, use_face_crop=USE_FACE_CROP, face_margin=FACE_MARGIN)
+    ds_train = DeepfakeDataset(f"{DATA_DIR}/Train",      train=True)
+    ds_val   = DeepfakeDataset(f"{DATA_DIR}/Validation", train=False)
     combined   = ConcatDataset([ds_train, ds_val])
     all_labels = np.array(ds_train.labels + ds_val.labels)
 
@@ -105,12 +93,12 @@ def main():
     # Simpan hasil ke JSON
     with open(RESULTS_PATH, "w") as f:
         json.dump(summary, f, indent=2)
-    print(f"\n Hasil disimpan ke: {RESULTS_PATH}")
+    print(f"\n💾 Hasil disimpan ke: {RESULTS_PATH}")
 
     # Salin model terbaik
     best_fold = summary["best_fold"]
     shutil.copy(f"outputs/models/{MODEL_NAME}_fold{best_fold}.pth", MODEL_SAVE_PATH)
-    print(f" Model terbaik (Fold {best_fold}) → {MODEL_SAVE_PATH}")
+    print(f"✅ Model terbaik (Fold {best_fold}) → {MODEL_SAVE_PATH}")
     print(f"\n   Langkah selanjutnya:")
     print(f"   1. Jalankan: python main_test.py  (evaluasi test set)")
     print(f"   2. Ganti MODEL_NAME di config.py, ulangi training")

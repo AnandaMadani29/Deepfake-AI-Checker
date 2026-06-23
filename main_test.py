@@ -9,25 +9,12 @@ import numpy as np
 from torch.utils.data import DataLoader
 from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
 
-from src.config import set_seed, SEED, DEVICE, BATCH_SIZE, DATA_DIR, MODEL_SAVE_PATH, MODEL_NAME, USE_FACE_CROP, FACE_MARGIN
+from src.config import set_seed, SEED, DEVICE, BATCH_SIZE, DATA_DIR, MODEL_SAVE_PATH, MODEL_NAME
 from src.dataset import DeepfakeDataset
 from src.model import get_model
 
 
 def evaluate(model, loader, device):
-    """
-    Evaluasi model pada dataset test.
-    
-    Args:
-        model: Model yang sudah diload
-        loader: DataLoader untuk test set
-        device: CPU atau CUDA
-    
-    Returns:
-        labels: Ground truth labels
-        preds: Predicted labels (0 atau 1)
-        probs: Probability scores (0-1)
-    """
     model.eval()
     all_preds, all_probs, all_labels = [], [], []
 
@@ -45,17 +32,6 @@ def evaluate(model, loader, device):
 
 
 def main():
-    """
-    Fungsi utama untuk evaluasi model pada test set.
-    
-    Proses:
-    1. Load model terbaik dari training
-    2. Evaluasi pada test set
-    3. Hitung metrics: accuracy, precision, recall, F1, ROC-AUC
-    4. Simpan hasil ke JSON untuk perbandingan
-    
-    Command: python main_test.py
-    """
     set_seed(SEED)
     import os; os.makedirs("outputs/results", exist_ok=True)
 
@@ -63,7 +39,7 @@ def main():
     print(f"  TEST EVALUASI — {MODEL_NAME.upper()}")
     print(f"{'='*55}")
 
-    test_ds     = DeepfakeDataset(f"{DATA_DIR}/Test", train=False, use_face_crop=USE_FACE_CROP, face_margin=FACE_MARGIN)
+    test_ds     = DeepfakeDataset(f"{DATA_DIR}/Test", train=False)
     test_loader = DataLoader(test_ds, batch_size=BATCH_SIZE,
                              shuffle=False, num_workers=0)
 
