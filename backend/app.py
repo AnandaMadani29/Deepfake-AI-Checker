@@ -635,12 +635,11 @@ async def predict(
         result = _predictor.predict(img_rgb, img_pil=enhanced_img)
         
         # Combine model prediction with AI-generated detection
-        # ENABLED: AI-generated detection boost
-        if is_ai_generated:
-            # If AI detector says it's AI-generated, boost significantly
-            boost = ai_score * 0.6  # Increased from 0.4 to 0.6 for higher sensitivity
-            result["prob_fake"] = min(0.99, result["prob_fake"] + boost)
-            result["label"] = "Fake" if result["prob_fake"] > 0.5 else "Real"
+        # DISABLED: AI-generated detection boost (dapat menyebabkan false positive)
+        # if is_ai_generated:
+        #     boost = ai_score * 0.6
+        #     result["prob_fake"] = min(0.99, result["prob_fake"] + boost)
+        #     result["label"] = "Fake" if result["prob_fake"] > 0.5 else "Real"
         
         # Add all improvement results
         if selection_reason:
