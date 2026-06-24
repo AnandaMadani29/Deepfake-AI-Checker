@@ -56,14 +56,17 @@ def _resolve_weights_path(model_name: str) -> str:
 
 
 class Predictor:
+    """Singleton class untuk load dan menjalankan inferensi model deepfake detection."""
     def __init__(self) -> None:
         self._model_name: Optional[str] = None
         self._weights_path: Optional[str] = None
         self._model: Optional[torch.nn.Module] = None
+        # Transform inferensi: hanya resize + normalisasi, tanpa augmentasi
         self._transform = get_transforms(train=False)
         self._adaptive_mode = True  # Enable adaptive model selection
 
     def load(self, model_name: str, weights_path: str) -> None:
+        # Skip reload jika model yang sama sudah ter-load (optimasi performa)
         if self._model is not None and self._model_name == model_name and self._weights_path == weights_path:
             return
 
@@ -72,23 +75,27 @@ class Predictor:
         if not os.path.exists(weights_path):
             raise FileNotFoundError(f"Weights file not found: {weights_path}")
 
+        # Load state dict dari file .pth hasil training
         state = torch.load(weights_path, map_location=DEVICE)
         model.load_state_dict(state)
-        model.eval()
+        model.eval()  # Set ke evaluation mode — nonaktifkan dropout dan batch norm training behavior
 
         self._model_name = model_name
         self._weights_path = weights_path
         self._model = model
 
-    @torch.no_grad()
+    @torch.no_grad()  # Nonaktifkan gradient computation untuk efisiensi inferensi
     def predict(self, img_rgb: np.ndarray, img_pil: Optional[Image.Image] = None) -> dict:
         if self._model is None:
             raise RuntimeError("Model is not loaded")
 
+        # Preprocessing: transform gambar → tensor, tambah batch dimension → [1, 3, 224, 224]
         x = self._transform(image=img_rgb)["image"].unsqueeze(0).to(DEVICE)
         logits = self._model(x)
+        # Konversi logit ke probabilitas menggunakan sigmoid (output range 0-1)
         prob_fake = torch.sigmoid(logits).squeeze().item()
 
+        # Threshold 0.5: prob_fake > 0.5 → Fake, sebaliknya → Real
         label = "Fake" if prob_fake > 0.5 else "Real"
         result = {
             "label": label,

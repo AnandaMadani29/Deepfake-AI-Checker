@@ -25,9 +25,10 @@ except ImportError:
     send_welcome_email = None
 
 
+# JWT configuration — SECRET_KEY harus diganti di production via environment variable
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
+ALGORITHM = "HS256"                      # Algoritma signing JWT
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24   # Token berlaku 24 jam
 
 # Database path - use volume in production for persistence
 DB_PATH = os.getenv("DATABASE_PATH", "users.db")
@@ -197,7 +198,7 @@ def get_or_create_google_user(email: str, full_name: str) -> dict:
             "email": user["email"],
             "full_name": user.get("full_name") or full_name
         }
-
+    # User baru via Google OAuth — generate random password karena login via Google tidak butuh password
     random_password = secrets.token_urlsafe(32)
     return create_user(email=email, password=random_password, full_name=full_name or "Google User")
 
@@ -207,15 +208,14 @@ def create_reset_token(email: str) -> str:
     user = get_user_by_email(email)
     
     if not user:
-        # Don't reveal if email exists or not (security)
-        # Still return success message
+        # Tidak reveal apakah email terdaftar atau tidak — mencegah email enumeration attack
         return None
     
-    # Create reset token
+    # Buat token JWT khusus reset password dengan expiry 1 jam
     token_data = {
         "user_id": user["id"],
         "email": email,
-        "type": "reset"
+        "type": "reset"  # Field type untuk membedakan dari access token biasa
     }
     
     token = create_access_token(token_data, expires_delta=timedelta(hours=1))
