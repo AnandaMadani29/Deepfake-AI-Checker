@@ -198,7 +198,7 @@ function ResultCard({ item, user, onDownload, expandedResults, onToggleExpand, i
                   </div>
                 </div>
                 {(item.result.detailed_analysis?.items || []).map((indicator, iIdx) => {
-                  const level = indicator.score > 70 ? "CRITICAL" : indicator.score > 50 ? "WARNING" : "NORMAL";
+                  const level = indicator.level || (indicator.score > 80 ? "CRITICAL" : indicator.score > 60 ? "WARNING" : "NORMAL");
                   const bgColor = level === "CRITICAL" ? "rgba(108, 5, 5, 0.2)" : level === "WARNING" ? "rgba(186, 119, 6, 0.2)" : "rgba(20, 108, 5, 0.2)";
                   const borderColor = level === "CRITICAL" ? "rgba(255, 65, 65, 0.5)" : level === "WARNING" ? "rgba(245, 158, 11, 0.5)" : "rgba(118, 255, 94, 0.5)";
                   const scoreColor = level === "CRITICAL" ? "#FF4141" : level === "WARNING" ? "#F59E0B" : "#76FF5E";
@@ -686,7 +686,7 @@ export default function Detection({
                 );
               })()}
               {(results[0].result.detailed_analysis?.items || []).map((indicator, idx) => {
-                const level = indicator.score > 70 ? "CRITICAL" : indicator.score > 50 ? "WARNING" : "NORMAL";
+                const level = indicator.level || (indicator.score > 80 ? "CRITICAL" : indicator.score > 60 ? "WARNING" : "NORMAL");
                 const bgColor = level === "CRITICAL" ? "rgba(108, 5, 5, 0.2)" : level === "WARNING" ? "rgba(186, 119, 6, 0.2)" : "rgba(20, 108, 5, 0.2)";
                 const borderColor = level === "CRITICAL" ? "rgba(255, 65, 65, 0.5)" : level === "WARNING" ? "rgba(245, 158, 11, 0.5)" : "rgba(118, 255, 94, 0.5)";
                 const scoreColor = level === "CRITICAL" ? "#FF4141" : level === "WARNING" ? "#F59E0B" : "#76FF5E";
